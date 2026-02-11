@@ -1,0 +1,20 @@
+{
+  "pages": [
+    "index",
+    "installation",
+    "quick-start",
+    "---Core---",
+    "core-concepts",
+    "ui-dsl",
+    "styling-system",
+    "state-management",
+    "---Advanced---",
+    "performance-model",
+    "navigation-di",
+    "architecture-overview",
+    "---Resources---",
+    "examples-gallery",
+    "best-practices",
+    "roadmap"
+  ]
+}

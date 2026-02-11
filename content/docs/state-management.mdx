@@ -1,0 +1,53 @@
+---
+title: State Management
+description: Global and local state architecture in Fluxy.
+---
+
+# State Management
+
+Fluxy provides a unified approach to both local and global state management using the same reactive primitives.
+
+## Local State
+
+For state that only lives within a single widget, define your signals inside the `State` class.
+
+```dart
+class MyWidget extends StatefulWidget {
+  @override
+  _MyWidgetState createState() => _MyWidgetState();
+}
+
+class _MyWidgetState extends State<MyWidget> {
+  final localCount = Signal(0);
+
+  @override
+  Widget build(BuildContext context) {
+    return Fx.button("Local: ${localCount.value}")
+      .onPressed(() => localCount.value++)
+      .render();
+  }
+}
+```
+
+## Global State
+
+For state shared across the app, define signals in a central location or a singleton/service.
+
+```dart
+// services/auth_service.dart
+class AuthService {
+  final user = Signal<User?>(null);
+  final isLoggedIn = Computed(() => user.value != null);
+}
+```
+
+## State Inversion
+
+You can pass signals down the tree or provide them via `FluxyProvider`.
+
+```dart
+FluxyProvider(
+  create: (context) => MyController(),
+  child: ChildWidget(),
+);
+```

@@ -1,0 +1,38 @@
+---
+title: Introduction
+description: Welcome to Fluxy - Reactive UI + State + Fluent DSL for Flutter.
+---
+
+# Introduction
+
+Fluxy is a modern, high-performance Flutter framework designed to simplify UI development and state management. It brings atomic reactivity and a fluent DSL to Flutter, reducing boilerplate and making your code more expressive.
+
+## Why Fluxy?
+
+Traditional Flutter development often involves deeply nested widget trees and complex state management patterns. Fluxy changes this by providing:
+
+- **Atomic Reactivity**: Only rebuild what's necessary. No more `setState` at the top of your tree.
+- **Fluent DSL**: A clean, chainable API for building UIs that feels natural and readable.
+- **High Performance**: Optimized rendering engine that minimizes layout and paint cycles.
+- **Developer Experience**: Less code, more features, and a faster feedback loop.
+
+## Quick Preview
+
+```dart
+final count = Signal(0);
+
+Widget build(BuildContext context) {
+  return Fx.column()
+    .children([
+      Fx.text("Count: ${count.value}").size(24).bold().render(),
+      Fx.button("Increment")
+        .onPressed(() => count.value++)
+        .padding(16)
+        .render(),
+    ])
+    .center()
+    .render();
+}
+```
+
+Ready to get started? Head over to the [Installation](/docs/installation) guide.

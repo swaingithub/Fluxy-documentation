@@ -1,0 +1,58 @@
+---
+title: Styling System
+description: Tailwind-like styling in Flutter.
+---
+
+# Styling System
+
+Fluxy includes a powerful utility-based styling engine that feels familiar to developers coming from the web.
+
+## Fluent Styling
+
+Style your widgets directly through chainable methods.
+
+```dart
+Fx.text("Styled Text")
+  .primary() // Theme primary color
+  .h1()      // Preset header style
+  .py(10)    // Vertical padding
+  .px(20)    // Horizontal padding
+  .render();
+```
+
+## Utility Classes
+
+Fluxy supports a "utility-first" approach similar to Tailwind CSS.
+
+```dart
+final cardStyle = FxStyle()
+  .bg(Colors.white)
+  .rounded(8)
+  .shadow(low)
+  .p(16);
+
+Fx.box()
+  .style(cardStyle)
+  .child(...)
+  .render();
+```
+
+## Responsive Styling
+
+Easily handle different screen sizes with built-in breakpoints.
+
+```dart
+Fx.box()
+  .width(sm: 100, md: 200, lg: 300)
+  .hidden(sm: true) // Hidden on small screens
+  .render();
+```
+
+## Theme Integration
+
+Fluxy automatically hooks into your `ThemeData` but provides easier accessors.
+
+- `.primary()`
+- `.secondary()`
+- `.surface()`
+- `.onPrimary()`

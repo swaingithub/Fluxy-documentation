@@ -1,0 +1,49 @@
+---
+title: Core Concepts
+description: Understanding the reactive engine behind Fluxy.
+---
+
+# Core Concepts
+
+Fluxy is built on three main reactive primitives: **Signals**, **Computed**, and **Effects**.
+
+## Signals (flux)
+
+Signals are the source of truth in Fluxy. They hold a value and notify observers when that value changes.
+
+```dart
+final name = Signal("Fluxy");
+
+// Set value
+name.value = "New Name";
+
+// Get value (and subscribe)
+print(name.value);
+```
+
+## Computed
+
+Computed signals are derived from other signals. They are lazily evaluated and cached. They only recompute if their dependencies change.
+
+```dart
+final count = Signal(2);
+final doubleCount = Computed(() => count.value * 2);
+
+print(doubleCount.value); // 4
+count.value = 5;
+print(doubleCount.value); // 10
+```
+
+## Effects
+
+Effects are used for side effects. They run once initially and then re-run whenever any signal they depend on changes.
+
+```dart
+Effect(() {
+  print("The count is now: ${count.value}");
+});
+```
+
+### Automatic Cleanup
+
+Effects are automatically cleaned up when the widget they are defined in is disposed, ensuring no memory leaks.

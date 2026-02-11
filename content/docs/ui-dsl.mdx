@@ -1,0 +1,63 @@
+---
+title: UI DSL
+description: Building UIs with the Fx fluent API.
+---
+
+# UI DSL
+
+Fluxy provides a fluent API via the `Fx` namespace. This allows you to build widget trees without deep nesting.
+
+## Fx.text
+
+The primary way to render text.
+
+```dart
+Fx.text("Hello World")
+  .size(18)
+  .bold()
+  .color(Colors.blue)
+  .align(TextAlign.center)
+  .render();
+```
+
+## Fx.box
+
+A replacement for `Container`, `SizedBox`, `Padding`, and `DecoratedBox`.
+
+```dart
+Fx.box()
+  .width(100)
+  .height(100)
+  .padding(all: 16)
+  .margin(bottom: 20)
+  .color(Colors.grey[200])
+  .radius(12)
+  .child(Fx.text("Inside Box").render())
+  .render();
+```
+
+## Fx.row / Fx.column
+
+Linear layouts with a cleaner syntax.
+
+```dart
+Fx.column()
+  .gap(10) // Easy spacing
+  .crossStart()
+  .children([
+    Fx.text("Item 1").render(),
+    Fx.text("Item 2").render(),
+  ])
+  .render();
+```
+
+## Fluent Modifiers
+
+Every `Fx` component supports modifiers that return the component itself, allowing for chaining:
+
+- `.padding(...)`
+- `.margin(...)`
+- `.onTap(...)`
+- `.visibility(...)`
+- `.expanded()`
+- `.center()`

@@ -1,0 +1,47 @@
+---
+title: Installation
+description: Learn how to set up Fluxy in your Flutter project.
+---
+
+# Installation
+
+Getting started with Fluxy is simple. You can add it to your project via `pub.dev`.
+
+## Add Dependency
+
+Add `fluxy` to your `pubspec.yaml` file:
+
+```yaml
+dependencies:
+  fluxy: ^1.0.0
+```
+
+Or run the following command in your terminal:
+
+```bash
+flutter pub add fluxy
+```
+
+## Basic Setup
+
+Import Fluxy in your Dart file:
+
+```dart
+import 'package:fluxy/fluxy.dart';
+```
+
+## Wrapping your App
+
+For global state and context-aware features, it's recommended to wrap your app with `FluxyRoot`:
+
+```dart
+void main() {
+  runApp(
+    FluxyRoot(
+      child: MyApp(),
+    ),
+  );
+}
+```
+
+Now you're ready to start building with Fluxy!

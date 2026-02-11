@@ -1,0 +1,54 @@
+---
+title: Quick Start
+description: Build your first reactive app with Fluxy in 5 minutes.
+---
+
+# Quick Start
+
+In this guide, we'll build a classic counter application to demonstrate the core features of Fluxy: **Signals**, **Fluent DSL**, and **Atomic Rebuilds**.
+
+## 1. Define your State
+
+In Fluxy, state is managed by **Signals**. A Signal is an observable value that elements can react to.
+
+```dart
+final counter = Signal(0);
+```
+
+## 2. Build the UI
+
+Use the `Fx` namespace to build your UI. The syntax is chainable and highly readable.
+
+```dart
+Widget build(BuildContext context) {
+  return Fx.column()
+    .center()
+    .children([
+      Fx.text("Welcome to Fluxy").size(32).bold().render(),
+      
+      // Reactive binding
+      Fx.text("Count: ${counter.value}").size(24).render(),
+      
+      Fx.button("Increment")
+        .onPressed(() => counter.value++)
+        .render(),
+    ])
+    .render();
+}
+```
+
+## 3. How it works
+
+When `counter.value++` is called:
+1. The signal notifies its listeners.
+2. Only the `Fx.text` widget that depends on `counter.value` is rebuilt.
+3. The rest of the column and its children remain untouched.
+
+This is **Atomic Reactivity**.
+
+## Next Steps
+
+Now that you've seen the basics, dive deeper into:
+- [Core Concepts](/docs/core-concepts)
+- [UI DSL Reference](/docs/ui-dsl)
+- [Styling System](/docs/styling-system)

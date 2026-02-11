@@ -1,0 +1,30 @@
+---
+title: Performance Model
+description: How Fluxy achieves lightning fast rebuilds.
+---
+
+# Performance Model
+
+Fluxy is designed for maximum efficiency. Understanding its performance model helps you build smoother applications.
+
+## Atomic Rebuilds
+
+In standard Flutter, calling `setState` rebuilds the entire widget subtree. In Fluxy, only the specific value-listener is triggered.
+
+### Comparison
+
+| Operation | Flutter Standard | Fluxy |
+|-----------|------------------|-------|
+| State Change | Full widget rebuild | Atomic element update |
+| Tree Depth | Affects performance | Negligible impact |
+| Layout Pass | Full subtree | Targeted |
+
+## Render Optimization
+
+Fluxy uses a custom `ReactiveElement` that intercepts changes and only marks the minimal necessary nodes for redrawing.
+
+### Best Practices for Performance
+
+1. **Keep Signals Granular**: Use multiple small signals instead of one large object signal.
+2. **Use Computed**: Avoid doing heavy calculations inside the `build` method.
+3. **Const Wrappers**: Use standard `const` constructors for static parts of your UI.

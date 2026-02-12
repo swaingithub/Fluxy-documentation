@@ -1,0 +1,28 @@
+---
+title: DevTools & Debugging
+description: Inspect state and performance in real-time.
+---
+
+# DevTools & Debugging
+
+Inspect state and performance in real-time with Fluxy DevTools.
+
+## Enable DevTools
+
+Wrap your root application with `Fluxy.debug` to enable the development tools:
+
+```dart
+runApp(Fluxy.debug(child: MyApp()));
+```
+
+## Signal Graph
+
+The **Signal Graph** visualizes your application's reactive state. It shows all active signals, their current values, and the number of active subscribers. This helps you understand data flow and identify potential memory leaks or unexpected dependencies.
+
+## Timeline
+
+The **Timeline** acts as a logger for state changes. It records every signal update with a timestamp, allowing you to trace exactly when and why your application state changed.
+
+## Global Error Boundary
+
+`FluxyApp` includes a built-in **Global Error Boundary**. This feature automatically catches unhandled exceptions in your widget tree, preventing the entire application from crashing in production. Instead, it displays a user-friendly error screen (which you can customize) while logging the error details for debugging.

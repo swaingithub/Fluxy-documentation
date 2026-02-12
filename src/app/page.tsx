@@ -13,6 +13,7 @@ import {
   Smartphone,
   Sparkles
 } from 'lucide-react';
+import { FluxyLogo } from '@/components/logo';
 
 export default function LandingPage() {
   return (
@@ -21,8 +22,8 @@ export default function LandingPage() {
       <nav className="fixed top-0 w-full z-50 border-b bg-background/80 backdrop-blur-md">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-              <span className="text-primary-foreground font-bold font-mono">F</span>
+            <div className="flex items-center justify-center">
+              <FluxyLogo className="w-8 h-8" />
             </div>
             <span className="text-xl font-bold tracking-tight">Fluxy</span>
           </div>
@@ -246,6 +247,7 @@ export default function LandingPage() {
       <footer className="py-12 border-t mt-auto">
         <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-2 text-muted-foreground">
+            <FluxyLogo className="w-6 h-6 grayscale hover:grayscale-0 transition-all opacity-70" />
             <span className="font-bold">Fluxy</span>
             <span className="text-sm">© 2024. Built for Flutter developers.</span>
           </div>

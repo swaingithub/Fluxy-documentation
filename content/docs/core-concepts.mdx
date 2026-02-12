@@ -47,3 +47,12 @@ Effect(() {
 ### Automatic Cleanup
 
 Effects are automatically cleaned up when the widget they are defined in is disposed, ensuring no memory leaks.
+
+## Two-Way Binding
+
+Fluxy simplifies form handling with built-in **Two-Way Binding**. Use the `FxTextField` component to seamlessly bind a `Signal` to an input field.
+
+```dart
+final email = flux("");
+FxTextField(signal: email, placeholder: "Enter email");
+```

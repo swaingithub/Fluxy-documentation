@@ -1,13 +1,19 @@
 import { DocsLayout } from 'fumadocs-ui/layouts/docs';
 import type { ReactNode } from 'react';
 import { source } from '@/lib/source';
+import { FluxyLogo } from '@/components/logo';
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
     <DocsLayout 
       tree={source.pageTree} 
       nav={{ 
-        title: 'Fluxy',
+        title: (
+          <div className="flex items-center gap-2 font-bold">
+            <FluxyLogo className="size-6" />
+            <span>Fluxy</span>
+          </div>
+        ),
       }}
     >
       {children}

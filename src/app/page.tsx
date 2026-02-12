@@ -11,7 +11,8 @@ import {
   ExternalLink,
   Cpu,
   Smartphone,
-  Sparkles
+  Sparkles,
+  Terminal
 } from 'lucide-react';
 import { FluxyLogo } from '@/components/logo';
 
@@ -154,9 +155,9 @@ export default function LandingPage() {
               description="Tailwind-like utility engine for creating responsive layouts with ease."
             />
             <FeatureCard 
-              icon={<ExternalLink className="text-primary" />}
-              title="Pub.dev Ready"
-              description="Fully documented and easy to integrate into any existing Flutter project."
+              icon={<Terminal className="text-primary" />}
+              title="Powerful CLI"
+              description="Scaffold projects, cloud build, and deploy with a single command. Automated CI/CD at your fingertips."
             />
           </div>
         </div>

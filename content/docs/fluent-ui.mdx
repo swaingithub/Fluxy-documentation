@@ -1,0 +1,64 @@
+---
+title: Fluent UI
+description: Build UIs with a clean, chainable DSL.
+---
+
+# Fluent UI
+
+Fluxy provides a fluent API for building UIs, reducing boilerplate and nesting.
+
+## The `Fx` Namespace
+
+All UI elements are accessed through the `Fx` namespace. This keeps your code clean and avoids polluting the global namespace.
+
+*   `Fx.box()`: A flexible container.
+*   `Fx.text()`: A stylized text widget.
+*   `Fx.button()`: An interactive button.
+*   `Fx.image()`: Displaying images.
+*   `Fx.icon()`: Rendering icons.
+
+## Chainable Modifiers
+
+Fluxy uses chainable modifiers instead of wrapping widgets endlessly.
+
+```dart
+// Traditional Flutter
+Padding(
+  padding: EdgeInsets.all(16),
+  child: Center(
+    child: Text(
+      "Hello",
+      style: TextStyle(
+        fontSize: 24,
+        fontWeight: FontWeight.bold,
+        color: Colors.blue,
+      ),
+    ),
+  ),
+);
+
+// Fluxy
+Fx.text("Hello")
+  .size(24)
+  .bold()
+  .color(Colors.blue)
+  .center()
+  .padding(16)
+  .render();
+```
+
+This reads top-down, like CSS or SwiftUI, making layout logic much easier to follow.
+
+## Layouts
+
+Layouts are also simplified.
+
+```dart
+Fx.column()
+  .children([
+    Fx.text("Item 1"),
+    Fx.text("Item 2"),
+  ])
+  .mainAxisAlignment(MainAxisAlignment.center)
+  .render();
+```

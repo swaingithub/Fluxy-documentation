@@ -1,0 +1,58 @@
+---
+title: Routing
+description: Type-safe, declarative routing for deep links and navigation.
+---
+
+# Routing with Fluxy
+
+Fluxy includes a type-safe routing system that supports deep links and navigation.
+
+## Defining Routes
+
+Routes are defined declaratively in your main module.
+
+```dart
+// main.dart
+final routes = [
+  FxRoute("/", () => HomePage()),
+  FxRoute("/profile", () => ProfilePage()),
+  FxRoute("/settings", () => SettingsPage()),
+];
+```
+
+## Navigation
+
+To navigate, use the `FxRouter` or helper function.
+
+```dart
+FxRouter.to("/profile");
+FxRouter.back();
+```
+
+## Passing Arguments
+
+You can pass arguments directly into route functions in a strictly typed manner.
+
+```dart
+FxRoute("/user/:id", (context, args) => UserPage(id: args["id"])),
+```
+
+When navigating:
+
+```dart
+FxRouter.to("/user/123");
+```
+
+## Middleware
+
+Add authentication guards or logging with **Middleware**.
+
+```dart
+FxRoute(
+  "/admin", 
+  () => AdminPage(), 
+  middleware: [AuthGuard()],
+);
+```
+
+If the middleware fails (e.g. user not logged in), navigation is blocked or redirected.

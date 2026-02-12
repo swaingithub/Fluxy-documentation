@@ -1,0 +1,76 @@
+---
+title: Examples Gallery
+description: A collection of Fluxy examples and recipes.
+---
+
+# Examples & Recipes
+
+Explore real-world examples of Fluxy in action.
+
+## Counter App
+
+The classic counter example demonstrating basic state management.
+
+```dart
+final count = flux(0);
+
+Widget build(BuildContext context) {
+  return Fx.column()
+    .children([
+      Fx.text("Count: ${count.value}").size(24).bold().render(),
+      Fx.button("Increment")
+        .onPressed(() => count.value++)
+        .padding(16)
+        .render(),
+    ])
+    .center()
+    .render();
+}
+```
+
+## API Fetching
+
+Fetch data from an API and display it reactively.
+
+```dart
+final data = flux<String?>(null);
+
+void fetchData() async {
+  final result = await http.get(Uri.parse('https://api.example.com/data'));
+  data.value = result.body;
+}
+
+Widget build(BuildContext context) {
+  if (data.value == null) {
+      fetchData();
+      return CircularProgressIndicator();
+  }
+
+  return Fx.text(data.value!).render();
+}
+```
+
+## Custom Components
+
+Build reusable components with the `Fx` style system.
+
+```dart
+Widget MyCard({required String title, required Widget child}) {
+  return Fx.box()
+    .padding(16)
+    .decoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(12),
+      boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 4)],
+    )
+    .child(
+      Fx.column()
+        .children([
+          Fx.text(title).bold().size(18).mb(8).render(),
+          child,
+        ])
+        .render()
+    )
+    .render();
+}
+```

@@ -1,0 +1,40 @@
+---
+title: Cloud Builds
+description: Automated builds via GitHub Actions.
+---
+
+# Cloud Builds
+
+Fluxy integrates directly with GitHub Actions to provide zero-cost CI/CD for your Flutter apps.
+
+## Setup
+
+Run the following command to generate a GitHub Actions workflow file:
+
+```bash
+fluxy cloud setup
+```
+
+This creates a `.github/workflows/fluxy_build.yml` file in your repository.
+
+## Triggering a Build
+
+Pushing to the `main` branch or creating a tag will trigger a build.
+
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+The workflow will automatically:
+
+1.  Set up Flutter environment.
+2.  Install dependencies.
+3.  Run tests.
+4.  Build Android APK/AppBundle.
+5.  Build iOS IPA (requires macOS runner).
+6.  Upload artifacts to GitHub Releases.
+
+## Artifacts
+
+Once the build is complete, you can download the APKs and IPAs directly from the GitHub Actions run summary or Releases page.

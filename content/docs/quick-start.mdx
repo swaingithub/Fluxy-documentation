@@ -1,54 +1,40 @@
 ---
 title: Quick Start
-description: Build your first reactive app with Fluxy in 5 minutes.
+description: Install Fluxy and create your first project in minutes.
 ---
 
 # Quick Start
 
-In this guide, we'll build a classic counter application to demonstrate the core features of Fluxy: **Signals**, **Fluent DSL**, and **Atomic Rebuilds**.
+Get started with Fluxy in just a few commands.
 
-## 1. Define your State
+## Installation
 
-In Fluxy, state is managed by **Signals**. A Signal is an observable value that elements can react to.
+Install the Fluxy CLI globally using Dart. This tool will manage your projects and generate code for you.
 
-```dart
-final counter = Signal(0);
+```bash
+dart pub global activate fluxy
 ```
 
-## 2. Build the UI
+## Creating a Project
 
-Use the `Fx` namespace to build your UI. The syntax is chainable and highly readable.
+Initialize a new Fluxy project structure. This command sets up the necessary folders for modules, routes, and themes.
 
-```dart
-Widget build(BuildContext context) {
-  return Fx.column()
-    .center()
-    .children([
-      Fx.text("Welcome to Fluxy").size(32).bold().render(),
-      
-      // Reactive binding
-      Fx.text("Count: ${counter.value}").size(24).render(),
-      
-      Fx.button("Increment")
-        .onPressed(() => counter.value++)
-        .render(),
-    ])
-    .render();
-}
+```bash
+fluxy init
 ```
 
-## 3. How it works
+## Running Your App
 
-When `counter.value++` is called:
-1. The signal notifies its listeners.
-2. Only the `Fx.text` widget that depends on `counter.value` is rebuilt.
-3. The rest of the column and its children remain untouched.
+Run your application using the standard Flutter command or the Fluxy CLI helper if available.
 
-This is **Atomic Reactivity**.
+```bash
+flutter run
+```
 
 ## Next Steps
 
-Now that you've seen the basics, dive deeper into:
-- [Core Concepts](/docs/core-concepts)
-- [UI DSL Reference](/docs/ui-dsl)
-- [Styling System](/docs/styling-system)
+Once your project is set up, explore the core concepts:
+
+- [Reactivity](/docs/reactivity): Learn about Signals and computed values.
+- [Fluent UI](/docs/fluent-ui): Use the `Fx` namespace to build UI.
+- [Routing](/docs/routing): Set up type-safe navigation.

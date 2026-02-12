@@ -1,33 +1,61 @@
 ---
-title: CLI & Tooling
-description: Automate your workflow with the new Fluxy CLI.
+title: Fluxy CLI
+description: The official command-line tool for Fluxy projects.
 ---
 
-# CLI & Tooling
+# Fluxy CLI
 
-Automate your workflow with the new Fluxy CLI.
+The Fluxy CLI is a powerful tool to automate your workflow, manage projects, and run development tasks.
 
 ## Installation
 
-Install the CLI globally using Dart:
+Install globally via Dart:
 
 ```bash
 dart pub global activate fluxy
 ```
 
-## Commands
+## Core Commands
 
 ### `fluxy init`
 
-Sets up the initial folder structure for your Fluxy project, including modules, routes, and theme configuration.
+Initializes a new Fluxy project structure.
 
 ```bash
 fluxy init
 ```
 
+### `fluxy doctor`
+
+Checks your environment for potential issues.
+
+```bash
+fluxy doctor
+```
+
+### `fluxy run`
+
+Runs your application in debug mode. This is a wrapper around `flutter run` with enhancements.
+
+```bash
+fluxy run
+```
+
+### `fluxy build`
+
+Builds your application for production.
+
+```bash
+fluxy build apk
+fluxy build ios
+fluxy build web
+```
+
+## Generators
+
 ### `fluxy gen:page <Name>`
 
-Generates a new View, Controller, and Route entry for a page.
+Generates a new View, Controller, and Route entry.
 
 ```bash
 fluxy gen:page Home
@@ -40,7 +68,3 @@ Generates a standalone reactive controller.
 ```bash
 fluxy gen:controller Auth
 ```
-
-<Callout type="info">
-  **Pro Tip**: Fluxy's CLI is inspired by Next.js, allowing you to scaffold scalable features in seconds.
-</Callout>

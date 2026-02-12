@@ -1,38 +1,50 @@
 ---
-title: Introduction
-description: Welcome to Fluxy - Reactive UI + State + Fluent DSL for Flutter.
+title: One Engine. Infinite Possibilities.
+description: Fluxy is a full-stack Flutter Framework for modern application development.
 ---
 
-# Introduction
+# Fluxy
+**One Engine. Infinite Possibilities.**
 
-Fluxy is a modern, high-performance Flutter framework designed to simplify UI development and state management. It brings atomic reactivity and a fluent DSL to Flutter, reducing boilerplate and making your code more expressive.
+Fluxy is a full-stack Flutter Framework designed to be the definitive solution for modern application development. It unifies state management, UI construction, routing, and DevOps into a single, cohesive engine.
 
-## Why Fluxy?
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-8">
+  <div className="p-4 border rounded-lg bg-card text-card-foreground">
+    <h3 className="text-xl font-bold mb-2">Atomic Reactivity</h3>
+    <p>Fine-grained signals that update only what changes. Zero manual dependency tracking.</p>
+  </div>
+  <div className="p-4 border rounded-lg bg-card text-card-foreground">
+    <h3 className="text-xl font-bold mb-2">Fluent UI</h3>
+    <p>A chainable, expressive DSL that compiles to standard Flutter widgets. Less boilerplate, more flow.</p>
+  </div>
+  <div className="p-4 border rounded-lg bg-card text-card-foreground">
+    <h3 className="text-xl font-bold mb-2">Cloud & OTA</h3>
+    <p>Built-in support for Server-Driven UI and Over-The-Air updates. Ship fixes instantly.</p>
+  </div>
+  <div className="p-4 border rounded-lg bg-card text-card-foreground">
+    <h3 className="text-xl font-bold mb-2">DevOps Ready</h3>
+    <p>Zero-config CI/CD pipelines via GitHub Actions. From code to cloud in minutes.</p>
+  </div>
+</div>
 
-Traditional Flutter development often involves deeply nested widget trees and complex state management patterns. Fluxy changes this by providing:
+## The Fluxy Philosophy
 
-- **Atomic Reactivity**: Only rebuild what's necessary. No more `setState` at the top of your tree.
-- **Fluent DSL**: A clean, chainable API for building UIs that feels natural and readable.
-- **High Performance**: Optimized rendering engine that minimizes layout and paint cycles.
-- **Developer Experience**: Less code, more features, and a faster feedback loop.
+Fluxy isn't just a state management library; it's an **application architecture**. 
 
-## Quick Preview
+Traditional Flutter development often requires stitching together multiple packages: one for state (Riverpod/Bloc), one for navigation (GoRouter), one for styling, and another for networking. Fluxy provides all of these as first-class citizens, integrated into a single **Reactive Engine**.
 
-```dart
-final count = Signal(0);
+### Key Features
 
-Widget build(BuildContext context) {
-  return Fx.column()
-    .children([
-      Fx.text("Count: ${count.value}").size(24).bold().render(),
-      Fx.button("Increment")
-        .onPressed(() => count.value++)
-        .padding(16)
-        .render(),
-    ])
-    .center()
-    .render();
-}
-```
+- **Signals & Effects**: The core of Fluxy's reactivity.
+- **Fx Namespace**: A unified entry point for all UI elements (`Fx.text`, `Fx.box`).
+- **Typed Routing**: Type-safe navigation with middleware support.
+- **CLI Tooling**: Generators and build tools to speed up your workflow.
 
-Ready to get started? Head over to the [Installation](/docs/installation) guide.
+## Getting Started
+
+Ready to build your first Fluxy app?
+
+<Cards>
+  <Card href="/docs/quick-start" title="Quick Start" description="Install Fluxy and create your first project in under 5 minutes." />
+  <Card href="/docs/architecture" title="Architecture" description="Understand the core principles behind the Fluxy Engine." />
+</Cards>

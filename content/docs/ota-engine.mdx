@@ -1,0 +1,52 @@
+---
+title: OTA Engine
+description: Server-Driven UI and Over-The-Air updates.
+---
+
+# OTA Engine & Server-Driven UI
+
+Fluxy includes a powerful engine for rendering UI dynamically from JSON and applying updates over-the-air.
+
+## Server-Driven UI (SDUI)
+
+The `FxRemoteView` component can render a full UI hierarchy from a JSON definition.
+
+```dart
+FxRemoteView(
+  url: "https://api.example.com/ui/home",
+  placeholder: LoadingSpinner(),
+  error: (e) => ErrorWidget(e),
+)
+```
+
+The backend response should follow the Fluxy SDUI schema:
+
+```json
+{
+  "type": "column",
+  "children": [
+    {
+      "type": "text",
+      "content": "Hello from Server!",
+      "style": { "fontSize": 24, "fontWeight": "bold" }
+    },
+    {
+      "type": "button",
+      "label": "Click Me",
+      "action": { "type": "navigate", "route": "/details" }
+    }
+  ]
+}
+```
+
+## Over-The-Air Updates
+
+Use `Fluxy.update()` to check for and apply hot updates to your app's logic or assets without a full store release.
+
+```dart
+await Fluxy.update(
+  manifestUrl: "https://updates.example.com/manifest.json",
+);
+```
+
+This feature downloads new JavaScript/Dart bytecode bundles (if supported by platform) or asset packs and applies them on the next restart.

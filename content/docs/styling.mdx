@@ -1,39 +1,66 @@
 ---
-title: Styling
-description: Define and manage styles using FxStyle.
+title: Design System & Tokens
+description: Global design system via FxTokens and FxStyle.
 ---
 
-# Styling with FxStyle
+# Design System & Tokens
 
-Fluxy provides a powerful styling system that allows you to manage themes, colors, and responsive breakpoints effortlessly.
+Fluxy encourages a consistent design language through the use of **Design Tokens**. These tokens ensure that spacing, radius, typography, and shadows remain uniform across your entire application.
 
-## The `FxStyle` Class
+## FxTokens
 
-`FxStyle` is the entry point for all styling-related properties.
+`FxTokens` is your global entry point for the design system. It follows a standard naming convention (`xs`, `sm`, `md`, `lg`, `xl`, `xxl`).
+
+### Spacing & Radius
+Access predefined sizes for scales and corners.
 
 ```dart
-FxStyle.colors.primary;
-FxStyle.text.header1;
+Fx.box()
+  .p(FxTokens.space.md)      // Standard 16dp spacing
+  .rounded(FxTokens.radius.lg) // Large rounded corners
+  .render();
 ```
 
-This namespace provides quick access to your global design token. You can configure your theme here and use it throughout your app.
-
-## Responsive Breakpoints
-
-Fluxy includes built-in breakpoint support.
+### Shadows
+Standardized shadow depths for elevating UI elements.
 
 ```dart
-FxStyle.media(context).isMobile;
-FxStyle.media(context).isTablet;
-FxStyle.media(context).isDesktop;
+Fx.box()
+  .shadow(FxTokens.shadow.md) // Medium shadow
+  .render();
 ```
 
-This makes it easy to conditionally render UI or apply styles based on screen size.
+## Modern Color API
 
-## Dark Mode Support
-
-Switching themes is handled automatically by the Engine if configured, or manually via `FxStyle`.
+In Fluxy v0.1.1, all color transparency should use the modern `withValues(alpha: 0.x)` API instead of the deprecated `withOpacity`.
 
 ```dart
-FxStyle.toggleTheme();
+// Preferred
+Colors.blue.withValues(alpha: 0.8)
+
+// Avoid (Deprecated)
+Colors.blue.withOpacity(0.8)
+```
+
+## Responsive Styling
+
+Fluxy handles responsiveness both through the DSL and the `FxStyle` helper.
+
+```dart
+Fx.box()
+  .width(sm: 100, md: 200, lg: 300) // Responsive widths
+  .render();
+
+// Or manual checks
+if (FxStyle.media(context).isMobile) {
+  // Mobile specific logic
+}
+```
+
+## Theme Management
+
+`FxStyle` provides utilities for managing the active theme.
+
+```dart
+FxStyle.toggleTheme(); // Quickly switch between Light and Dark modes
 ```

@@ -7,43 +7,113 @@ description: Global and local state architecture in Fluxy.
 
 Fluxy provides a unified approach to both local and global state management using the same reactive primitives.
 
-## Local State
+## Advanced Reactivity
 
-For state that only lives within a single widget, define your signals inside the `State` class.
+### Batching Updates
+When making multiple signal changes at once, use `batch()` to prevent intermediate rebuilds and ensure a single notification at the end.
 
 ```dart
-class MyWidget extends StatefulWidget {
-  @override
-  _MyWidgetState createState() => _MyWidgetState();
-}
+batch(() {
+  count.value++;
+  name.value = "New Name";
+  // Subscribing widgets only rebuild once
+});
+```
 
+### Numeric Operators
+Numeric signals support operator overloading, automatically creating `Computed` signals for concise arithmetic.
+
+```dart
+final a = flux(10);
+final b = flux(5);
+final sum = a + b; // Automatically a Computed<num>
+```
+
+### Signal Persistence
+Fluxy 0.1.1 supports built-in persistence for signals using `SharedPreferences` or `FlutterSecureStorage`.
+
+```dart
+final theme = flux("dark", persistKey: "app_theme");
+final token = flux("", persistKey: "user_token", secure: true);
+```
+
+### Computed Error Handling
+Derived signals can handle errors during computation to prevent app crashes.
+
+```dart
+final result = computed(
+  () => throw Exception("Failed"),
+  onError: (error, stack) => print("Log error: $error"),
+);
+```
+
+## Local State
+
+For state that only lives within a single widget, you can define your signals inside the `State` class.
+
+```dart
 class _MyWidgetState extends State<MyWidget> {
-  final localCount = Signal(0);
+  final count = flux(0); // Shorthand for Signal(0)
 
   @override
   Widget build(BuildContext context) {
-    return Fx.button("Local: ${localCount.value}")
-      .onPressed(() => localCount.value++)
-      .render();
+    return Fx(() => Fx.button("Count: ${count.value}")
+      .p(16)
+      .bg(FxTokens.primary)
+      .onPressed(() => count.value++)
+      .render());
   }
 }
 ```
 
 ## Global State
 
-For state shared across the app, define signals in a central location or a singleton/service.
+For shared state, define signals in a central Controller or Service. You can use the `find` and `put` methods of `Fluxy` for Dependency Injection.
 
 ```dart
-// services/auth_service.dart
-class AuthService {
-  final user = Signal<User?>(null);
-  final isLoggedIn = Computed(() => user.value != null);
+// controllers/auth_controller.dart
+class AuthController {
+  final user = flux<User?>(null);
+  final isLoggedIn = computed(() => user.value != null);
 }
+
+// In main or init
+Fluxy.put(AuthController());
+
+// In any widget
+final auth = Fluxy.find<AuthController>();
 ```
 
-## State Inversion
+## Dependency Injection
 
-You can pass signals down the tree or provide them via `FluxyProvider`.
+Fluxy includes a robust DI system to manage your application logic and services.
+
+### `Fluxy.put()` & `Fluxy.find()`
+Register and retrieve singletons globally.
+
+```dart
+Fluxy.put(AuthService());
+final service = Fluxy.find<AuthService>();
+```
+
+### Shorthands: `inject` & `use`
+For an even more concise experience, use the `inject` and `use` global functions.
+
+```dart
+inject(SettingsController());
+final settings = use<SettingsController>();
+```
+
+### Lazy Loading
+Register services that are only instantiated when first accessed to save memory.
+
+```dart
+Fluxy.lazyPut(() => ExpensiveController());
+```
+
+## State Inversion & Scoping
+
+You can also pass signals down the tree or provide them via `FluxyProvider` for scoped state restricted to a specific widget subtree.
 
 ```dart
 FluxyProvider(
@@ -51,3 +121,5 @@ FluxyProvider(
   child: ChildWidget(),
 );
 ```
+
+

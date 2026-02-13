@@ -46,6 +46,55 @@ effect(() {
 
 This is useful for side effects like logging, manual DOM updates, or triggering network requests.
 
-### Automatic Cleanup
+## Reactivity in UI
 
-Effects are automatically disposed of when the widget or context they belong to is destroyed, preventing memory leaks.
+To make your UI reactive, you have two primary options:
+
+### The `Fx` Factory
+Wrap any widget builder in `Fx(() => ...)` to automatically subscribe to any signals used inside. This triggers atomic rebuilds only for that specific widget.
+
+```dart
+final count = flux(0);
+
+// Only this Text widget rebuilds when count changes
+Fx(() => Text("Count: ${count.value}")) 
+```
+
+### Reactive Text Shorthand
+For simple text display, use `Fx.text(() => signal.value)`.
+
+```dart
+Fx.text(() => "Current: ${count.value}").render();
+```
+
+## Two-Way Binding
+
+Fluxy v0.1.1 provides native two-way binding for interactive components. Instead of manually handling `onChanged` and `controller.text`, you can bind a signal directly.
+
+### FxTextField
+Binds its text content to a `Signal<String>`.
+
+```dart
+final username = flux("");
+
+FxTextField(
+  label: "Username",
+  value: username, // Two-way binding
+)
+```
+
+### FxDropdown
+Binds its selection to a `Signal<T>`.
+
+```dart
+final theme = flux("Light");
+
+FxDropdown<String>(
+  value: theme, // Two-way binding
+  options: ["Light", "Dark", "System"],
+)
+```
+
+### Automatic Cleanup
+Effects and subscriptions created within a widget's lifecycle are automatically disposed of when the widget is destroyed, preventing memory leaks.
+

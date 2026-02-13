@@ -9,44 +9,60 @@ Fluxy includes a powerful engine for rendering UI dynamically from JSON and appl
 
 ## Server-Driven UI (SDUI)
 
-The `FxRemoteView` component can render a full UI hierarchy from a JSON definition.
+The `FxRemoteView` and `FluxyRenderer` allow you to define full application screens or individual components in JSON and render them dynamically.
 
-```dart
-FxRemoteView(
-  url: "https://api.example.com/ui/home",
-  placeholder: LoadingSpinner(),
-  error: (e) => ErrorWidget(e),
-)
-```
+### Supported Widget Types
+The renderer supports a wide range of atomic and layout widgets:
+- **Layouts**: `row`, `column`, `box` (flexible container), `hero`.
+- **Content**: `text`, `button`, `image`.
 
-The backend response should follow the Fluxy SDUI schema:
+### Dynamic Data & Interpolation
+Fluxy supports real-time data binding via interpolation. You can pass a `dataContext` to the renderer, and use the `{key}` syntax in your JSON.
 
 ```json
 {
-  "type": "column",
-  "children": [
-    {
-      "type": "text",
-      "content": "Hello from Server!",
-      "style": { "fontSize": 24, "fontWeight": "bold" }
-    },
-    {
-      "type": "button",
-      "label": "Click Me",
-      "action": { "type": "navigate", "route": "/details" }
-    }
-  ]
+  "type": "text",
+  "data": "Hello, {user.name}!",
+  "style": { "fontSize": 18 }
 }
+```
+
+### Action Handlers
+You can trigger local app events directly from your remote JSON using the `action` or `onTap` property:
+- `navigate:/route`: Navigate to a specific path.
+- `back`: Go back to the previous screen.
+- `print:message`: Log a message to the console.
+
+```json
+{
+  "type": "button",
+  "label": "View Profile",
+  "action": "navigate:/profile"
+}
+```
+
+## CLI & Package Sync
+
+In v0.1.1, the `fluxy` CLI and the `fluxy` Flutter package are synchronized. Ensure your CLI is up to date to support the latest OTA features.
+
+```bash
+dart pub global activate fluxy # Sync to v0.1.1
 ```
 
 ## Over-The-Air Updates
 
-Use `Fluxy.update()` to check for and apply hot updates to your app's logic or assets without a full store release.
+Fluxy enables Over-The-Air (OTA) updates for your application's UI and logic. This is achieved via `FluxyRemote` which can fetch and apply remote JSON manifests.
+
+### FxRemoteView
+
+Render dynamic UI segments from your backend.
 
 ```dart
-await Fluxy.update(
-  manifestUrl: "https://updates.example.com/manifest.json",
-);
+FxRemoteView(
+  url: "https://cdn.fluxy.dev/manifests/header_v2.json",
+  loading: Fx.text("Syncing...").render(),
+)
 ```
 
-This feature downloads new JavaScript/Dart bytecode bundles (if supported by platform) or asset packs and applies them on the next restart.
+This allows you to update your app's layout, styles, and even basic logic without waiting for App Store or Google Play approval. It's the ultimate solution for A/B testing, emergency fixes, and seasonal UI changes.
+

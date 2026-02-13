@@ -1,63 +1,94 @@
 ---
-title: UI DSL
-description: Building UIs with the Fx fluent API.
+title: Atomic Styling DSL
+description: Building UIs with the Fx fluent API and Atomic modifiers.
 ---
 
-# UI DSL
+# Atomic Styling DSL
 
-Fluxy provides a fluent API via the `Fx` namespace. This allows you to build widget trees without deep nesting.
+Fluxy provides a powerful Atomic Styling DSL (Domain-Specific Language) via the `Fx` namespace and widget extensions. This allows you to build complex UI hierarchies using chainable modifiers, drastically reducing nesting and boilerplate.
 
-## Fx.text
+## Syntax: Chainable Modifiers
 
-The primary way to render text.
-
-```dart
-Fx.text("Hello World")
-  .size(18)
-  .bold()
-  .color(Colors.blue)
-  .align(TextAlign.center)
-  .render();
-```
-
-## Fx.box
-
-A replacement for `Container`, `SizedBox`, `Padding`, and `DecoratedBox`.
+Every Fluxy widget (accessible via `Fx`) and even standard Flutter widgets (via `FluxyWidgetExtension`) can be styled using chainable methods.
 
 ```dart
 Fx.box()
-  .width(100)
-  .height(100)
-  .padding(all: 16)
-  .margin(bottom: 20)
-  .color(Colors.grey[200])
-  .radius(12)
-  .child(Fx.text("Inside Box").render())
+  .p(16)            // Shorthand for padding
+  .bg(Colors.blue)  // Background color
+  .rounded(12)      // Border radius
+  .shadowXL()       // Large shadow token
   .render();
 ```
 
-## Fx.row / Fx.column
+## Shorthand Pairs
 
-Linear layouts with a cleaner syntax.
+Fluxy uses intuitive shorthand pairs for common layout properties:
+
+### Padding & Margin
+Fluxy is designed to be flexible. You can use full descriptive names or rapid-fire shorthands interchangeably:
+- **Padding**: `.padding()`, `.p()`, or `.pad()`
+- **Horizontal/Vertical**: `.px()`, `.py()`, `.paddingX()`, `.paddingY()`
+- **Directional**: `.pt()` (top), `.pb()` (bottom), `.pl()` (left), `.pr()` (right)
+- **Margin**: `.margin()`, `.m()`, `.mt()`, `.mb()`, `.ml()`, `.mr()`
+
+### Size Aliases
+- **Dimensions**: `.w()` or `.width()`, `.h()` or `.height()`
+- **Bulk**: `.size(w, h)`, `.square(size)`
+- **Full Scale**: `.fullWidth()`, `.fullHeight()`, or shorthands `.wFull()`, `.hFull()`
+
+### Styling & Colors
+- **Background**: `.bg(color)` or `.background(color)`
+- **Radius**: `.rounded(radius)` or `.radius(radius)`
+- **Shadows**: `.shadow(token)` or quick presets like `.shadowXL()`
+- **Modern Colors**: Always use `.withValues(alpha: 0.x)` for transparency (modern API).
+
+```dart
+Fx.box()
+  .square(100)
+  .bg(Colors.red.withValues(alpha: 0.5))
+  .rounded(FxTokens.radius.md)
+  .render();
+```
+
+## Interactions & Animations
+
+Fluxy makes it easy to add dynamic interactions and smooth transitions directly in the style chain:
+
+- `.onHover( (s) => s.scale(1.1) )`: Apply styles when the mouse hovers over the widget.
+- `.onPressed( (s) => s.op(0.8) )`: Apply styles when the widget is pressed.
+- **Animations**: Use `.animate()` to implicitly animate any style changes (background, size, opacity, etc.).
+
+```dart
+Fx.box()
+  .square(100)
+  .bg(Colors.blue)
+  .animate(duration: 500.ms, curve: Curves.easeOut)
+  .onHover((s) => s.bg(Colors.blueAccent).scale(1.1))
+  .render();
+```
+
+## Conditional Visibility
+
+You can conditionally show or hide widgets without complex `if` statements in your build method using the `.show()` and `.hide()` modifiers.
+
+```dart
+Fx.text("Conditional Text")
+  .show(isLogged.value)
+  .render();
+```
+
+## Layouts
+
+Linear layouts like `Fx.row` and `Fx.column` use the same fluent philosophy:
 
 ```dart
 Fx.column()
-  .gap(10) // Easy spacing
+  .gap(FxTokens.space.md) // Built-in spacing between children
   .crossStart()
   .children([
-    Fx.text("Item 1").render(),
-    Fx.text("Item 2").render(),
+    Fx.text("Header").h2().render(),
+    Fx.text("Body text here...").render(),
   ])
   .render();
 ```
 
-## Fluent Modifiers
-
-Every `Fx` component supports modifiers that return the component itself, allowing for chaining:
-
-- `.padding(...)`
-- `.margin(...)`
-- `.onTap(...)`
-- `.visibility(...)`
-- `.expanded()`
-- `.center()`

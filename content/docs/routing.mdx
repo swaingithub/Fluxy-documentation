@@ -1,58 +1,111 @@
 ---
-title: Routing
-description: Type-safe, declarative routing for deep links and navigation.
+title: Reactive Routing
+description: Deep-dive into Fluxy's type-safe, declarative routing and navigation engine.
 ---
 
-# Routing with Fluxy
+# Reactive Routing
 
-Fluxy includes a type-safe routing system that supports deep links and navigation.
+Fluxy includes a production-stable routing engine (Router 2.0) that handles everything from simple navigation to complex nested views and transition animations.
 
 ## Defining Routes
 
-Routes are defined declaratively in your main module.
+Routes are defined using the `FxRoute` class. Each route requires a path and a builder that receives both URL parameters and optional transition arguments.
 
 ```dart
-// main.dart
 final routes = [
-  FxRoute("/", () => HomePage()),
-  FxRoute("/profile", () => ProfilePage()),
-  FxRoute("/settings", () => SettingsPage()),
+  FxRoute(
+    path: "/", 
+    builder: (params, args) => const HomePage(),
+  ),
+  FxRoute(
+    path: "/user/:id", 
+    builder: (params, args) => UserPage(id: params['id']!),
+  ),
 ];
 ```
 
-## Navigation
-
-To navigate, use the `FxRouter` or helper function.
-
-```dart
-FxRouter.to("/profile");
-FxRouter.back();
-```
-
-## Passing Arguments
-
-You can pass arguments directly into route functions in a strictly typed manner.
-
-```dart
-FxRoute("/user/:id", (context, args) => UserPage(id: args["id"])),
-```
-
-When navigating:
-
-```dart
-FxRouter.to("/user/123");
-```
-
-## Middleware
-
-Add authentication guards or logging with **Middleware**.
+### Transition Modes
+Fluxy supports various built-in transitions via `FxTransition`:
+- `FxTransition.native`: Default platform transition.
+- `FxTransition.fade`: Smooth cross-fade.
+- `FxTransition.slideUp`, `.slideRight`, `.slideLeft`: Directional slides.
+- `FxTransition.zoom`: Scale-based transition.
+- `FxTransition.none`: Instant swap.
+- `FxTransition.custom`: Professional-grade transitions via `transitionBuilder`.
 
 ```dart
 FxRoute(
-  "/admin", 
-  () => AdminPage(), 
-  middleware: [AuthGuard()],
+  path: "/details",
+  builder: (p, a) => DetailsPage(),
+  transition: FxTransition.fade,
+  transitionDuration: const Duration(milliseconds: 500),
+)
+```
+
+## Route Protection
+
+Secure your application using both global Middlewares and per-route Guards.
+
+### Guards (Per-Route)
+Guards are functions that return a `FutureOr<bool>`. If any guard returns `false`, the navigation is blocked.
+
+```dart
+FxRoute(
+  path: "/dashboard",
+  builder: (p, a) => Dashboard(),
+  guards: [() => AuthService.isLoggedIn()],
+)
+```
+
+### Middleware (Global)
+Middlewares run before every navigation event.
+
+```dart
+FluxyRouter.use((path) async {
+  print("Navigating to: $path");
+  return true; // Allow navigation
+});
+```
+
+## Advanced Patterns
+
+### Route Grouping
+Use `FxRoute.group()` to apply prefixes or shared guards to a collection of routes.
+
+```dart
+final adminRoutes = FxRoute.group(
+  prefix: "/admin",
+  guards: [AdminGuard()],
+  routes: [
+    FxRoute(path: "/users", builder: (p, a) => UserList()),
+    FxRoute(path: "/reports", builder: (p, a) => Reports()),
+  ],
 );
 ```
 
-If the middleware fails (e.g. user not logged in), navigation is blocked or redirected.
+### Nested Routing (`FxOutlet`)
+For complex layouts (like tabs or dashboard sidebars), use `FxOutlet` to render sub-routes within a specific scope.
+
+```dart
+FxOutlet(
+  scope: "dashboard",
+  initialRoute: "/overview",
+  routes: [
+    FxRoute(path: "/overview", builder: (p, a) => Overview()),
+    FxRoute(path: "/stats", builder: (p, a) => Statistics()),
+  ],
+)
+```
+
+### Navigation Shortcuts
+Use the `Fluxy` class for a high-level API or `FluxyRouter` for scoped control.
+
+- `Fluxy.to("/path")`: Push a new route.
+- `Fluxy.off("/path")`: Replace current route.
+- `Fluxy.offAll("/path")`: Clear stack and push.
+- `Fluxy.back()`: Pop the current route.
+- **Scoped Navigation**: All methods accept a `scope` parameter to control specific `FxOutlet` navigators.
+
+```dart
+Fluxy.to("/settings", scope: "dashboard");
+```

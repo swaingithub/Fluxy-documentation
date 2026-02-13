@@ -1,0 +1,104 @@
+---
+title: Premium Widget Suite
+description: High-quality, pre-styled widgets for modern Flutter apps.
+---
+
+# Premium Widget Suite
+
+Fluxy v0.1.1 introduces a suite of "Premium" widgets designed to handle common UI patterns with minimal configuration and built-in reactivity.
+
+## FxAvatar
+
+A versatile avatar widget with support for images, fallbacks, and multiple sizes.
+
+```dart
+FxAvatar(
+  image: "https://example.com/user.jpg",
+  fallback: Fx.text("JD").render(),
+  size: FxAvatarSize.lg,
+  shape: FxAvatarShape.circle,
+)
+```
+
+- **Sizes**: `sm`, `md`, `lg`, `xl`.
+- **Shapes**: `circle`, `rounded`.
+
+## FxBadge
+
+Wraps any widget with a notification dot or a label.
+
+```dart
+FxBadge(
+  label: "5",
+  child: Icon(Icons.notifications),
+)
+```
+
+## FxDropdown
+
+An Overlay-based selective UI that feels more like a modern web select than a native mobile dropdown. It binds directly to a Signal.
+
+```dart
+final selectedValue = flux("Option 1");
+
+FxDropdown<String>(
+  value: selectedValue,
+  options: ["Option 1", "Option 2", "Option 3"],
+  onChanged: (val) => selectedValue.value = val,
+)
+```
+
+## FxBottomBar
+
+A pill-style, animated navigation bar with physics-based selection tracking. It provides a premium, "springy" feel out of the box.
+
+```dart
+FxBottomBar(
+  selectedIndex: currentTab,
+  items: [
+    FxBottomBarItem(icon: Icons.home, label: "Home"),
+    FxBottomBarItem(icon: Icons.search, label: "Search"),
+    FxBottomBarItem(icon: Icons.person, label: "Profile"),
+  ],
+  onTap: (index) => currentTab.value = index,
+)
+```
+
+## FxTabScaffold (Parallel Navigation)
+
+The `FxTabScaffold` is a high-level widget for building complex tab-based apps with **parallel navigation stacks**. This means each tab maintains its own navigation history.
+
+```dart
+final currentTab = flux(0);
+
+FxTabScaffold(
+  currentIndex: currentTab,
+  tabs: [
+    FxTabItem(
+      label: "Home",
+      icon: Icons.home,
+      initialRoute: "/",
+      routes: homeRoutes,
+    ),
+    FxTabItem(
+      label: "Search",
+      icon: Icons.search,
+      initialRoute: "/discover",
+      routes: searchRoutes,
+    ),
+  ],
+)
+```
+
+- When you navigate within the "Home" tab, the "Search" tab's state is preserved.
+- Use `Fluxy.to("/some-path", scope: "Home")` to navigate within a specific tab's stack.
+
+## Usage in DSL
+
+All premium widgets are also available via the `Fx` namespace for a consistent development experience:
+
+```dart
+Fx.avatar(image: "...")
+  .shadowMD()
+  .render();
+```

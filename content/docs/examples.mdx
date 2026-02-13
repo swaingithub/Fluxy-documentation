@@ -1,76 +1,118 @@
 ---
 title: Examples Gallery
-description: A collection of Fluxy examples and recipes.
+description: A collection of Fluxy examples and recipes updated for v0.1.1.
 ---
 
 # Examples & Recipes
 
-Explore real-world examples of Fluxy in action.
+Explore how to build modern apps using the Fluxy v0.1.1 feature set.
 
-## Counter App
+## Counter App (Atomic)
 
-The classic counter example demonstrating basic state management.
+The classic counter example demonstrating fine-grained reactivity with the `Fx` builder.
 
 ```dart
 final count = flux(0);
 
 Widget build(BuildContext context) {
   return Fx.column()
+    .center()
+    .gap(16)
     .children([
-      Fx.text("Count: ${count.value}").size(24).bold().render(),
-      Fx.button("Increment")
+      // Only this part rebuilds when count changes
+      Fx(() => Fx.text("Count: ${count.value}").h1().render()),
+      
+      Fx.box()
+        .p(16)
+        .bg(FxTokens.primary)
+        .rounded(12)
         .onPressed(() => count.value++)
-        .padding(16)
+        .child(Fx.text("Increment").white().render())
         .render(),
     ])
-    .center()
     .render();
 }
 ```
 
-## API Fetching
+## User Profile (Premium Widgets)
 
-Fetch data from an API and display it reactively.
-
-```dart
-final data = flux<String?>(null);
-
-void fetchData() async {
-  final result = await http.get(Uri.parse('https://api.example.com/data'));
-  data.value = result.body;
-}
-
-Widget build(BuildContext context) {
-  if (data.value == null) {
-      fetchData();
-      return CircularProgressIndicator();
-  }
-
-  return Fx.text(data.value!).render();
-}
-```
-
-## Custom Components
-
-Build reusable components with the `Fx` style system.
+Using `FxAvatar` and `FxBadge` with conditional styling.
 
 ```dart
-Widget MyCard({required String title, required Widget child}) {
-  return Fx.box()
-    .padding(16)
-    .decoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(12),
-      boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 4)],
-    )
-    .child(
+Widget UserProfile() {
+  return Fx.row()
+    .p(16)
+    .bg(Colors.grey.withValues(alpha: 0.1))
+    .rounded(FxTokens.radius.lg)
+    .children([
+      FxBadge(
+        label: "Online",
+        child: FxAvatar(
+          image: "https://i.pravatar.cc/150",
+          size: FxAvatarSize.md,
+        ),
+      ),
       Fx.column()
+        .px(16)
+        .crossStart()
         .children([
-          Fx.text(title).bold().size(18).mb(8).render(),
-          child,
+          Fx.text("Jane Doe").bold().render(),
+          Fx.text("Software Engineer").size(12).render(),
         ])
-        .render()
-    )
+        .render(),
+    ])
     .render();
 }
 ```
+
+## Form with Two-Way Binding
+
+Native two-way binding using `FxTextField` and `FxDropdown`.
+
+```dart
+final username = flux("");
+final role = flux("Developer");
+
+Widget RegistrationForm() {
+  return Fx.column()
+    .p(24)
+    .gap(FxTokens.space.md)
+    .children([
+      FxTextField(
+        label: "Username",
+        value: username, // Auto-binds to signal
+      ),
+      FxDropdown<String>(
+        label: "Select Role",
+        value: role,
+        options: ["Developer", "Designer", "Manager"],
+      ),
+      Fx.button("Submit")
+        .px(32)
+        .py(12)
+        .bg(FxTokens.primary)
+        .onPressed(() {
+          print("Registering ${username.value} as ${role.value}");
+        })
+        .render(),
+    ])
+    .render();
+}
+```
+
+## Hover Effects
+
+Adding interactive states using the Atomic DSL.
+
+```dart
+Fx.box()
+  .square(150)
+  .bg(Colors.blue)
+  .rounded(FxTokens.radius.md)
+  .onHover((s) => s.scale(1.1).bg(Colors.blueAccent))
+  .onPressed((s) => s.op(0.7))
+  .center()
+  .child(Fx.text("Interactive").white().render())
+  .render();
+```
+

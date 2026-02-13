@@ -1,50 +1,51 @@
 ---
 title: One Engine. Infinite Possibilities.
-description: Fluxy is a full-stack Flutter Framework for modern application development.
+description: Fluxy is a "Full-Stack" Flutter platform (v0.1.1) that unifies signals-based reactivity, an atomic styling DSL, and cloud-based CI/CD.
 ---
 
-# Fluxy
+# Fluxy v0.1.1
 **One Engine. Infinite Possibilities.**
 
-Fluxy is a full-stack Flutter Framework designed to be the definitive solution for modern application development. It unifies state management, UI construction, routing, and DevOps into a single, cohesive engine.
+Fluxy is a "Full-Stack" Flutter platform designed to modernize mobile and web development. It unifies high-performance Signals-based reactivity, an Atomic Styling DSL (Fluent interface), and Cloud-based CI/CD into a single, cohesive engine.
 
 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-8">
   <div className="p-4 border rounded-lg bg-card text-card-foreground">
-    <h3 className="text-xl font-bold mb-2">Atomic Reactivity</h3>
-    <p>Fine-grained signals that update only what changes. Zero manual dependency tracking.</p>
+    <h3 className="text-xl font-bold mb-2">Atomic Styling DSL</h3>
+    <p>Chainable modifiers for any widget. Shorthand syntax like .px(16).py(8).bg(FxTokens.primary) for lightning-fast UI construction.</p>
   </div>
   <div className="p-4 border rounded-lg bg-card text-card-foreground">
-    <h3 className="text-xl font-bold mb-2">Fluent UI</h3>
-    <p>A chainable, expressive DSL that compiles to standard Flutter widgets. Less boilerplate, more flow.</p>
+    <h3 className="text-xl font-bold mb-2">Signals Reactivity</h3>
+    <p>Fine-grained updates via `flux(value)`. Use `Fx(() => widget)` for automatic atomic rebuilds without the boilerplate.</p>
   </div>
   <div className="p-4 border rounded-lg bg-card text-card-foreground">
-    <h3 className="text-xl font-bold mb-2">Cloud & OTA</h3>
-    <p>Built-in support for Server-Driven UI and Over-The-Air updates. Ship fixes instantly.</p>
+    <h3 className="text-xl font-bold mb-2">Premium Widget Suite</h3>
+    <p>High-quality, pre-styled widgets like `FxAvatar`, `FxBadge`, `FxDropdown`, and the physics-based `FxBottomBar`.</p>
   </div>
   <div className="p-4 border rounded-lg bg-card text-card-foreground">
-    <h3 className="text-xl font-bold mb-2">DevOps Ready</h3>
-    <p>Zero-config CI/CD pipelines via GitHub Actions. From code to cloud in minutes.</p>
+    <h3 className="text-xl font-bold mb-2">OTA & SDUI</h3>
+    <p>Render remote JSON manifests via `FxRemoteView`. Update your app instantly with Over-The-Air capabilities.</p>
   </div>
 </div>
 
 ## The Fluxy Philosophy
 
-Fluxy isn't just a state management library; it's an **application architecture**. 
+Fluxy isn't just a state management library; it's an **all-in-one Flutter ecosystem**. 
 
-Traditional Flutter development often requires stitching together multiple packages: one for state (Riverpod/Bloc), one for navigation (GoRouter), one for styling, and another for networking. Fluxy provides all of these as first-class citizens, integrated into a single **Reactive Engine**.
+Traditional Flutter development often requires stitching together multiple packages: one for state, one for navigation, and one for styling. Fluxy provides all of these as first-class citizens, integrated into a single **Reactive Engine** that minimizes boilerplate and maximizes flow.
 
-### Key Features
+### v0.1.1 Highlights
 
-- **Signals & Effects**: The core of Fluxy's reactivity.
-- **Fx Namespace**: A unified entry point for all UI elements (`Fx.text`, `Fx.box`).
-- **Typed Routing**: Type-safe navigation with middleware support.
-- **CLI Tooling**: Generators and build tools to speed up your workflow.
+- **Atomic DSL Shorthands**: Use `.p()`, `.m()`, `.bg()`, `.rounded()`, and more for rapid styling.
+- **Premium Premium Widgets**: New `FxDropdown` and `FxAvatar` for modern app designs.
+- **Direct Binding**: Bind inputs and selects directly to Signals for native two-way binding.
+- **Modern API Standards**: All color transparency uses the modern `.withValues(alpha: 0.x)` API.
 
 ## Getting Started
 
 Ready to build your first Fluxy app?
 
 <Cards>
-  <Card href="/docs/quick-start" title="Quick Start" description="Install Fluxy and create your first project in under 5 minutes." />
-  <Card href="/docs/architecture" title="Architecture" description="Understand the core principles behind the Fluxy Engine." />
+  <Card href="/docs/quick-start" title="Quick Start" description="Install Fluxy CLI and create your first project in under 5 minutes." />
+  <Card href="/docs/ui-dsl" title="Atomic Styling DSL" description="Learn how to build beautiful UIs with chainable modifiers." />
 </Cards>
+

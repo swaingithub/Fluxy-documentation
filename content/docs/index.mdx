@@ -1,9 +1,9 @@
 ---
 title: One Engine. Infinite Possibilities.
-description: Fluxy is a "Full-Stack" Flutter platform (v0.1.1) that unifies signals-based reactivity, an atomic styling DSL, and cloud-based CI/CD.
+description: Fluxy is a "Full-Stack" Flutter platform (v0.1.2) that unifies signals-based reactivity, an atomic styling DSL, and cloud-based CI/CD.
 ---
 
-# Fluxy v0.1.1
+# Fluxy v0.1.2
 **One Engine. Infinite Possibilities.**
 
 Fluxy is a "Full-Stack" Flutter platform designed to modernize mobile and web development. It unifies high-performance Signals-based reactivity, an Atomic Styling DSL (Fluent interface), and Cloud-based CI/CD into a single, cohesive engine.
@@ -11,7 +11,7 @@ Fluxy is a "Full-Stack" Flutter platform designed to modernize mobile and web de
 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-8">
   <div className="p-4 border rounded-lg bg-card text-card-foreground">
     <h3 className="text-xl font-bold mb-2">Atomic Styling DSL</h3>
-    <p>Chainable modifiers for any widget. Shorthand syntax like .px(16).py(8).bg(FxTokens.primary) for lightning-fast UI construction.</p>
+    <p>Chainable modifiers for any widget. Shorthand syntax like `.px(16).py(8).bg.blue500` for lightning-fast UI construction using the new Proxy-based DSL.</p>
   </div>
   <div className="p-4 border rounded-lg bg-card text-card-foreground">
     <h3 className="text-xl font-bold mb-2">Signals Reactivity</h3>
@@ -33,12 +33,12 @@ Fluxy isn't just a state management library; it's an **all-in-one Flutter ecosys
 
 Traditional Flutter development often requires stitching together multiple packages: one for state, one for navigation, and one for styling. Fluxy provides all of these as first-class citizens, integrated into a single **Reactive Engine** that minimizes boilerplate and maximizes flow.
 
-### v0.1.1 Highlights
+### v0.1.2 Highlights
 
+- **Proxy-based DSL**: More intuitive syntax like `.weight.bold` and `.bg.blue500` instead of just method calls.
 - **Atomic DSL Shorthands**: Use `.p()`, `.m()`, `.bg()`, `.rounded()`, and more for rapid styling.
-- **Premium Premium Widgets**: New `FxDropdown` and `FxAvatar` for modern app designs.
-- **Direct Binding**: Bind inputs and selects directly to Signals for native two-way binding.
-- **Modern API Standards**: All color transparency uses the modern `.withValues(alpha: 0.x)` API.
+- **Cloud Orchestration**: Integrated commands for GitHub Actions based CI/CD.
+- **Ready for Production**: Core engines (Signals, DSL, OTA) are now production-ready in Alpha.
 
 ## Getting Started
 

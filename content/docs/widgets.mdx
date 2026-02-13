@@ -5,7 +5,7 @@ description: High-quality, pre-styled widgets for modern Flutter apps.
 
 # Premium Widget Suite
 
-Fluxy v0.1.1 introduces a suite of "Premium" widgets designed to handle common UI patterns with minimal configuration and built-in reactivity.
+Fluxy v0.1.2 introduces a suite of "Premium" widgets designed to handle common UI patterns with minimal configuration and built-in reactivity.
 
 ## FxAvatar
 
@@ -145,10 +145,11 @@ FxTabScaffold(
 
 ## Usage in DSL
 
-All premium widgets are also available via the `Fx` namespace for a consistent development experience:
+All premium widgets are also available via the `Fx` namespace for a consistent development experience, and can be styled using the new **Proxy-based DSL**:
 
 ```dart
 Fx.avatar(image: "...")
-  .shadowMD()
+  .shadow.medium() // Proxy syntax
+  .border.blue500  // Proxy syntax
   .render();
 ```

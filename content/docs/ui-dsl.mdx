@@ -20,6 +20,23 @@ Fx.box()
   .render();
 ```
 
+## Proxy-based DSL (New in 0.1.2)
+
+Fluxy 0.1.2 introduces a more expressive **Proxy-based DSL** that allows you to access style properties as fields rather than methods for common tokens. This results in even cleaner, more readable code.
+
+```dart
+Fx.text("Hello Fluxy")
+  .weight.bold      // Proxy syntax for weight
+  .color.blue500    // Proxy syntax for color
+  .textLg()         // Semantic sizing
+  .mt(8);           // Traditional shorthand still available
+```
+
+### Why use Proxy DSL?
+1. **Readability**: It reads more like a declaration than a series of function calls.
+2. **Type Safety**: Proxies are specifically mapped to framework tokens, ensuring you use valid colors and weights.
+3. **Speed**: Autocomplete works seamlessly with proxy getters.
+
 ## Shorthand Pairs
 
 Fluxy uses intuitive shorthand pairs for common layout properties:

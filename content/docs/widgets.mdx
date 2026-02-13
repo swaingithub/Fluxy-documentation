@@ -9,42 +9,92 @@ Fluxy v0.1.1 introduces a suite of "Premium" widgets designed to handle common U
 
 ## FxAvatar
 
-A versatile avatar widget with support for images, fallbacks, and multiple sizes.
+A versatile avatar system with smart fallback logic. If an image fails to load or is not provided, it falls back to a string label or a custom widget.
+
+### Configuration
+- **Image**: Remote URL via the `image` property.
+- **Fallback Label**: Pass a string to `fallback`. It automatically extracts and capitalizes the first two characters.
+- **Custom Fallback**: Use `fallbackWidget` for icons or complex placeholders.
+- **Shapes**: Supports `circle` (default), `square`, and `rounded`.
 
 ```dart
 FxAvatar(
-  image: "https://example.com/user.jpg",
-  fallback: Fx.text("JD").render(),
+  image: "https://avatar.iran.liara.run/public",
+  fallback: "Jane Doe", // Displays "JA"
   size: FxAvatarSize.lg,
-  shape: FxAvatarShape.circle,
+  shape: FxAvatarShape.rounded,
 )
 ```
-
-- **Sizes**: `sm`, `md`, `lg`, `xl`.
-- **Shapes**: `circle`, `rounded`.
 
 ## FxBadge
 
-Wraps any widget with a notification dot or a label.
+Wraps any widget with a highly customizable notification overlay.
+
+### Badge Types
+1. **Dot**: No label or content provided.
+2. **Label**: Passing a string to `label`.
+3. **Custom**: Passing a widget to `content`.
 
 ```dart
 FxBadge(
-  label: "5",
-  child: Icon(Icons.notifications),
+  label: "New",
+  color: Colors.green,
+  offset: const Offset(10, -10),
+  child: Fx.box().square(50).bg(Colors.blue).render(),
 )
 ```
 
-## FxDropdown
+## FxDropdown<T>
 
-An Overlay-based selective UI that feels more like a modern web select than a native mobile dropdown. It binds directly to a Signal.
+An Overlay-based selective UI that provides a modern, "web-like" select experience. It uses a `CompositedTransformFollower` to ensure the menu follows the trigger widget even during scrolls or animations.
+
+### Implementation Checklist
+- **Atomic Binding**: It is mandatory to provide either a `value` or a `signal`.
+- **Custom Labels**: Use `itemLabel` to define how each item is converted to text.
+- **Custom Builders**: Use `itemBuilder` for complex item layouts.
+- **Dual Styling**: Control the trigger button with `style` and the overlay menu with `dropdownStyle`.
 
 ```dart
-final selectedValue = flux("Option 1");
+final selectedCity = flux("New York");
 
 FxDropdown<String>(
-  value: selectedValue,
-  options: ["Option 1", "Option 2", "Option 3"],
-  onChanged: (val) => selectedValue.value = val,
+  signal: selectedCity, // Two-way binding
+  items: ["New York", "London", "Tokyo", "Berlin"],
+  placeholder: "Select a city",
+  
+  // Custom Label Shortcut
+  itemLabel: (city) => city.toUpperCase(),
+  
+  // Custom Trigger Styling
+  style: FxStyle(
+    backgroundColor: Colors.grey.withValues(alpha: 0.1),
+    borderRadius: BorderRadius.circular(8),
+    padding: const EdgeInsets.all(12),
+  ),
+  
+  // Custom Menu Styling
+  dropdownStyle: FxStyle(
+    backgroundColor: Colors.white,
+    boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 10)],
+  ),
+  
+  onChanged: (val) => print("Selected: $val"),
+)
+```
+
+### Complex Item Builder
+You can render custom widgets for each dropdown item:
+
+```dart
+FxDropdown<User>(
+  signal: currentUser,
+  items: users,
+  itemBuilder: (user) => Fx.row()
+    .children([
+      FxAvatar(image: user.avatar, size: FxAvatarSize.sm),
+      Fx.text(user.name).ml(8).render(),
+    ])
+    .render(),
 )
 ```
 

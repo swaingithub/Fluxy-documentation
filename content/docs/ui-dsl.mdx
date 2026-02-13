@@ -94,17 +94,94 @@ Fx.text("Conditional Text")
   .render();
 ```
 
-## Layouts
+## Layouts & Flex Control
 
-Linear layouts like `Fx.row` and `Fx.column` use the same fluent philosophy:
+Fluxy v0.1.3 introduces powerful new modifiers for `Fx.box` and linear layouts (`Fx.row`, `Fx.column`) for cleaner responsive designs.
+
+### Linear Layouts
+
+Standard linear layouts use the same fluent philosophy:
 
 ```dart
 Fx.column()
-  .gap(FxTokens.space.md) // Built-in spacing between children
+  .gap(16) // Built-in spacing between children
   .crossStart()
   .children([
     Fx.text("Header").h2().render(),
     Fx.text("Body text here...").render(),
+  ])
+  .render();
+```
+
+### Fluent Flex Modifiers (New in 0.1.3)
+
+Fluxy now provides comprehensive flex layout modifiers to control alignments and spacing fluently, just like in Tailwind CSS. You can use these modifiers on any `Fx.row`, `Fx.col`, or even a generic `Fx.box`.
+
+#### Alignment (Main Axis)
+- `.justifyStart()`
+- `.justifyCenter()`
+- `.justifyEnd()`
+- `.justifyBetween()`
+- `.justifyAround()`
+- `.justifyEvenly()`
+- `.justify(MainAxisAlignment.value)` (Generic)
+
+#### Alignment (Cross Axis)
+- `.itemsStart()`
+- `.itemsCenter()`
+- `.itemsEnd()`
+- `.itemsStretch()`
+- `.itemsBaseline()`
+- `.items(CrossAxisAlignment.value)` (Generic)
+
+#### Spacing
+- `.gap(double)`: Adds equal spacing between all children.
+
+### Usage Examples
+
+Here is how you can use them to create beautiful layouts with zero effort:
+
+```dart
+// A centered row with items spread out and a 20px gap
+Fx.row(
+  children: [
+    Fx.text("Left"),
+    Fx.text("Middle"),
+    Fx.text("Right"),
+  ],
+)
+.justifyBetween()
+.itemsCenter()
+.gap(20)
+.p(16);
+
+// A vertical column centered both ways
+Fx.column(
+  children: [
+    Fx.avatar(image: "URL"),
+    Fx.text("User Name").bold(),
+  ],
+)
+.justifyCenter()
+.itemsCenter()
+.gap(12)
+.fullWidth();
+```
+
+#### Why use these instead of constructor parameters?
+
+While `Fx.row` and `Fx.col` still support `mainAxisAlignment` and `crossAxisAlignment` in their constructors, using these modifiers allows you to chain layout properties with styles (padding, background, etc.) in a single, readable flow. It also makes your code feel much more like modern CSS/Tailwind.
+
+```dart
+Fx.box()
+  .p(20)
+  .asRow()       // Determine direction
+  .gap(12)       // Gap between children
+  .justifyBetween()
+  .itemsCenter()
+  .children([
+    Fx.text("Left Item"),
+    Fx.text("Right Item"),
   ])
   .render();
 ```

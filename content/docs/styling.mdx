@@ -59,8 +59,15 @@ if (FxStyle.media(context).isMobile) {
 
 ## Theme Management
 
-`FxStyle` provides utilities for managing the active theme.
+FxTheme provides a zero-boilerplate way to manage your app's theme.
 
 ```dart
-FxStyle.toggleTheme(); // Quickly switch between Light and Dark modes
+// Toggle between light and dark mode
+Fx.toggleTheme(); 
+
+// Check current theme
+bool isDark = FxTheme.isDark;
+
+// Access theme colors directly
+Color bg = FxTheme.colorScheme.background;
 ```

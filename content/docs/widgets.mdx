@@ -143,6 +143,177 @@ FxTabScaffold(
 - When you navigate within the "Home" tab, the "Search" tab's state is preserved.
 - Use `Fluxy.to("/some-path", scope: "Home")` to navigate within a specific tab's stack.
 
+## FxButton
+
+A fully responsive, theme-aware button component with multiple variants and fluent modifiers.
+
+### Basic Usage
+
+```dart
+Fx.button("Click Me", onTap: () => print("Clicked"))
+```
+
+### Variants
+
+Fluxy supports a wide range of semantic variants:
+
+- `Fx.primaryButton("Label")`: Default primary action (Blue).
+- `Fx.secondaryButton("Label")`: Secondary action (Slate).
+- `Fx.textButton("Label")`: Text-only button.
+- `.danger`: Red variant for destructive actions.
+- `.success`: Green variant for positive actions.
+- `.warning`: Amber variant for warnings.
+- `.outline`: Transparent background with border.
+- `.ghost`: Transparent background, hover effect only.
+
+```dart
+Fx.button("Delete").danger.render()
+Fx.button("Save").success.render()
+Fx.button("Cancel").outline.render()
+```
+
+### Sizes
+
+Available in `xs`, `sm`, `md` (default), `lg`, and `xl`.
+
+```dart
+Fx.button("Tiny").sizeXs()
+Fx.button("Large Action").sizeLg()
+```
+
+### Fluent Modifiers
+
+Chain modifiers to customize appearance and behavior instantly:
+
+- `.rounded`: Makes the button fully rounded (pill shape).
+- `.square`: Removes rounding.
+- `.loading(bool)`: Shows a loading spinner and disables interaction.
+- `.withIcon(Widget)`: Adds a leading icon.
+- `.withTrailing(Widget)`: Adds a trailing icon.
+- `.fullWidth()`: Expands to fill available width.
+- `.shadowSm()`, `.shadowMd()`, `.shadowLg()`: Adds elevation.
+
+```dart
+Fx.button("Continue")
+  .primary
+  .sizeLg()
+  .rounded
+  .withIcon(Icon(Icons.arrow_forward))
+  .fullWidth()
+  .shadowMd()
+  .onTap(() {
+    // Action
+  })
+```
+
+## Advanced Layouts (New in 0.1.3)
+
+Fluxy provides powerful layout primitives for building responsive interfaces.
+
+### FxLayout
+
+The `Fx.layout` builder provides semantic targeting for different screen sizes.
+
+```dart
+Fx.layout(
+  mobile: (context) => MobileView(),
+  desktop: (context) => DesktopView(),
+);
+```
+
+### FxGrid
+
+A responsive grid system that uses `FxStyle` for column control.
+
+```dart
+Fx.grid(
+  gap: 16,
+  children: myItems.map((item) => ItemCard(item)).toList(),
+  // Mobile: 1 Column
+  style: FxStyle(gridCols: 1), 
+  // Tablet: 2 Cols, Desktop: 4 Cols
+  responsive: FxResponsiveStyle(
+    md: FxStyle(gridCols: 2),
+    lg: FxStyle(gridCols: 4),
+  ),
+)
+```
+
+## Data Display
+
+### FxTable
+
+A premium data table with built-in scrolling, sticky headers, and hover effects.
+
+```dart
+Fx.table<User>(
+  data: users,
+  columns: [
+    FxTableColumn(
+      header: "Name", 
+      cellBuilder: (user) => Fx.text(user.name).bold(),
+    ),
+    FxTableColumn(
+      header: "Status", 
+      cellBuilder: (user) => FxBadge(label: user.status, color: Colors.blue),
+    ),
+  ],
+  striped: true,
+  onRowTap: () => print("Row tapped"),
+)
+```
+
+## Forms & Validation
+
+Fluxy v0.1.3 introduces a reactive form system driven by `FluxField`.
+
+### Reactive Fields
+
+Define fields with fluent validation rules directly on the signal.
+
+```dart
+// Define fields with rules
+final email = fluxField("").required().email();
+final password = fluxField("").required().minLength(8);
+
+// Group into a form (optional)
+final loginForm = fluxForm({
+  "email": email,
+  "password": password,
+});
+```
+
+### FxInput & FxForm
+
+Use specialized widgets that automatically bind to these reactive fields.
+
+```dart
+Fx.form(
+  child: Fx.column().children([
+    Fx.input(
+      signal: email, 
+      placeholder: "Email Address",
+    ),
+    Fx.password(
+      signal: password,
+      placeholder: "Password",
+    ),
+    Fx.button("Login", onTap: () {
+      if (loginForm.validate()) {
+        // Proceed with login
+      }
+    }).mt(16),
+  ]),
+)
+```
+
+## Feedback & Overlays
+
+Fluxy includes responsive feedback mechanisms that adapt to the device form factor.
+
+- **`Fx.snack(context, "Message")`**: Shows a responsive snackbar/toast (floating on desktop).
+- **`Fx.modal(context, child)`**: Opens a responsive modal (dialog on desktop, bottom sheet on mobile).
+
 ## Usage in DSL
 
 All premium widgets are also available via the `Fx` namespace for a consistent development experience, and can be styled using the new **Proxy-based DSL**:

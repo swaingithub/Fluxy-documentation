@@ -35,3 +35,23 @@ Performance is built-in, not an afterthought.
 *   **Fine-Grained Updates**: Only change the specific text node or style property that needs to update.
 *   **Lazy Evaluation**: `Computed` values are only calculated when accessed.
 *   **Zero Overhead**: While the developer experience is rich, the runtime cost is minimal.
+
+## Flat Widget Tree (Attribute Accumulation)
+
+Fluxy v0.1.6 optimizes UI performance through a **Flat Widget Tree**. Unlike traditional modifier-based frameworks that wrap widgets in nested layers (Padding > DecoratedBox > Opacity), Fluxy uses an **Attribute Accumulation** pattern.
+
+When you chain modifiers:
+```dart
+Fx.box()
+  .p(16)
+  .bg(Colors.blue)
+  .rounded(12)
+  .shadow.lg
+```
+The engine accumulates these attributes into a single internal style object. This results in far fewer widgets in the element tree, leading to better memory usage and faster layout passes.
+
+## Structural Recursion (ParentData Preservation)
+
+Fluxy's engine is designed to be "layout aware." It uses **Structural Recursion** to correctly handle Flutter's `ParentData` requirements. 
+
+If you apply modifiers to widgets like `Expanded`, `Flexible`, or `Positioned`, Fluxy "peers through" these wrappers to apply styles to the inner child without breaking the communication between the layout widget and its parent (like a `Row` or `Stack`). This eliminates the common "Incorrect use of ParentDataWidget" errors.

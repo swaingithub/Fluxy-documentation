@@ -48,13 +48,12 @@ Since `Fx.fetch` returns an `AsyncSignal`, you can use the `.on()` method to ele
 
 ```dart
 Fx(() => userPosts.on(
-  loading: () => Fx.loader().render(),
-  error: (err) => Fx.text("Error: $err").color.red500.render(),
+  loading: () => Fx.loader(),
+  error: (err) => Fx.text("Error: $err").color(Colors.red),
   data: (posts) => Fx.column()
     .children(
       posts.map((p) => Fx.text(p.title).p(8)).toList()
-    )
-    .render(),
+    ),
 ))
 ```
 

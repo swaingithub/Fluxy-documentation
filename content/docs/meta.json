@@ -2,6 +2,7 @@
   "pages": [
     "index",
     "quick-start",
+    "migration-0-1-6",
     "architecture",
     "---The Core---",
     "reactivity",

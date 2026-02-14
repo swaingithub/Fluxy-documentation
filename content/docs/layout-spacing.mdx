@@ -21,8 +21,8 @@ Fx.row(
   items: CrossAxisAlignment.center,
   gap: 16, // Built-in gap support
   children: [
-    Fx.text("Left").render(),
-    Fx.text("Right").render(),
+    Fx.text("Left"),
+    Fx.text("Right"),
   ],
 )
 ```
@@ -35,8 +35,8 @@ Fx.col(
   items: CrossAxisAlignment.stretch,
   gap: 8,
   children: [
-    Fx.button("Login").fullWidth().render(),
-    Fx.button("Register").outline().fullWidth().render(),
+    Fx.button("Login").fullWidth(),
+    Fx.button("Register").outline().fullWidth(),
   ],
 )
 ```
@@ -54,8 +54,8 @@ Fx.stack(
   alignment: Alignment.center,
   fit: StackFit.loose,
   children: [
-    Fx.image("background.jpg").cover().render(),
-    Fx.text("Overlay Text").white.bold().render(),
+    Fx.image("background.jpg").cover(),
+    Fx.text("Overlay Text").white.bold,
   ],
 )
 ```
@@ -71,11 +71,11 @@ While flex `gap` is powerful, sometimes you need specific spacing between indivi
 ```dart
 Fx.row(
   children: [
-    Fx.text("Item 1").render(),
+    Fx.text("Item 1"),
     Fx.gap(16), // Intelligent Gap
-    Fx.text("Item 2").render(),
+    Fx.text("Item 2"),
     Fx.hgap(8), // Explicit Horizontal
-    Fx.text("Item 3").render(),
+    Fx.text("Item 3"),
   ],
 )
 ```
@@ -94,5 +94,4 @@ Fx.container()
   .p(16)
   .m(8)
   .bg(Colors.blue)
-  .render();
 ```

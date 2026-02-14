@@ -18,7 +18,6 @@ Access predefined sizes for scales and corners.
 Fx.box()
   .p(FxTokens.space.md)      // Standard 16dp spacing
   .rounded(FxTokens.radius.lg) // Large rounded corners
-  .render();
 ```
 
 ### Shadows
@@ -26,8 +25,7 @@ Standardized shadow depths for elevating UI elements.
 
 ```dart
 Fx.box()
-  .shadow(FxTokens.shadow.md) // Medium shadow
-  .render();
+  .shadow.md // Medium shadow proxy getter
 ```
 
 ## Modern Color API
@@ -49,7 +47,7 @@ Fluxy handles responsiveness both through the DSL and the `FxStyle` helper.
 ```dart
 Fx.box()
   .width(sm: 100, md: 200, lg: 300) // Responsive widths
-  .render();
+  ;
 
 // Or manual checks
 if (FxStyle.media(context).isMobile) {

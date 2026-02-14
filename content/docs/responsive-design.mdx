@@ -5,7 +5,7 @@ description: Build adaptive layouts for any screen size in Fluxy.
 
 # Responsive Design
 
-Fluxy v0.1.5 introduces `Fx.layout()` as the standard way to build truly adaptive applications.
+Fluxy v0.1.6 introduces `Fx.layout()` as the standard way to build truly adaptive applications.
 
 ## `Fx.layout`
 
@@ -15,7 +15,7 @@ The `Fx.layout` builder allows you to specify different widgets for mobile, tabl
 Fx.layout(
   mobile: (context) => Fx.col(
     children: [
-      Fx.text("Mobile Header").font.lg.bold(),
+      Fx.text("Mobile Header").font.lg.bold,
       MainContent().p(16),
     ],
   ),

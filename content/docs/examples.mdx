@@ -5,7 +5,7 @@ description: A collection of Fluxy examples and recipes updated for v0.1.1.
 
 # Examples & Recipes
 
-Explore how to build modern apps using the Fluxy v0.1.5 feature set.
+Explore how to build modern apps using the Fluxy v0.1.6 feature set.
 
 ## Counter App (Atomic)
 
@@ -20,15 +20,14 @@ Widget build(BuildContext context) {
     gap: 16,
     children: [
       // Only this part rebuilds when count changes
-      Fx(() => Fx.text("Count: ${count.value}").h1().render()),
+      Fx(() => Fx.text("Count: ${count.value}").h1()),
       
       Fx.box()
         .p(16)
         .bg(FxTokens.primary)
         .rounded(12)
         .onPressed(() => count.value++)
-        .child(Fx.text("Increment").white().render())
-        .render(),
+        .child(Fx.text("Increment").color(Colors.white))
     ],
   );
 }
@@ -58,14 +57,14 @@ Widget UserProfile() {
           Fx.col(
             items: CrossAxisAlignment.start,
             children: [
-              Fx.text("Jane Doe").bold().render(),
-              Fx.text("Software Engineer").size(12).render(),
+              Fx.text("Jane Doe").font.bold,
+              Fx.text("Software Engineer").size(12),
             ],
           ),
         ],
       ),
     )
-    .render();
+    ;
 }
 ```
 
@@ -99,12 +98,11 @@ Widget RegistrationForm() {
             .bg(FxTokens.primary)
             .onPressed(() {
               print("Registering ${username.value} as ${role.value}");
-            })
-            .render(),
+            }),
         ],
       ),
     )
-    .render();
+    ;
 }
 ```
 
@@ -120,7 +118,6 @@ Fx.box()
   .onHover((s) => s.scale(1.1).bg(Colors.blueAccent))
   .onPressed((s) => s.op(0.7))
   .center()
-  .child(Fx.text("Interactive").white().render())
-  .render();
+  .child(Fx.text("Interactive").color(Colors.white));
 ```
 

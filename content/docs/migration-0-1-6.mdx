@@ -1,0 +1,92 @@
+---
+title: v0.1.6 Migration Guide
+description: Upgrade your project from Fluxy 0.1.5 to 0.1.6.
+---
+
+# Fluxy 0.1.5 → 0.1.6 Migration Guide
+
+Fluxy 0.1.6 is a "Trust & Stability" release focused on hardening the internal architecture while keeping the outward-facing DSL consistent. While most changes are internal, there are a few key refinements to be aware of.
+
+## 🚀 Key Architectural Shift: Attribute Accumulation
+
+Previously, Fluxy used a "Widget Wrapping" approach where every modifier call (like `.padding()`) would wrap the widget in another physical widget (like `Padding`).
+
+In **0.1.6**, Fluxy has transitioned to an **Attribute Accumulation** model. Modifiers now update a local style object within the source widget.
+
+### Why this matters:
+1. **Performance**: Your widget tree is now significantly flatter. Chaining 10 modifiers results in exactly **one** styled widget.
+2. **Correctness**: Fixed the "Incorrect use of ParentDataWidget" error. Modifiers now correctly preserve `Expanded`, `Flexible`, and `Positioned` data.
+3. **Consistency**: All core widgets now behave identically when styled.
+
+---
+
+## 🛠 Breaking Changes & Deprecations
+
+### 1. Removal of ``
+The `` method is no longer required and has been removed from the engine. Fluxy widgets are now actual `Widget` instances from the start of the chain.
+
+**Action**: Remove all `` calls from your widget chains.
+```dart
+// Old (0.1.5)
+Fx.box().p(16).bg(Colors.blue);
+
+// New (0.1.6)
+Fx.box().p(16).bg(Colors.blue)
+```
+
+### 2. Proxy DSL Syntax Updates
+Property proxies like `bold` and `italic` are now **getters**, not methods.
+
+**Action**: Remove parentheses from these property proxies.
+```dart
+// Old (0.1.5)
+Fx.text("Hi").font.lg.bold()
+
+// New (0.1.6)
+Fx.text("Hi").font.lg.bold
+```
+
+### 3. Fx.cond Parameter Shift
+`Fx.cond` now reactive by default and expects a **Signal** rather than a boolean value.
+
+**Action**: Pass the signal directly, without `.value`.
+```dart
+// Old (0.1.5)
+Fx.cond(isLoading.value, loadingWidget, dataWidget)
+
+// New (0.1.6)
+Fx.cond(isLoading, loadingWidget, dataWidget)
+```
+
+### 4. Factory Method Signatures
+The `Fx` factory methods (avatar, table, dropdown, badge) now support the accumulation pattern natively via named parameters.
+
+```dart
+// Native support for style and class names in constructors
+Fx.avatar(
+  image: "...", 
+  style: FxStyle(padding: 10), 
+  className: "profile-pic",
+  responsive: true,
+)
+```
+
+---
+
+## ✅ Best Practices for 0.1.6
+
+### Use ClassNames for Shared Styles
+With the new engine, `className` is resolved **after** the inline `.style()` but **before** modifiers. This means modifiers will always override class-based styles.
+
+### Modifier Order
+Because styles are now accumulated into a single object, the order of most modifiers no longer affects the result. `.padding(10).bg(Colors.blue)` is identical to `.bg(Colors.blue).padding(10)`.
+
+---
+
+## 🆘 Troubleshooting
+
+**"My ParentData is still breaking!"**
+Ensure you are using the latest `Fx` factories. If you are wrapping a native Flutter widget in `Expanded`, make sure the `Expanded` is the **outermost** element in your DSL chain, or use the `.expand()` modifier directly.
+
+**"Shadows look different!"**
+We fixed a recursion bug where multiple shadows were stacking incorrectly. Your UI might look "cleaner" now. Adjust your shadow blur values if necessary.

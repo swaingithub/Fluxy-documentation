@@ -81,7 +81,7 @@ Fx.form(
   child: Fx.column()
     .gap(16)
     .children([
-      Fx.text("Welcome").font.xl.bold().render(),
+      Fx.text("Welcome").font.xl.bold,
       
       Fx.input(
         signal: email,
@@ -96,7 +96,6 @@ Fx.form(
             Fx.toast.success("Logging in...");
           }
         }),
-    ])
-    .p(24)
+    ]).p(24)
 )
 ```

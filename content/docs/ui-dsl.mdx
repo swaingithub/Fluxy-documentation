@@ -17,7 +17,7 @@ Fx.box()
   .bg(Colors.blue)  // Background color
   .rounded(12)      // Border radius
   .shadowXL()       // Large shadow token
-  .render();
+  ;
 ```
 
 ## Proxy-based DSL (New in 0.1.6)
@@ -26,10 +26,10 @@ Fluxy v0.1.6 continues to refine the **Proxy-based DSL**, allowing you to access
 
 ```dart
 Fx.text("Hello Fluxy")
-  .font.lg.bold()      // New Property Proxies
-  .color.blue500    // Proxy syntax for color
-  .shadow.md()      // Shadow proxy
-  .mt(8);           // Traditional shorthand still available
+  .font.lg.bold      // Property Proxies are now getters
+  .color(Colors.blue) // Use color method
+  .shadow.md          // Shadow proxy getter
+  .mt(8);
 ```
 
 ### Why use Proxy DSL?
@@ -64,7 +64,7 @@ Fx.box()
   .square(100)
   .bg(Colors.red.withValues(alpha: 0.5))
   .rounded(FxTokens.radius.md)
-  .render();
+  ;
 ```
 
 ## Interactions & Animations
@@ -81,7 +81,7 @@ Fx.box()
   .bg(Colors.blue)
   .animate(duration: 500.ms, curve: Curves.easeOut)
   .onHover((s) => s.bg(Colors.blueAccent).scale(1.1))
-  .render();
+  ;
 ```
 
 ## Conditional Rendering
@@ -92,9 +92,9 @@ Fluxy v0.1.6 introduces `Fx.cond()`, a cleaner alternative to ternary operators 
 
 ```dart
 Fx.cond(
-  isLoading.value,
-  Fx.text("Processing...").render(),
-  Fx.button("Submit").render(),
+  isLoading,
+  Fx.text("Processing..."),
+  Fx.button("Submit"),
 )
 ```
 
@@ -104,7 +104,7 @@ You can also toggle visibility on any widget using the `.show()` and `.hide()` m
 ```dart
 Fx.text("Conditional Text")
   .show(isLogged.value)
-  .render();
+  ;
 ```
 
 ## Duration Extensions
@@ -120,7 +120,7 @@ Fx.text("Fade In")
     duration: 500.ms,
     delay: 1.sec,
   )
-  .render();
+  ;
 ```
 
 ## Layouts & Spacing
@@ -131,7 +131,7 @@ Please refer to the dedicated [Layout & Spacing](/docs/layout-spacing) guide for
 
 ## Context Extensions
 
-Fluxy v0.1.4 extends `BuildContext` with helpful properties to reduce boilerplate when accessing theme and screen information.
+Fluxy v0.1.6 extends `BuildContext` with helpful properties to reduce boilerplate when accessing theme and screen information.
 
 - `context.theme`: Access the current `ThemeData`.
 - `context.colors`: Shortcut to `Theme.of(context).colorScheme`.
@@ -143,8 +143,8 @@ Fx.box()
   .bg(context.colors.primary)
   .w(context.screenSize.width * 0.8)
   .child(
-    Fx.text(context.isDark ? "Dark Side" : "Light Side").render()
+    Fx.text(context.isDark ? "Dark Side" : "Light Side")
   )
-  .render();
+  ;
 ```
 

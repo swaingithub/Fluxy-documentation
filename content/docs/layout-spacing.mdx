@@ -1,0 +1,78 @@
+---
+title: Layout & Spacing
+description: Next-gen declarative layout system for Fluxy.
+---
+
+# Layout & Spacing
+
+Fluxy v0.1.5 introduces a **Next-Gen Layout System** designed to be declarative, explicit, and boilerplate-free.
+
+While previous versions relied on chaining modifiers (like `.start().center()`), the new system promotes using named parameters directly in `Fx.row`, `Fx.col`, and `Fx.stack` for clarity and standard Flutter control.
+
+## Flex Layouts (`Fx.row` & `Fx.col`)
+
+The new API exposes strict `justify`, `items`, and `gap` parameters, mirroring CSS Flexbox and Flutter's Main/Cross axis alignment but with cleaner syntax.
+
+### `Fx.row`
+
+```dart
+Fx.row(
+  justify: MainAxisAlignment.spaceBetween,
+  items: CrossAxisAlignment.center,
+  gap: 16, // Built-in gap support
+  children: [
+    Fx.text("Left").render(),
+    Fx.text("Right").render(),
+  ],
+)
+```
+
+### `Fx.col`
+
+```dart
+Fx.col(
+  justify: MainAxisAlignment.center,
+  items: CrossAxisAlignment.stretch,
+  gap: 8,
+  children: [
+    Fx.button("Login").fullWidth().render(),
+    Fx.button("Register").outline().fullWidth().render(),
+  ],
+)
+```
+
+### Deprecation Notice
+
+> **Deprecated**: Chained flex modifiers (e.g., `Fx.row().between().center()`) are deprecated in v0.1.5. Please migrate to the declarative syntax above for better readability and tool support.
+
+## Stack Layout (`Fx.stack`)
+
+`Fx.stack` now provides first-class support for `alignment` and `fit`, allowing you to overlay widgets with precision.
+
+```dart
+Fx.stack(
+  alignment: Alignment.center,
+  fit: StackFit.loose,
+  children: [
+    Fx.image("background.jpg").cover().render(),
+    Fx.text("Overlay Text").white.bold().render(),
+  ],
+)
+```
+
+## Spacing Utilities
+
+Fluxy continues to support its robust spacing modifiers on all widgets.
+
+- `.p(16)` / `.padding(16)`: All-around padding.
+- `.px(12)` / `.py(8)`: Horizontal / Vertical padding.
+- `.m(16)`: Margin.
+- `.gap(10)`: Works on any flex container.
+
+```dart
+Fx.container()
+  .p(16)
+  .m(8)
+  .bg(Colors.blue)
+  .render();
+```

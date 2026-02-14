@@ -1,0 +1,72 @@
+---
+title: Responsive Design
+description: Build adaptive layouts for any screen size in Fluxy.
+---
+
+# Responsive Design
+
+Fluxy v0.1.5 introduces `Fx.layout()` as the standard way to build truly adaptive applications.
+
+## `Fx.layout`
+
+The `Fx.layout` builder allows you to specify different widgets for mobile, tablet, and desktop breakpoints.
+
+```dart
+Fx.layout(
+  mobile: (context) => Fx.col(
+    children: [
+      Fx.text("Mobile Header").font.lg.bold(),
+      MainContent().p(16),
+    ],
+  ),
+  tablet: (context) => Fx.row(
+    children: [
+      Sidebar().w(250),
+      MainContent().flex(1),
+    ],
+  ),
+  desktop: (context) => Fx.row(
+    children: [
+      Sidebar().w(300),
+      MainContent().flex(1),
+      StatsPanel().w(300),
+    ],
+  ),
+)
+```
+
+## Breakpoints
+
+Fluxy uses the `FxBreakpoint` system to handle screen size transitions. These breakpoints are globally configurable via `FluxyTheme`.
+
+- `xs` (Extra Small): Below 600px (Phones)
+- `sm` (Small): 600px - 900px (Tablets / Large Phones)
+- `md` (Medium): 900px - 1200px (Laptops / Small Desktops)
+- `lg` (Large): 1200px+ (Large Desktops)
+
+### Custom Configuration
+
+You can customize breakpoints during initialization:
+
+```dart
+FluxyTheme(
+  breakpoints: FxBreakpoints(
+    xs: 500,
+    sm: 800,
+    md: 1100,
+  ),
+  child: MyApp(),
+)
+```
+
+## Responsive Utilities
+
+Helper methods like `context.isMobile`, `context.isTablet`, and `context.isDesktop` are available for quick conditional logic.
+
+```dart
+if (context.isMobile) {
+  // Show bottom sheet
+} else {
+  // Show dialog
+}
+```

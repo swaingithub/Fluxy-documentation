@@ -20,9 +20,9 @@ Fx.box()
   .render();
 ```
 
-## Proxy-based DSL (New in 0.1.4)
+## Proxy-based DSL (New in 0.1.6)
 
-Fluxy v0.1.4 introduces a more expressive **Proxy-based DSL** that allows you to access style properties as fields rather than methods for common tokens. This results in even cleaner, more readable code.
+Fluxy v0.1.6 continues to refine the **Proxy-based DSL**, allowing you to access style properties as fields rather than methods.
 
 ```dart
 Fx.text("Hello Fluxy")
@@ -84,13 +84,42 @@ Fx.box()
   .render();
 ```
 
-## Conditional Visibility
+## Conditional Rendering
 
-You can conditionally show or hide widgets without complex `if` statements in your build method using the `.show()` and `.hide()` modifiers.
+### Declarative Conditionals (New in 0.1.6)
+
+Fluxy v0.1.6 introduces `Fx.cond()`, a cleaner alternative to ternary operators for conditional UI.
+
+```dart
+Fx.cond(
+  isLoading.value,
+  Fx.text("Processing...").render(),
+  Fx.button("Submit").render(),
+)
+```
+
+### Visibility Modifiers
+You can also toggle visibility on any widget using the `.show()` and `.hide()` modifiers.
 
 ```dart
 Fx.text("Conditional Text")
   .show(isLogged.value)
+  .render();
+```
+
+## Duration Extensions
+
+Fluxy provide human-readable extensions for `int` and `double` to define `Duration` objects effortlessly.
+
+- `500.ms` -> `Duration(milliseconds: 500)`
+- `2.sec` -> `Duration(seconds: 2)`
+
+```dart
+Fx.text("Fade In")
+  .animate(
+    duration: 500.ms,
+    delay: 1.sec,
+  )
   .render();
 ```
 

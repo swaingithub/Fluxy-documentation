@@ -28,10 +28,9 @@ Fx.grid(
 
 ```dart
 Fx.grid.auto(
-  maxCrossAxisExtent: 200,
-  childAspectRatio: 0.8,
-  gap: 12,
-  children: items,
+  minItemWidth: 160,
+  gap: 16,
+  children: products.map((p) => ProductCard(p)).toList(),
 );
 ```
 

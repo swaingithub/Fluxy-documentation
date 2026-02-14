@@ -60,6 +60,26 @@ Fx.stack(
 )
 ```
 
+## Intelligent Spacing (New in 0.1.6)
+
+While flex `gap` is powerful, sometimes you need specific spacing between individual children. Fluxy v0.1.6 introduces **Intelligent Gap** widgets.
+
+- `Fx.gap(size)`: Spacing that automatically detects if it's in a Row or Column.
+- `Fx.hgap(size)`: Explicit horizontal spacing (`SizedBox(width: size)`).
+- `Fx.vgap(size)`: Explicit vertical spacing (`SizedBox(height: size)`).
+
+```dart
+Fx.row(
+  children: [
+    Fx.text("Item 1").render(),
+    Fx.gap(16), // Intelligent Gap
+    Fx.text("Item 2").render(),
+    Fx.hgap(8), // Explicit Horizontal
+    Fx.text("Item 3").render(),
+  ],
+)
+```
+
 ## Spacing Utilities
 
 Fluxy continues to support its robust spacing modifiers on all widgets.

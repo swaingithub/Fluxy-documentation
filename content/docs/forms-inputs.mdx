@@ -67,6 +67,10 @@ Fx.input(
   signal: phone,
   placeholder: "Enter Phone",
   keyboardType: TextInputType.phone,
+  validators: [
+    (val) => val.isEmpty ? "Required" : null,
+    (val) => val.length < 10 ? "Too short" : null,
+  ],
 )
 ```
 

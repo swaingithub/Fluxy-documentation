@@ -5,7 +5,7 @@ description: High-quality, pre-styled widgets for modern Flutter apps.
 
 # Premium Widget Suite
 
-Fluxy v0.1.2 introduces a suite of "Premium" widgets designed to handle common UI patterns with minimal configuration and built-in reactivity.
+Fluxy v0.1.4 introduces a suite of "Premium" widgets designed to handle common UI patterns with minimal configuration and built-in reactivity.
 
 ## FxAvatar
 
@@ -263,13 +263,26 @@ Fx.table<User>(
 )
 ```
 
+## Collections (New in 0.1.4)
+
+Fluxy v0.1.4 introduces performant ways to handle large datasets with reactive builders.
+
+### Fx.list()
+
+Similar to `ListView.builder`, the `Fx.list()` helper provides a fluent way to build lazy-loading lists that are automatically reactive.
+
+```dart
+Fx.list(
+  itemCount: 100,
+  itemBuilder: (context, index) => Fx.text("Item $index").p(16).render(),
+)
+```
+
 ## Forms & Validation
 
-Fluxy v0.1.3 introduces a reactive form system driven by `FluxField`.
+Fluxy v0.1.4 features a complete reactive form system. For a detailed guide on validation rules and smart UX features, see the [Forms & Inputs](/docs/forms-inputs) page.
 
-### Reactive Fields
-
-Define fields with fluent validation rules directly on the signal.
+### Quick Example
 
 ```dart
 // Define fields with rules
@@ -309,10 +322,9 @@ Fx.form(
 
 ## Feedback & Overlays
 
-Fluxy includes responsive feedback mechanisms that adapt to the device form factor.
+Fluxy includes responsive feedback mechanisms that adapt to the device form factor. For v0.1.4, we recommend using the new **Context-Free** API.
 
-- **`Fx.snack(context, "Message")`**: Shows a responsive snackbar/toast (floating on desktop).
-- **`Fx.modal(context, child)`**: Opens a responsive modal (dialog on desktop, bottom sheet on mobile).
+See the full [Feedback & Overlays](/docs/feedback-overlays) documentation for details on `Fx.toast`, `Fx.loader`, and `Fx.dialog`.
 
 ## Usage in DSL
 
@@ -320,7 +332,6 @@ All premium widgets are also available via the `Fx` namespace for a consistent d
 
 ```dart
 Fx.avatar(image: "...")
-  .shadow.medium() // Proxy syntax
-  .border.blue500  // Proxy syntax
+  .shadow.md() // Proxy syntax
   .render();
 ```

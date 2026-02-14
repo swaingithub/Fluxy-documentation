@@ -1,0 +1,98 @@
+---
+title: Forms & Inputs
+description: Smart, reactive form handling with automatic validation and UX polish.
+---
+
+# Forms & Inputs
+
+Fluxy simplifies form management with the `Fx.form()` wrapper and reactive inputs. It focuses on a "Smart UX" philosophy — reducing boilerplate while providing professional features out of the box.
+
+## Fx.form()
+
+The `Fx.form()` widget wraps your input fields and provides high-level control over the form's lifecycle.
+
+### Smart UX Features
+- **Automatic Keyboard Dismissal**: Tapping anywhere outside an input field automatically hides the keyboard.
+- **Bulk Validation**: Use `formKey.currentState?.validate()` or the form signal's `.validate()` to trigger all internal input validations at once.
+
+```dart
+final loginForm = fluxForm({
+  "email": fluxField("").required().email(),
+  "pass": fluxField("").required().minLength(8),
+});
+
+Fx.form(
+  child: Fx.column().children([
+    Fx.input(
+      signal: loginForm["email"],
+      placeholder: "Email",
+    ),
+    Fx.password(
+      signal: loginForm["pass"],
+      placeholder: "Password",
+    ),
+    Fx.button("Submit", onTap: () {
+      if (loginForm.validate()) {
+        // Submit data
+      }
+    }),
+  ]),
+)
+```
+
+## Fx.input()
+
+The `Fx.input` widget is a reactive wrapper around Flutter's `TextField`, enhanced with Fluxy's DSL.
+
+### Configuration Properties
+
+| Property | Description |
+| :--- | :--- |
+| `signal` | The `FluxField` signal for two-way binding and validation. |
+| `inputFormatters` | Custom formatters (e.g., FilteringTextInputFormatter). |
+| `focusNode` | Custom focus control. |
+| `keyboardType` | Specify the input type (email, phone, number, etc.). |
+| `onChanged` | Callback for manual transformations. |
+
+### Reactive Validation
+
+Validation rules are defined directly on the signal using fluent methods:
+
+```dart
+final phone = fluxField("")
+  .required("Phone number is required")
+  .matches(r'^\d{10}$', "Invalid phone number");
+
+Fx.input(
+  signal: phone,
+  placeholder: "Enter Phone",
+  keyboardType: TextInputType.phone,
+)
+```
+
+## Smart Features Example
+
+```dart
+Fx.form(
+  child: Fx.column()
+    .gap(16)
+    .children([
+      Fx.text("Welcome").font.xl.bold().render(),
+      
+      Fx.input(
+        signal: email,
+        placeholder: "Email",
+        keyboardType: TextInputType.emailAddress,
+      ),
+      
+      Fx.button("Continue")
+        .fullWidth()
+        .onTap(() {
+          if (loginForm.validate()) {
+            Fx.toast.success("Logging in...");
+          }
+        }),
+    ])
+    .p(24)
+)
+```

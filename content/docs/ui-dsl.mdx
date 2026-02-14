@@ -20,15 +20,15 @@ Fx.box()
   .render();
 ```
 
-## Proxy-based DSL (New in 0.1.2)
+## Proxy-based DSL (New in 0.1.4)
 
-Fluxy 0.1.2 introduces a more expressive **Proxy-based DSL** that allows you to access style properties as fields rather than methods for common tokens. This results in even cleaner, more readable code.
+Fluxy v0.1.4 introduces a more expressive **Proxy-based DSL** that allows you to access style properties as fields rather than methods for common tokens. This results in even cleaner, more readable code.
 
 ```dart
 Fx.text("Hello Fluxy")
-  .weight.bold      // Proxy syntax for weight
+  .font.lg.bold()      // New Property Proxies
   .color.blue500    // Proxy syntax for color
-  .textLg()         // Semantic sizing
+  .shadow.md()      // Shadow proxy
   .mt(8);           // Traditional shorthand still available
 ```
 
@@ -113,26 +113,15 @@ Fx.column()
   .render();
 ```
 
-### Fluent Flex Modifiers (New in 0.1.3)
+### Fluent Flex Modifiers (New in 0.1.4)
 
 Fluxy now provides comprehensive flex layout modifiers to control alignments and spacing fluently, just like in Tailwind CSS. You can use these modifiers on any `Fx.row`, `Fx.col`, or even a generic `Fx.box`.
 
-#### Alignment (Main Axis)
-- `.justifyStart()`
-- `.justifyCenter()`
-- `.justifyEnd()`
-- `.justifyBetween()`
-- `.justifyAround()`
-- `.justifyEvenly()`
-- `.justify(MainAxisAlignment.value)` (Generic)
-
-#### Alignment (Cross Axis)
-- `.itemsStart()`
-- `.itemsCenter()`
-- `.itemsEnd()`
-- `.itemsStretch()`
-- `.itemsBaseline()`
-- `.items(CrossAxisAlignment.value)` (Generic)
+#### Alignment & Justification
+- `.justifyStart()`, `.justifyCenter()`, `.justifyEnd()`
+- `.justifyBetween()`, `.justifyAround()`, `.justifyEvenly()`
+- `.itemsStart()`, `.itemsCenter()`, `.itemsEnd()`, `.itemsStretch()`
+- **New Shortcut**: `.alignCenter()` (Centers both axes)
 
 #### Spacing
 - `.gap(double)`: Adds equal spacing between all children.
@@ -183,6 +172,25 @@ Fx.box()
     Fx.text("Left Item"),
     Fx.text("Right Item"),
   ])
+  .render();
+```
+
+## Context Extensions
+
+Fluxy v0.1.4 extends `BuildContext` with helpful properties to reduce boilerplate when accessing theme and screen information.
+
+- `context.theme`: Access the current `ThemeData`.
+- `context.colors`: Shortcut to `Theme.of(context).colorScheme`.
+- `context.isDark`: Boolean check for dark mode.
+- `context.screenSize`: Access `MediaQuery.of(context).size`.
+
+```dart
+Fx.box()
+  .bg(context.colors.primary)
+  .w(context.screenSize.width * 0.8)
+  .child(
+    Fx.text(context.isDark ? "Dark Side" : "Light Side").render()
+  )
   .render();
 ```
 

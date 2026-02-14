@@ -1,0 +1,63 @@
+---
+title: Networking
+description: Zero-boilerplate data fetching with Managed State.
+---
+
+# Networking
+
+Fluxy v0.1.4 introduces a streamlined networking layer via `Fx.fetch<T>()`. This utility combines HTTP requests with Fluxy's reactivity, providing automatic state management (loading, data, error) for your endpoints.
+
+## Fx.fetch<T>()
+
+The `Fx.fetch` method returns an `AsyncSignal<T>`, which you can consume directly in your UI for a completely reactive experience.
+
+### Basic Usage
+
+```dart
+final userPosts = Fx.fetch<List<Post>>(
+  "https://api.example.com/posts",
+  onSuccess: (data) => print("Fetched ${data.length} posts"),
+);
+```
+
+### Advanced Configuration
+
+`Fx.fetch` provides built-in support for common networking patterns like retries, debouncing, and timeouts.
+
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `retries` | `int` | Number of times to retry the request on failure. |
+| `retryDelay` | `Duration` | Wait time between retries. |
+| `debounce` | `Duration` | Prevent rapid consecutive calls (useful for search). |
+| `timeout` | `Duration` | Max time to wait for a response. |
+| `headers` | `Map` | Custom HTTP headers. |
+
+```dart
+final searchResult = Fx.fetch<User>(
+  "https://api.example.com/user/1",
+  retries: 3,
+  retryDelay: 2.seconds,
+  debounce: 500.ms,
+  timeout: 10.seconds,
+);
+```
+
+## Consuming Data in the UI
+
+Since `Fx.fetch` returns an `AsyncSignal`, you can use the `.on()` method to elegantly handle different loading states in your widgets.
+
+```dart
+Fx(() => userPosts.on(
+  loading: () => Fx.loader().render(),
+  error: (err) => Fx.text("Error: $err").color.red500.render(),
+  data: (posts) => Fx.column()
+    .children(
+      posts.map((p) => Fx.text(p.title).p(8)).toList()
+    )
+    .render(),
+))
+```
+
+## Managed State Pattern
+
+Fluxy's networking follows the **Managed State** pattern. You don't need to manually create `isLoading` or `error` variables. The signal itself tracks these states, allowing you to focus on the UI and business logic while Fluxy handles the lifecycle of the request.

@@ -15,6 +15,16 @@ export default function Layout({ children }: { children: ReactNode }) {
           </div>
         ),
       }}
+      links={[
+        {
+          text: 'GitHub',
+          url: 'https://github.com/swaingithub/fluxy',
+          active: 'nested-url',
+        },
+      ]}
+      searchToggle={{
+        enabled: true,
+      }}
     >
       {children}
     </DocsLayout>

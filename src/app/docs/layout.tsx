@@ -11,7 +11,7 @@ export default function Layout({ children }: { children: ReactNode }) {
         title: (
           <div className="flex items-center gap-2 font-bold">
             <FluxyLogo className="size-6" />
-            <span>Fluxy</span>
+            <span className="text-foreground">Fluxy</span>
           </div>
         ),
       }}

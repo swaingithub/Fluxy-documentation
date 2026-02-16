@@ -1,0 +1,91 @@
+# 🏗️ Section 2: Layout & Alignment
+
+**Declarative. Explicit. Zero Math.**
+
+Fluxy's layout system eliminates the need for manual `Spacer` or `SizedBox` management by treating **Spacing as a property of the container**.
+
+---
+
+## 🌪️ Fx.row & Fx.col (Flexbox Mastery)
+
+Distribute space and align items with named semantic parameters.
+
+### ⚡ Side-by-Side Comparison
+
+| Standard Flutter (Manual Spacing) | Fluxy DSL (Intelligent Gap) |
+| :--- | :--- |
+| ```dart
+Row(
+  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  children: [
+    Icon(Icons.star),
+    SizedBox(width: 8),
+    Text("Rating"),
+    SizedBox(width: 8),
+    Icon(Icons.chevron_right),
+  ],
+)
+``` | ```dart
+Fx.row(
+  justify: MainAxisAlignment.spaceBetween,
+  gap: 8,
+  children: [
+    Icon(Icons.star),
+    Fx.text("Rating"),
+    Icon(Icons.chevron_right),
+  ],
+)
+``` |
+
+---
+
+## 🕸️ Fx.grid (The Layout Workhorse)
+
+The Grid API handles all the aspect ratio and column math for you.
+
+### ⚡ Side-by-Side Comparison
+
+| Standard Flutter | Fluxy DSL |
+| :--- | :--- |
+| ```dart
+GridView.count(
+  crossAxisCount: 2,
+  mainAxisSpacing: 16,
+  crossAxisSpacing: 16,
+  childAspectRatio: 0.8,
+  children: [ ... ],
+)
+``` | ```dart
+Fx.grid(
+  columns: 2,
+  gap: 16,
+  childAspectRatio: 0.8,
+  children: [ ... ],
+)
+``` |
+
+---
+
+## 🛠️ Layout Intelligence (Structural Recursion)
+
+Fluxy handles `ParentData` automatically, preventing common layout crashes.
+
+### ⚡ Side-by-Side Comparison
+
+| Standard Flutter (Explicit Wrapping) | Fluxy DSL (Late Binding) |
+| :--- | :--- |
+| ```dart
+Row(
+  children: [
+    Text("Title"),
+    Expanded(
+      child: Container(color: Colors.red),
+    ),
+  ],
+)
+``` | ```dart
+Fx.row().children([
+  Fx.text("Title"),
+  Fx.box().bg(Colors.red).expanded(),
+])
+``` |

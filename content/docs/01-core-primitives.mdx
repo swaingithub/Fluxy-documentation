@@ -1,0 +1,92 @@
+# 📦 Section 1: Core Primitives
+
+**The Foundation of Atomic Styling.**
+
+Fluxy redefines the basic building blocks of Flutter. Instead of deeply nested widget trees, Fluxy uses a **Flat Architecture** where every visual property is a chainable modifier.
+
+---
+
+## 💎 Fx.box (The Universal Container)
+
+The `Fx.box` replaces `Container`, `DecoratedBox`, `Padding`, `GestureDetector`, and `SizedBox`.
+
+### ⚡ Side-by-Side Comparison
+
+| Standard Flutter (The "Wrapper" Way) | Fluxy DSL (The "Atomic" Way) |
+| :--- | :--- |
+| ```dart
+GestureDetector(
+  onTap: () => print("Tap"),
+  child: Container(
+    width: 200, height: 200,
+    padding: EdgeInsets.all(16),
+    decoration: BoxDecoration(
+      color: Colors.blue,
+      borderRadius: BorderRadius.circular(20),
+      boxShadow: [BoxShadow(blurRadius: 10)],
+    ),
+    child: Text("Hello"),
+  ),
+)
+``` | ```dart
+Fx.box()
+  .size(200, 200)
+  .p(16)
+  .bg(Colors.blue)
+  .rounded(20)
+  .shadow.md
+  .onTap(() => print("Tap"))
+  .child(Fx.text("Hello"))
+``` |
+
+---
+
+## 💎 Fx.text (Reactive Typography)
+
+`Fx.text` isn't just a label; it's a reactive engine that can switch values instantly based on `Signal` updates.
+
+### ⚡ Side-by-Side Comparison
+
+| Standard Flutter | Fluxy DSL |
+| :--- | :--- |
+| ```dart
+Text(
+  "Premium Design",
+  style: TextStyle(
+    fontSize: 24,
+    fontWeight: FontWeight.bold,
+    color: Colors.indigo,
+    letterSpacing: 1.2,
+  ),
+)
+``` | ```dart
+Fx.text("Premium Design")
+  .font.xl()
+  .bold()
+  .color(Colors.indigo)
+  .spacing(1.2)
+``` |
+
+---
+
+## 💎 Fx.list (Performant Collections)
+
+Handling large datasets with built-in spacing and lazy loading.
+
+### ⚡ Side-by-Side Comparison
+
+| Standard Flutter | Fluxy DSL |
+| :--- | :--- |
+| ```dart
+ListView.separated(
+  itemCount: items.length,
+  separatorBuilder: (c, i) => SizedBox(height: 12),
+  itemBuilder: (c, i) => Card(child: Text(items[i])),
+)
+``` | ```dart
+Fx.list(
+  itemCount: items.length,
+  gap: 12,
+  itemBuilder: (c, i) => MyCard(items[i]),
+)
+``` |

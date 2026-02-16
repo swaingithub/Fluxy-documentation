@@ -24,6 +24,23 @@ final routes = [
 ];
 ```
 
+## Integrated Controllers (New in v0.1.11)
+
+`FxRoute` can now manage the lifecycle of your logic layer. By providing a `controller` factory, the framework will automatically:
+1. **Instantiate** the controller when the route is reached.
+2. **Register** it in the global DI container (`FluxyDI.put`).
+3. **Dispose/Remove** it once the route is removed from the navigation stack.
+
+```dart
+FxRoute(
+  path: "/user/:id",
+  builder: (p, a) => UserView(),
+  controller: (context) => UserController(), // Auto-managed lifecycle
+)
+```
+
+This ensures that your business logic is only in memory while the user is on that specific page, eliminating manual boilerplate.
+
 ### Transition Modes
 Fluxy supports various built-in transitions via `FxTransition`:
 - `FxTransition.native`: Default platform transition.

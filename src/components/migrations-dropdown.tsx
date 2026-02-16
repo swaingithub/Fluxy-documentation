@@ -8,9 +8,10 @@ import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const migrations = [
-  { version: 'v0.1.9', href: '/docs/migration/migration-0-1-9', description: 'Latest stable - Fluxy State System' },
-  { version: 'v0.1.8', href: '/docs/migration/migration-0-1-8', description: 'Latest stable - Fluxy State System' },
-  { version: 'v0.1.7', href: '/docs/migration/migration-0-1-7', description: 'Previous stable' },
+  { version: 'v0.1.11', href: '/docs/migration/migration-0-1-11', description: 'Latest - Routing & DI stabilization' },
+  { version: 'v0.1.9', href: '/docs/migration/migration-0-1-9', description: 'Application Platform' },
+  { version: 'v0.1.8', href: '/docs/migration/migration-0-1-8', description: 'Fluxy State System' },
+  { version: 'v0.1.7', href: '/docs/migration/migration-0-1-7', description: 'Visual FX update' },
   { version: 'v0.1.6', href: '/docs/migration/migration-0-1-6', description: 'Stability release' },
   { href: '/docs/migration/#', description: 'Migration Guides' },
 ];

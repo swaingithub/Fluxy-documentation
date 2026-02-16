@@ -36,7 +36,7 @@ export default function LandingPage() {
               Fluxy
             </span>
             <div className="px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-[10px] font-bold tracking-widest text-white/40 ml-2">
-              v0.1.9
+              v0.1.11
             </div>
           </div>
           <div className="hidden lg:flex items-center gap-10 text-sm font-bold tracking-wide text-white/50">
@@ -70,7 +70,7 @@ export default function LandingPage() {
               <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full glass mb-10 animate-fade-in">
                 <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                 <span className="text-[10px] font-black tracking-[0.3em] uppercase text-emerald-500/80">
-                  New v0.1.9: The Application Platform
+                  New v0.1.11: Routing & DI Stabilization
                 </span>
               </div>
 

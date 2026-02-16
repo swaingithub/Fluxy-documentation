@@ -67,6 +67,17 @@ Fx(() => heavyResult.when(
 
 **Perfect for**: Searching large lists, parsing complex JSON, image processing.
 
+### 2.5 `fluxIsolate` (Task Isolation)
+
+A high-level wrapper for executing one-off heavy tasks in a separate isolate without setting up a continuous worker.
+
+```dart
+final result = await fluxIsolate(() {
+  // Expensive synchronous computation
+  return crunchNumbers(data);
+});
+```
+
 ### 3. `FluxyLocalMixin` (Auto-Cleaning State)
 
 Prevents memory leaks by making state "local" to a widget with automatic cleanup.

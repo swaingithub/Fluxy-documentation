@@ -39,9 +39,10 @@ Fluxy v0.1.6 continues to refine the **Proxy-based DSL**, allowing you to access
 
 ```dart
 Fx.text("Hello Fluxy")
-  .font.lg.bold      // Property Proxies are now getters
-  .color(Colors.blue) // Use color method
-  .shadow.md          // Shadow proxy getter
+  .font.lg().bold      // Sizes are now methods (New in 0.1.10)
+  .color(Colors.blue)  
+  .italic()            // New text modifier
+  .letterSpacing(2)    // New text modifier
   .mt(8);
 ```
 
@@ -103,12 +104,13 @@ Fx.box()
   .onHover((s) => s.bg(Colors.blueAccent).scale(1.1))
   ;
 
-// Pulse Effect
+// Custom Typography
 Fx.text("Flash Sale!")
-  .bold
+  .font.xl6().bold // Methods for sizes xl4-xl6
+  .italic()
   .scale(1.2)
   .animate(duration: 800.ms)
-  .loop() // Repeats forever
+  .loop() 
   ;
 ```
 

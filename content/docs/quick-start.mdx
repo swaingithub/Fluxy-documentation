@@ -31,21 +31,35 @@ Run your application using the optimized Fluxy dev runner for a better developer
 fluxy run
 ```
 
-## Your First Widget
+## Quick Feature Generation
 
-Replace your `main.dart` with this minimal Fluxy application. `FluxyApp` handles your routing and theme engine automatically.
+Instead of writing everything from scratch, use **Fluxy Blueprints** to generate complete, working features:
+
+```bash
+# Generate a complete login feature
+fluxy g auth login
+```
+
+## Your First App
+
+A professional Fluxy application requires initialization. Here is a minimal `main.dart` setup:
 
 ```dart
+import 'package:flutter/material.dart';
 import 'package:fluxy/fluxy.dart';
 
-void main() {
+void main() async {
+  // 1. Setup core engine
+  WidgetsFlutterBinding.ensureInitialized();
+  await Fluxy.init();
+  
   runApp(
     FluxyApp(
       title: "Hello Fluxy",
       initialRoute: FxRoute(
         path: "/",
         builder: (context, args) => Fx.center(
-          child: Fx.text("Hello World").font.xxl.bold,
+          child: Fx.text("Hello World").font.xxl.bold.blue600,
         ),
       ),
     ),

@@ -73,14 +73,20 @@ Fluxy is designed to be flexible. You can use full descriptive names or rapid-fi
 - **Modern Colors**: Always use `.withValues(alpha: 0.x)` for transparency (modern API).
 
 ```dart
+### Atomic Borders (New in 0.1.9)
+Fluxy 0.1.9 introduces precise control over individual borders within the style chain.
+- `.borderTop()`, `.borderBottom()`, `.borderLeft()`, `.borderRight()`
+- Supports `width`, `color`, and `style`.
+
+```dart
 Fx.box()
   .square(100)
-  .bg(Colors.red.withValues(alpha: 0.5))
-  .rounded(FxTokens.radius.md)
+  .borderTop(width: 2, color: Colors.blue)
+  .borderBottom(width: 1, color: Colors.grey)
   ;
 ```
 
-## Interactions & Animations
+### Interactions & Animations
 
 Fluxy makes it easy to add dynamic interactions and smooth transitions directly in the style chain:
 

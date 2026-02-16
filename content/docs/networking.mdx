@@ -1,62 +1,110 @@
 ---
-title: Networking
-description: Zero-boilerplate data fetching with Managed State.
+title: Fluxy Networking
+description: High-performance native HTTP engine with global interceptors and auto-serialization.
 ---
 
-# Networking
+# Fluxy Networking (`FluxyHttp`)
 
-Fluxy v0.1.4 introduces a streamlined networking layer via `Fx.fetch<T>()`. This utility combines HTTP requests with Fluxy's reactivity, providing automatic state management (loading, data, error) for your endpoints.
+Fluxy v0.1.9 introduces **FluxyHttp**, a high-performance, zero-dependency networking engine built directly on `dart:io`. It replaces the legacy `Fx.fetch` with a more robust, professional-grade infrastructure that eliminates external dependencies while providing a 100% reactive experience.
 
-## `Fx.fetch<T>()`
+## Core Features
 
-The `Fx.fetch` method returns an `AsyncSignal<T>`, which you can consume directly in your UI for a completely reactive experience.
+- **Zero-Dependency**: No `dio` or `http` required. Built on native `dart:io`.
+- **Auto-Orchestration**: Seamless integration with `Fluxy.http` and `Fx.http` for global API access.
+- **Global Interceptors**: Native support for request/response interceptors (perfect for Auth and Logging).
+- **Automatic JSON**: Requests and responses are automatically serialized/deserialized.
+- **Thread safe**: Optimized for background execution in `fluxWorker`.
 
-### Basic Usage
+## Basic Usage
+
+The engine is available globally via `Fluxy.http` or the shorthand `Fx.http`.
 
 ```dart
-final userPosts = Fx.fetch<List<Post>>(
-  "https://api.example.com/posts",
-  onSuccess: (data) => print("Fetched ${data.length} posts"),
-);
+// GET request (Returns dynamic Map or List)
+final user = await Fx.http.get('/users/1');
+
+// POST request with body
+final response = await Fx.http.post('/users', body: {
+  'name': 'John Doe',
+  'email': 'john@example.com'
+});
 ```
 
-### Advanced Configuration
+## Global Interceptors
 
-`Fx.fetch` provides built-in support for common networking patterns like retries, debouncing, and timeouts.
-
-| Parameter | Type | Description |
-| :--- | :--- | :--- |
-| `retries` | `int` | Number of times to retry the request on failure. |
-| `retryDelay` | `Duration` | Wait time between retries. |
-| `debounce` | `Duration` | Prevent rapid consecutive calls (useful for search). |
-| `timeout` | `Duration` | Max time to wait for a response. |
-| `headers` | `Map` | Custom HTTP headers. |
+Interceptors allow you to centralize logic like adding Authorization headers or logging.
 
 ```dart
-final searchResult = Fx.fetch<User>(
-  "https://api.example.com/user/1",
-  retries: 3,
-  retryDelay: 2.seconds,
-  debounce: 500.ms,
-  timeout: 10.seconds,
-);
+Fluxy.http.interceptors.add(FluxyInterceptor(
+  onRequest: (options) {
+    // Add Auth Token
+    options.headers['Authorization'] = 'Bearer $token';
+    return options; // Proceed with modified request
+  },
+  onResponse: (response) {
+    // Log response
+    print('Response: ${response.statusCode}');
+    return response;
+  },
+  onError: (error) {
+    if (error.statusCode == 401) {
+      // Handle unauthorized
+    }
+    return error;
+  }
+));
 ```
 
-## Consuming Data in the UI
+## Reactive Implementation
 
-Since `Fx.fetch` returns an `AsyncSignal`, you can use the `.on()` method to elegantly handle different loading states in your widgets.
+Combine `FluxyHttp` with `AsyncFlux` for a completely managed UI state.
 
 ```dart
-Fx(() => userPosts.on(
+// Define an async flux that fetches data
+final userFlux = fluxAsync(() => Fx.http.get('/profile'));
+
+// Connect to UI
+Fx(() => userFlux.when(
   loading: () => Fx.loader(),
-  error: (err) => Fx.text("Error: $err").color(Colors.red),
-  data: (posts) => Fx.column()
-    .children(
-      posts.map((p) => Fx.text(p.title).p(8)).toList()
-    ),
+  data: (user) => Fx.text("Welcome, ${user['name']}"),
+  error: (e) => Fx.text("Error: $e"),
 ))
 ```
 
-## Managed State Pattern
+## Instance-Based Access
 
-Fluxy's networking follows the **Managed State** pattern. You don't need to manually create `isLoading` or `error` variables. The signal itself tracks these states, allowing you to focus on the UI and business logic while Fluxy handles the lifecycle of the request.
+For testing or multi-base-URL support, you can create isolated instances.
+
+```dart
+final github = FluxyHttp(
+  baseUrl: 'https://api.github.com',
+  headers: {'Accept': 'application/vnd.github.v3+json'},
+);
+
+final repo = await github.get('/repos/swaingithub/fluxy');
+```
+
+## Advanced Logic
+
+`FluxyHttp` is designed to work with `FluxController` and reactive workers.
+
+```dart
+class SearchController extends FluxController {
+  final query = flux("");
+  
+  // debounced search
+  late final searchResults = fluxAsync(() async {
+    if (query.value.isEmpty) return [];
+    return await Fx.http.get('/search', query: {'q': query.value});
+  }, debounce: 500.ms);
+}
+```
+
+## Streaming API
+
+For large responses or real-time data:
+
+```dart
+final stream = Fx.http.stream('/events');
+stream.listen((chunk) => print('Received data chunk'));
+```

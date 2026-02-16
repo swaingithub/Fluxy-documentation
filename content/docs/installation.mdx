@@ -5,21 +5,37 @@ description: Learn how to set up Fluxy in your Flutter project.
 
 # Installation
 
-Getting started with Fluxy is simple. You can add it to your project via `pub.dev`.
+Fluxy is composed of two main parts: the **CLI** for orchestration and the **Framework** for building.
 
-## Add Dependency
+## 1. Install Fluxy CLI
 
-Add `fluxy` to your `pubspec.yaml` file:
+The Fluxy CLI handles project scaffolding, feature generation (Blueprints), and local OTA testing.
 
-```yaml
-dependencies:
-  fluxy: ^0.1.7
+```bash
+dart pub global activate fluxy
 ```
 
-Or run the following command in your terminal:
+## 2. Initialize a New Project
+
+If you are starting from scratch, use the CLI to scaffold a complete Fluxy architecture:
+
+```bash
+fluxy init my_awesome_app
+```
+
+## 3. Add Framework to Existing Project
+
+If you already have a Flutter project, add the Fluxy framework via `pub.dev`.
 
 ```bash
 flutter pub add fluxy
+```
+
+Alternatively, add it manually to your `pubspec.yaml`:
+
+```yaml
+dependencies:
+  fluxy: ^0.1.9
 ```
 
 ## Basic Setup
@@ -30,12 +46,31 @@ Import Fluxy in your Dart file:
 import 'package:fluxy/fluxy.dart';
 ```
 
-## Wrapping your App
+## Global Initialization
 
-For global state and context-aware features, it's recommended to wrap your app with `FluxyRoot`:
+Starting from v0.1.8, you must initialize the Fluxy engine at the start of your `main()` function. This handles framework setup, state hydration, and networking orchestration.
 
 ```dart
-void main() {
+void main() async {
+  // 1. Ensure Flutter is initialized
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // 2. Initialize Fluxy Engine
+  await Fluxy.init(); 
+  
+  runApp(const MyApp());
+}
+```
+
+## Wrapping your App (Optional)
+
+While `Fluxy.init()` handles the core engine, wrapping your app with `FluxyRoot` provides additional context-aware features like global overlays and theme management:
+
+```dart
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Fluxy.init();
+  
   runApp(
     FluxyRoot(
       child: MyApp(),

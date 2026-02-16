@@ -1,29 +1,50 @@
 ---
 title: One Engine. Infinite Possibilities.
-description: Fluxy is a "Full-Stack" Flutter platform (v0.1.8) that unifies the Fluxy State System, an atomic styling DSL, and cloud-based CI/CD.
+description: Fluxy is a "Full-Stack" Flutter platform (v0.1.9) that unifies high-performance networking, architectural authority, and reactive state management.
 ---
 
-# Fluxy v0.1.8
+# Fluxy v0.1.9
 **One Engine. Infinite Possibilities.**
 
-Fluxy is a "Full-Stack" Flutter platform designed to modernize mobile and web development. It unifies the **Fluxy State System** with enterprise-grade reactivity, an Atomic Styling DSL (Fluent interface), and Cloud-based CI/CD into a single, cohesive engine.
+<div className="grid grid-cols-1 md:grid-cols-3 gap-4 my-6">
+  <div>
+    <h4 className="text-sm font-bold mb-2 uppercase tracking-widest text-muted-foreground">1. Install CLI</h4>
+    ```bash
+    dart pub global activate fluxy
+    ```
+  </div>
+  <div>
+    <h4 className="text-sm font-bold mb-2 uppercase tracking-widest text-muted-foreground">2. New Project</h4>
+    ```bash
+    fluxy init my_awesome_app
+    ```
+  </div>
+  <div>
+    <h4 className="text-sm font-bold mb-2 uppercase tracking-widest text-muted-foreground">3. Existing Project</h4>
+    ```bash
+    flutter pub add fluxy
+    ```
+  </div>
+</div>
+
+Fluxy is a "Full-Stack" Flutter platform designed to modernize mobile and web development. It unifies high-performance **Native Networking**, **Architectural Authority**, and the **Fluxy State System** into a single, cohesive engine for building enterprise-grade applications at scale.
 
 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-8">
   <div className="p-4 border rounded-lg bg-card text-card-foreground">
+    <h3 className="text-xl font-bold mb-2">Native Networking (FluxyHttp)</h3>
+    <p>Zero-dependency HTTP engine built on dart:io. Global interceptors, automatic JSON serialization, and auto-orchestration.</p>
+  </div>
+  <div className="p-4 border rounded-lg bg-card text-card-foreground">
+    <h3 className="text-xl font-bold mb-2">Architectural Authority</h3>
+    <p>Standardized patterns with FluxController (lifecycle hooks), FluxRepository (offline-first), and Fluxy Blueprints for scalable apps.</p>
+  </div>
+  <div className="p-4 border rounded-lg bg-card text-card-foreground">
     <h3 className="text-xl font-bold mb-2">Fluxy State System</h3>
-    <p>Enterprise-grade reactive state management with fluxSelector, fluxWorker, and automatic state hydration. Zero jank, infinite scalability.</p>
+    <p>Enterprise-grade reactive state with fluxSelector, fluxWorker, and automatic hydration. Zero jank, infinite scalability.</p>
   </div>
   <div className="p-4 border rounded-lg bg-card text-card-foreground">
-    <h3 className="text-xl font-bold mb-2">Atomic Styling DSL</h3>
-    <p>Chainable modifiers for any widget. Shorthand syntax like `.px(16).py(8).bg.blue500` for lightning-fast UI construction.</p>
-  </div>
-  <div className="p-4 border rounded-lg bg-card text-card-foreground">
-    <h3 className="text-xl font-bold mb-2">Premium Widget Suite</h3>
-    <p>High-quality components like `FxTable`, `FxGrid`, `FxForm`, and physics-based `FxBottomBar`.</p>
-  </div>
-  <div className="p-4 border rounded-lg bg-card text-card-foreground">
-    <h3 className="text-xl font-bold mb-2">OTA & SDUI</h3>
-    <p>Render remote JSON manifests via `FxRemoteView`. Update your app instantly with Over-The-Air capabilities.</p>
+    <h3 className="text-xl font-bold mb-2">CLI Intelligence</h3>
+    <p>Generate complete features with `fluxy g`, run local OTA servers with `fluxy serve`, and enforce project structure.</p>
   </div>
 </div>
 
@@ -31,7 +52,16 @@ Fluxy is a "Full-Stack" Flutter platform designed to modernize mobile and web de
 
 Fluxy isn't just a state management library; it's an **all-in-one Flutter ecosystem**. 
 
-Traditional Flutter development often requires stitching together multiple packages: one for state, one for navigation, and one for styling. Fluxy provides all of these as first-class citizens, integrated into a single **Reactive Engine** that minimizes boilerplate and maximizes flow.
+Traditional Flutter development often requires stitching together multiple packages: one for state, one for networking, and one for styling. Fluxy provides all of these as first-class citizens, integrated into a single **Reactive Engine** that minimizes boilerplate and maximizes flow.
+
+### v0.1.9 Highlights - The Application Platform
+
+- **FluxyHttp**: A high-performance, zero-dependency networking engine with global interceptors.
+- **Architectural Scaffolding**: Formalized `FluxController` with `onInit`, `onReady`, and `onDispose` hooks.
+- **Fluxy Blueprints**: CLI-driven generation of complete working features like `login` and `feed`.
+- **Local OTA Server**: Test Over-The-Air updates instantly with the new `fluxy serve` command.
+- **Project Structure Authority**: Enforced `core/features` directory convention for scalable apps.
+- **Background Isolates**: Enhanced `fluxIsolate` and `fluxWorker` for heavy thread management.
 
 ### v0.1.8 Highlights - The Fluxy State System
 

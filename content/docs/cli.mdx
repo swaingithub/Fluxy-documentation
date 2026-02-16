@@ -41,6 +41,14 @@ Checks your environment for Flutter and Fluxy compatibility and reports potentia
 fluxy doctor
 ```
 
+### `fluxy serve`
+
+Launches a local Over-The-Air (OTA) server for instant development and testing of remote manifests. This allows you to test SDUI (Server-Driven UI) changes locally before deploying.
+
+```bash
+fluxy serve
+```
+
 ## Cloud Integration
 
 Fluxy CLI provides built-in tools for CI/CD and cloud-based build systems.
@@ -61,23 +69,35 @@ Sets up and executes automated deployment pipelines to TestFlight (iOS) and Goog
 fluxy cloud deploy
 ```
 
-## Generators
+## Generators & Blueprints
 
 Generate components and boilerplate quickly to maintain project consistency.
 
-### `fluxy gen:page <Name>`
+### `fluxy g <name> <type>` (Blueprints)
+
+Generates complete, working feature solutions based on official **Blueprints**. Currently supports professional scaffolding for common features.
+
+```bash
+# Generate a complete login feature
+fluxy g auth login
+
+# Generate a social feed feature
+fluxy g social feed
+```
+
+### `fluxy g:page <Name>`
 
 Generates a new View, Controller, and Route entry.
 
 ```bash
-fluxy gen:page Home
+fluxy g:page Home
 ```
 
-### `fluxy gen:controller <Name>`
+### `fluxy g:controller <Name>`
 
 Generates a standalone reactive controller for global or modular state.
 
 ```bash
-fluxy gen:controller Auth
+fluxy g:controller Auth
 ```
 

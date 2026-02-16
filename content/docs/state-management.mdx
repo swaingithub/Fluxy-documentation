@@ -243,18 +243,51 @@ final settings = use<SettingsController>();
 
 ### Controllers with Lifecycle
 
+`FluxController` provides native lifecycle hooks that are automatically managed by the Fluxy engine. This is where you should place your business logic.
+
 ```dart
-class UserController extends FluxyController {
-  final name = flux("Jane");
+class UserController extends FluxController {
+  final user = flux<User?>(null);
 
   @override
   void onInit() {
-    print("User Controller Ready");
+    // Called when the controller is first initialized.
+    // Perfect for setting up listeners or initial data fetching.
+    super.onInit();
+    print("User Controller Initialized");
   }
 
   @override
-  void onDispose() {
-    print("Cleaning up resources");
+  void onReady() {
+    // Called after the first frame is rendered.
+    // Safe to show snackbars, dialogs, or perform navigation.
+    super.onReady();
+  }
+
+  @override
+  void onClose() {
+    // Called when the controller is removed from memory.
+    // Use for cleaning up streams, timers, or manual resources.
+    super.onClose();
+  }
+}
+```
+
+## Architectural Scaffolding
+
+Fluxy v0.1.9 introduces **Blueprints** and the **FluxRepository** pattern to standardize enterprise application development.
+
+### `FluxRepository`
+
+Standardized data layer that handles offline-first orchestration.
+
+```dart
+class AuthRepository extends FluxRepository {
+  late final session = flux(null, persistKey: 'user_session');
+
+  Future<void> login(String email, String password) async {
+    final data = await Fx.http.post('/auth/login', body: {'email': email, 'password': password});
+    session.value = data;
   }
 }
 ```

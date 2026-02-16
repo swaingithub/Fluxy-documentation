@@ -1,0 +1,122 @@
+---
+title: Migration Guide v0.1.9
+description: How to migrate to the Fluxy Application Platform in v0.1.9.
+---
+
+# Migration Guide v0.1.9
+
+Fluxy v0.1.9 marks the transition from a library to an **Application Platform**. This release introduces a native networking engine, formalized architectural patterns, and enhanced CLI intelligence.
+
+## What Changed?
+
+### 1. High-Performance Networking (`FluxyHttp`)
+Fluxy now includes a zero-dependency HTTP engine built directly on `dart:io`.
+- No more dependency on `dio` or `http` packages.
+- Native support for global and instance-level interceptors.
+- Automatic JSON serialization/deserialization.
+
+### 2. Architectural Authority
+Standardized base classes for application layers:
+- `FluxController`: Native lifecycle hooks (`onInit`, `onReady`, `onDispose`).
+- `FluxRepository`: Structured offline-first data orchestration.
+- `FxRoute`: Automatic controller factory and disposal.
+
+### 3. CLI Intelligence
+New commands for rapid development:
+- `fluxy g <name> <type>`: Architectural scaffolding (Blueprints).
+- `fluxy serve`: Local OTA development server.
+
+## Recommended Migration Path
+
+### Step 1: Formalize Controllers
+If you were using raw classes for logic, migrate them to `FluxController` to benefit from native lifecycle hooks:
+
+```dart
+// Before
+class UserController {
+  void init() { ... }
+}
+
+// After
+class UserController extends FluxController {
+  @override
+  void onInit() {
+    // Called when controller is created
+    super.onInit();
+  }
+  
+  @override
+  void onReady() {
+    // Called after the first frame
+  }
+}
+```
+
+### Step 2: Adopt Fluxy Networking
+Replace your existing networking logic with `Fluxy.http`:
+
+```dart
+// Before (using dio or http)
+final response = await dio.get('/user/1');
+
+// After (Native Fluxy)
+final user = await Fluxy.http.get('/user/1'); // Automatically parsed
+```
+
+Add global interceptors for Auth:
+
+```dart
+Fluxy.http.interceptors.add(FluxyInterceptor(
+  onRequest: (options) {
+    options.headers['Authorization'] = 'Bearer $token';
+    return options;
+  },
+));
+```
+
+### Step 3: Implement Repositories
+Move your data fetching and persistence logic into `FluxRepository`:
+
+```dart
+class ProductRepository extends FluxRepository {
+  late final products = flux([], persistKey: 'cached_products');
+
+  Future<void> sync() async {
+    final data = await Fluxy.http.get('/products');
+    products.value = data;
+  }
+}
+```
+
+### Step 4: Use Blueprints
+Instead of manually creating files, use the CLI to generate complete features:
+
+```bash
+fluxy g auth login
+```
+
+## New Styling DSL
+Added atomic border modifiers to `FxStyle`:
+
+```dart
+Fx.box()
+  .borderTop(width: 2, color: FxTokens.primary)
+  .borderBottom(width: 1, color: FxTokens.gray300)
+```
+
+## Performance & Threading
+Use the new `fluxIsolate` for heavy background tasks:
+
+```dart
+final result = await fluxIsolate(() => heavyComputation(data));
+```
+
+## Breaking Changes
+There are **no breaking changes** in v0.1.9. All v0.1.8 code is fully compatible.
+
+## Migration Checklist
+- [ ] Migrate logic classes to `FluxController`.
+- [ ] Update background tasks to use `fluxIsolate`.
+- [ ] (Optional) Replace `dio`/`http` with `FluxyHttp`.
+- [ ] (Optional) Move data orchestration to `FluxRepository`.
+- [ ] Check `lib/features` and `lib/core` directory structure.

@@ -29,6 +29,7 @@
     "i18n",
     "cli",
     "ota-engine",
+    "migration/index",
     "---Future---",
     "cloud-builds",
     "fluxy-play",

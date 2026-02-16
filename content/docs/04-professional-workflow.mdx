@@ -3,7 +3,7 @@ title: Professional Workflow
 description: A standardized order of operations for Fluxy development.
 ---
 
-# 🏁 Professional Workflow
+# Professional Workflow
 
 **Build Production UI in Record Time.**
 
@@ -11,7 +11,7 @@ Following a standardized order of operations ensures your Fluxy app remains main
 
 ---
 
-## 🛠️ Step 1: Define Reactive State (Logic First)
+## Step 1: Define Reactive State (Logic First)
 Start by defining your `Signals`. This decouples your business logic from the UI.
 
 ```dart
@@ -19,7 +19,7 @@ final count = flux(0);
 final isLoading = flux(false);
 ```
 
-## 🏗️ Step 2: Establish the Structural Shell
+## Step 2: Establish the Structural Shell
 Use `Fx.page` or `Fx.dashboard` to define the high-level layout of your screen.
 
 ```dart
@@ -29,7 +29,7 @@ Fx.dashboard(
 )
 ```
 
-## 🎨 Step 3: Atomic Component Assembly
+## Step 3: Atomic Component Assembly
 Build your UI using the Fluxy DSL. Focus on **Atomic Styling** rather than nesting.
 
 ```dart
@@ -39,7 +39,7 @@ Fx.col().children([
 ])
 ```
 
-## 📱 Step 4: Responsive Hardening
+## Step 4: Responsive Hardening
 Apply responsive modifiers where the layout needs to adapt to larger screens.
 
 ```dart
@@ -50,7 +50,7 @@ Fx.box()
 
 ---
 
-## ⚡ Comparison of Final UI Implementation
+## Workflow Comparison
 
 | Feature | Standard Flutter Workflow | Fluxy Professional Workflow |
 | :--- | :--- | :--- |
@@ -61,7 +61,7 @@ Fx.box()
 
 ---
 
-## 💎 The Fluxy Commitment
+## The Fluxy Commitment
 By following this order, you ensure that every screen is:
 1.  **Reactive by design.**
 2.  **Responsive by default.**

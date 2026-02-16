@@ -3,7 +3,7 @@ title: Advanced Shells
 description: Enterprise-grade layout distribution and navigation.
 ---
 
-# 🗺️ Advanced Shells
+# Advanced Shells
 
 **The Architecture of Enterprise Apps.**
 
@@ -11,15 +11,14 @@ Building professional dashboards and multi-level navigation is complex. Fluxy pr
 
 ---
 
-## 🏗️ Fx.dashboard (The Dashboard Shell)
+## Fx.dashboard (The Dashboard Shell)
 
 Automatically handles Sidebar, Top Navbar, and a scrolling Content Area with perfect responsive transitions.
 
-### ⚡ Side-by-Side Comparison
+### Comparison
 
-| Standard Flutter (Manual Layout) | Fluxy DSL (Architectural) |
-| :--- | :--- |
-| ```dart
+**Standard Flutter (Manual Layout)**
+```dart
 Row(
   children: [
     Sidebar(),
@@ -33,39 +32,44 @@ Row(
     ),
   ],
 )
-``` | ```dart
+```
+
+**Fluxy DSL (Architectural)**
+```dart
 Fx.dashboard(
   sidebar: MySidebar(),
   navbar: MyNavbar(),
   body: MainContent(),
   sidebarWidth: 280,
 )
-``` |
+```
 
 ---
 
-## 💎 Fx.avatar & Fx.badge (Micro-Components)
+## Fx.avatar & Fx.badge (Micro-Components)
 
 Consistency is key for professional apps. These atoms follow the global design system.
 
-### ⚡ Side-by-Side Comparison
+### Comparison
 
-| Standard Flutter | Fluxy DSL |
-| :--- | :--- |
-| ```dart
+**Standard Flutter**
+```dart
 CircleAvatar(
   backgroundImage: NetworkImage(url),
   radius: 24,
 )
-``` | ```dart
+```
+
+**Fluxy DSL**
+```dart
 Fx.avatar(image: url, size: FxAvatarSize.lg)
   .shadow.sm
   .onTap(() => profile())
-``` |
+```
 
 ---
 
-## 🌪️ Smart Navigation (`Fx.to`)
+## Smart Navigation (Fx.to)
 
 Fluxy includes a global routing proxy that removes the need for `Navigator.of(context)` everywhere.
 
@@ -80,7 +84,7 @@ Fx.back();
 
 ---
 
-## 🚧 Common "Gotchas" & Solutions
+## Common "Gotchas" & Solutions
 
 | Issue | Standard Flutter Pain | Fluxy Solution |
 | :--- | :--- | :--- |

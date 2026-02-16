@@ -31,6 +31,29 @@ Run your application using the optimized Fluxy dev runner for a better developer
 fluxy run
 ```
 
+## Your First Widget
+
+Replace your `main.dart` with this minimal Fluxy application. `FluxyApp` handles your routing and theme engine automatically.
+
+```dart
+import 'package:fluxy/fluxy.dart';
+
+void main() {
+  runApp(
+    FluxyApp(
+      title: "Hello Fluxy",
+      initialRoute: FxRoute(
+        path: "/",
+        builder: (context, args) => Fx.center(
+          child: Fx.text("Hello World").font.xxl.bold,
+        ),
+      ),
+    ),
+  );
+}
+```
+
+
 
 ## Next Steps
 

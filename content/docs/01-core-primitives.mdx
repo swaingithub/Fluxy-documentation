@@ -3,7 +3,7 @@ title: Core Primitives
 description: The foundation of Atomic Styling in Fluxy.
 ---
 
-# 📦 Core Primitives
+# Core Primitives
 
 **The Foundation of Atomic Styling.**
 
@@ -11,15 +11,14 @@ Fluxy redefines the basic building blocks of Flutter. Instead of deeply nested w
 
 ---
 
-## 💎 Fx.box (The Universal Container)
+## Fx.box (The Universal Container)
 
 The `Fx.box` replaces `Container`, `DecoratedBox`, `Padding`, `GestureDetector`, and `SizedBox`.
 
-### ⚡ Side-by-Side Comparison
+### Comparison
 
-| Standard Flutter (The "Wrapper" Way) | Fluxy DSL (The "Atomic" Way) |
-| :--- | :--- |
-| ```dart
+**Standard Flutter (The "Wrapper" Way)**
+```dart
 GestureDetector(
   onTap: () => print("Tap"),
   child: Container(
@@ -33,7 +32,10 @@ GestureDetector(
     child: Text("Hello"),
   ),
 )
-``` | ```dart
+```
+
+**Fluxy DSL (The "Atomic" Way)**
+```dart
 Fx.box()
   .size(200, 200)
   .p(16)
@@ -42,19 +44,18 @@ Fx.box()
   .shadow.md
   .onTap(() => print("Tap"))
   .child(Fx.text("Hello"))
-``` |
+```
 
 ---
 
-## 💎 Fx.text (Reactive Typography)
+## Fx.text (Reactive Typography)
 
 `Fx.text` isn't just a label; it's a reactive engine that can switch values instantly based on `Signal` updates.
 
-### ⚡ Side-by-Side Comparison
+### Comparison
 
-| Standard Flutter | Fluxy DSL |
-| :--- | :--- |
-| ```dart
+**Standard Flutter**
+```dart
 Text(
   "Premium Design",
   style: TextStyle(
@@ -64,34 +65,39 @@ Text(
     letterSpacing: 1.2,
   ),
 )
-``` | ```dart
+```
+
+**Fluxy DSL**
+```dart
 Fx.text("Premium Design")
   .font.xl()
   .bold()
   .color(Colors.indigo)
   .spacing(1.2)
-``` |
+```
 
 ---
 
-## 💎 Fx.list (Performant Collections)
+## Fx.list (Performant Collections)
 
 Handling large datasets with built-in spacing and lazy loading.
 
-### ⚡ Side-by-Side Comparison
+### ⚡ Comparison
 
-| Standard Flutter | Fluxy DSL |
-| :--- | :--- |
-| ```dart
+**Standard Flutter**
+```dart
 ListView.separated(
   itemCount: items.length,
   separatorBuilder: (c, i) => SizedBox(height: 12),
   itemBuilder: (c, i) => Card(child: Text(items[i])),
 )
-``` | ```dart
+```
+
+**Fluxy DSL**
+```dart
 Fx.list(
   itemCount: items.length,
   gap: 12,
   itemBuilder: (c, i) => MyCard(items[i]),
 )
-``` |
+```

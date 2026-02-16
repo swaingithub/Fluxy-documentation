@@ -3,7 +3,7 @@ title: Reactive Engine
 description: Deep dive into Signals, Effects, and Fluxy's reactivity.
 ---
 
-# 🧠 Reactive Engine
+# Reactive Engine
 
 **Zero-Boilerplate State. Atomic Rebuilds.**
 
@@ -11,15 +11,14 @@ Fluxy's Heart is the **Reactive Engine**. Unlike `Provider` or `Bloc` which ofte
 
 ---
 
-## ⚡ The Signal (`flux<T>`)
+## The Signal (`flux<T>`)
 
 A Signal is a reactive wrapper around any value. When the value changes, only the widgets observing that specific signal are updated.
 
-### ⚡ Side-by-Side Comparison
+### Comparison
 
-| Standard Flutter (State Management) | Fluxy Reactive Engine |
-| :--- | :--- |
-| ```dart
+**Standard Flutter (State Management)**
+```dart
 class MyState extends ChangeNotifier {
   int _count = 0;
   int get count => _count;
@@ -28,7 +27,10 @@ class MyState extends ChangeNotifier {
     notifyListeners(); // Rebuilds entire widget tree!
   }
 }
-``` | ```dart
+```
+
+**Fluxy Reactive Engine**
+```dart
 final count = flux(0); // Defined once
 
 // Rebuilds ONLY this text
@@ -36,36 +38,38 @@ Fx(() => Fx.text("Count: ${count.value}"))
 
 // Update value anywhere
 count.value++;
-``` |
+```
 
 ---
 
-## ⚡ Form Signals (`fluxField`)
+## Form Signals (`fluxField`)
 
 Specialized signals for inputs that handle validation and "touched" states automatically.
 
-### ⚡ Side-by-Side Comparison
+### Comparison
 
-| Standard Flutter | Fluxy DSL |
-| :--- | :--- |
-| ```dart
+**Standard Flutter**
+```dart
 String? error;
 String val = "";
 void validate(String s) {
   if (s.isEmpty) error = "Required";
   setState(() {});
 }
-``` | ```dart
+```
+
+**Fluxy DSL**
+```dart
 final name = fluxField("")
   .required("Min name")
   .minLength(3);
 
 // Error and state are managed internally
-``` |
+```
 
 ---
 
-## ⚡ Computed Signals (`computedFlux`)
+## Computed Signals (`computedFlux`)
 
 Derived state that automatically updates when its dependencies change.
 
@@ -79,7 +83,62 @@ final total = flux(() => price.value * (1 + tax.value));
 
 ---
 
-## 🚧 Common "Gotchas" & Solutions
+## Async Signals (`AsyncSignal`)
+
+Manage asynchronous tasks (API calls, Database queries) with built-in loading and error states.
+
+```dart
+final userSignal = AsyncSignal<User>(
+  config: AsyncConfig(
+    retries: 3,
+    debounce: 500.ms,
+    timeout: 10.sec,
+  ),
+);
+
+// Trigger fetch
+userSignal.fetch(() => api.getUser(id));
+
+// Reactive UI binding
+Fx(() => userSignal.on(
+  loading: () => Fx.loader.shimmer(),
+  error: (err) => Fx.text("Error: $err"),
+  data: (user) => Fx.text("Welcome, ${user.name}"),
+));
+```
+
+---
+
+## Advanced Conditionals (`Fx.cond`)
+
+Refined alternatives to ternary operators for complex UI branching.
+
+### Single Condition
+```dart
+Fx.cond(isLoggedIn, ProfilePage(), LoginPage())
+```
+
+### Multiple Cases
+```dart
+Fx.cond.multiple({
+  isLoading: Fx.loader.show(),
+  hasError: Fx.text("Error occurred"),
+  isGuest: Fx.button("Login"),
+}, fallback: WelcomeDashboard())
+```
+
+### Switcher
+```dart
+Fx.cond.switcher(currentView, {
+  View.home: HomeView(),
+  View.settings: SettingsView(),
+})
+```
+
+
+---
+
+## Common "Gotchas" & Solutions
 
 | Issue | Standard Flutter Pain | Fluxy Solution |
 | :--- | :--- | :--- |

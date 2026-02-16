@@ -19,13 +19,7 @@ export default function Layout({ children }: { children: ReactNode }) {
       sidebar={{
         banner: <MigrationsDropdown />,
       }}
-      links={[
-        {
-          text: 'GitHub',
-          url: 'https://github.com/swaingithub/fluxy',
-          active: 'nested-url',
-        },
-      ]}
+      links={[]}
       searchToggle={{
         enabled: true,
       }}

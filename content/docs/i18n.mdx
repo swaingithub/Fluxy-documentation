@@ -1,0 +1,81 @@
+---
+title: Internationalization (i18n)
+description: Multilingual support with reactive translations.
+---
+
+# Internationalization
+
+Fluxy features a built-in, reactive translation engine that allows you to change your app's language at runtime without managing complex localization delegates.
+
+## Basic Setup
+
+Initialize your translations by loading a map into the `FluxyI18n` engine. Each top-level key should be a language code (e.g., 'en', 'es').
+
+```dart
+void main() {
+  FluxyI18n.load({
+    'en': {
+      'hello': 'Hello World',
+      'welcome': 'Welcome, {name}!',
+      'items': {
+        'zero': 'No items',
+        'one': 'One item',
+        'other': '{n} items',
+      },
+    },
+    'es': {
+      'hello': 'Hola Mundo',
+      'welcome': '¡Bienvenido, {name}!',
+    }
+  });
+  
+  runApp(FluxyRoot(child: MyApp()));
+}
+```
+
+## Translating Strings
+
+Fluxy extends the `String` class with reactive getters and methods. When the locale changes, any widget using these extensions will automatically re-render.
+
+### Simple Translation
+Use the `.tr` getter for simple keys.
+
+```dart
+Fx.text("hello".tr)
+```
+
+### Translation with Arguments
+Use `.trArgs` to inject dynamic values into your strings.
+
+```dart
+Fx.text("welcome".trArgs({'name': 'Jane'}))
+```
+
+### Pluralization
+Use `.trPlural` to handle count-based translations. It automatically looks for `.zero`, `.one`, or `.other` submasks.
+
+```dart
+final itemCount = flux(5);
+
+Fx(() => Fx.text("items".trPlural(itemCount.value)))
+```
+
+## Changing Locales
+
+Switch the active language from anywhere in your app. All observing widgets will update instantly.
+
+```dart
+// Switch to Spanish
+Fluxy.setLocale(Locale('es'));
+
+// Get current locale
+print(FluxyI18n.currentLocale.languageCode);
+```
+
+## Advanced: trText Shortcut
+
+For the ultimate shorthand, use `.trText()` directly on a string to create a reactive, translated `Text` widget.
+
+```dart
+"hello".trText(align: TextAlign.center)
+```

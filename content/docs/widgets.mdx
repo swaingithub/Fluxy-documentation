@@ -359,6 +359,23 @@ Fx.form(
 )
 ```
 
+## Interactive Form Controls
+
+### Fx.checkbox & Fx.switcher
+Small, reactive toggles that bind directly to `Signal<bool>`.
+
+```dart
+final isToggled = flux(false);
+
+Fx.checkbox(
+  signal: isToggled,
+  label: "Accept Terms",
+)
+
+Fx.switcher(signal: isToggled)
+```
+
+
 ## Feedback & Overlays
 
 Fluxy includes responsive feedback mechanisms that adapt to the device form factor. For v0.1.6, we recommend using the new **Context-Free** API.

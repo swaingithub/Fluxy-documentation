@@ -111,6 +111,36 @@ Register services that are only instantiated when first accessed to save memory.
 Fluxy.lazyPut(() => ExpensiveController());
 ```
 
+## Controllers & LifeCycle
+
+For organized business logic, extend `FluxyController`. This provides built-in lifecycle management.
+
+```dart
+class UserController extends FluxyController {
+  final name = flux("Jane");
+
+  @override
+  void onInit() {
+    // Called when the controller is first instantiated
+    print("User Controller Ready");
+  }
+
+  @override
+  void onDispose() {
+    // Called when Fluxy.delete<UserController>() is called
+    print("Cleaning up resources");
+  }
+}
+```
+
+### Manual Cleanup
+If you need to remove a dependency from memory manually:
+
+```dart
+Fluxy.delete<UserController>();
+```
+
+
 ## State Inversion & Scoping
 
 You can also pass signals down the tree or provide them via `FluxyProvider` for scoped state restricted to a specific widget subtree.

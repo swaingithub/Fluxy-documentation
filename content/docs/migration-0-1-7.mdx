@@ -7,7 +7,7 @@ description: Upgrade your project from Fluxy 0.1.6 to 0.1.7.
 
 Fluxy 0.1.7 introduces the **Atomic Interaction API**, a major upgrade to the button system, alongside powerful new visual filters and motion enhancements. This release focuses on "Interaction Fidelity" and "Visual Polish".
 
-## 🚀 Key Features
+## Key Features
 
 ### 1. Atomic Interaction API (Next-Gen Buttons)
 The `FxButton` system has been completely re-engineered. Buttons now use a **content-first architecture**, ensuring perfect centering and flexible layout options.
@@ -26,7 +26,7 @@ The new `.transition(Duration)` modifier allows for automatic interpolation of s
 
 ---
 
-## 🛠 Breaking Changes & Deprecations
+## Breaking Changes & Deprecations
 
 ### 1. FxButton Internal Centering
 We renamed some internal properties to avoid collisions. If you were using custom `FxButton` implementations that relied on internal layout fields, you might need to update them.
@@ -40,7 +40,7 @@ In 0.1.6, styling applied to an `FxBadge` sometimes leaked into the notification
 
 ---
 
-## ✅ Best Practices for 0.1.7
+## Best Practices for 0.1.7
 
 ### Use `.primaryBtn()` for Strings
 Instead of `Fx.primaryButton("Save")`, use the more concise:
@@ -60,7 +60,7 @@ Fx.col().children([...]).stagger(100.ms)
 
 ---
 
-## 🆘 Troubleshooting
+## Troubleshooting
 
 **"My button content isn't centered!"**
 0.1.7 fixed a centering engine bug. If you had "hacks" (like manual padding) to center button content in 0.1.6, those hacks may now cause off-center layout. Remove them to let the new engine handle it.

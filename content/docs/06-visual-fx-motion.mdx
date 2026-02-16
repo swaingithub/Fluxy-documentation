@@ -3,7 +3,7 @@ title: Visual FX & Motion
 description: High-performance animations and visual filters.
 ---
 
-# 🎬 Visual FX & Motion
+# Visual FX & Motion
 
 **Cinematic Transitions. Native Performance.**
 
@@ -11,15 +11,14 @@ Fluxy 0.1.7 introduces a hardware-accelerated **Visual FX Engine**. We've moved 
 
 ---
 
-## 🌪️ Motion Modifiers (`.animate`)
+## Motion Modifiers (`.animate`)
 
 Standard Flutter animations require `AnimationController`, `Tween`, and `AnimatedBuilder`. In Fluxy, it's a single line.
 
-### ⚡ Side-by-Side Comparison
+### Comparison
 
-| Standard Flutter (30+ lines) | Fluxy DSL (1 line) |
-| :--- | :--- |
-| ```dart
+**Standard Flutter (30+ lines)**
+```dart
 AnimationController(vsync: this);
 SlideTransition(
   position: animation,
@@ -28,40 +27,45 @@ SlideTransition(
     child: MyWidget(),
   ),
 )
-``` | ```dart
+```
+
+**Fluxy DSL (1 line)**
+```dart
 Fx.box()
   .animate(
     fade: 0.0, 
     slide: Offset(0, 20),
     duration: 500.ms
   )
-``` |
+```
 
 ---
 
-## 💎 Visual Filters (Blur & Grayscale)
+## Visual Filters (Blur & Grayscale)
 
 Apply cinematic effects to any container without specialized clipping widgets.
 
-### ⚡ Side-by-Side Comparison
+### Comparison
 
-| Standard Flutter | Fluxy DSL |
-| :--- | :--- |
-| ```dart
+**Standard Flutter**
+```dart
 BackdropFilter(
   filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
   child: Container(color: Colors.white10),
 )
-``` | ```dart
+```
+
+**Fluxy DSL**
+```dart
 Fx.box()
   .bg(Colors.white10)
   .blur(10)
   .grayscale() // Optional desaturation
-``` |
+```
 
 ---
 
-## ⚡ Staggered Lists (`.stagger`)
+## Staggered Lists (`.stagger`)
 
 Creating a landing page with "entry reveal" animations usually requires manual delay math. Fluxy handles the indexing for you.
 
@@ -75,7 +79,7 @@ Fx.col().children([
 
 ---
 
-## 🚧 Common "Gotchas" & Solutions
+## Common "Gotchas" & Solutions
 
 | Issue | Standard Flutter Pain | Fluxy Solution |
 | :--- | :--- | :--- |

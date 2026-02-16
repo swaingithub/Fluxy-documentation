@@ -7,7 +7,7 @@ description: Upgrade your project from Fluxy 0.1.5 to 0.1.6.
 
 Fluxy 0.1.6 is a "Trust & Stability" release focused on hardening the internal architecture while keeping the outward-facing DSL consistent. While most changes are internal, there are a few key refinements to be aware of.
 
-## 🚀 Key Architectural Shift: Attribute Accumulation
+## Key Architectural Shift: Attribute Accumulation
 
 Previously, Fluxy used a "Widget Wrapping" approach where every modifier call (like `.padding()`) would wrap the widget in another physical widget (like `Padding`).
 
@@ -20,7 +20,7 @@ In **0.1.6**, Fluxy has transitioned to an **Attribute Accumulation** model. Mod
 
 ---
 
-## 🛠 Breaking Changes & Deprecations
+## Breaking Changes & Deprecations
 
 ### 1. Removal of ``
 The `` method is no longer required and has been removed from the engine. Fluxy widgets are now actual `Widget` instances from the start of the chain.
@@ -73,7 +73,7 @@ Fx.avatar(
 
 ---
 
-## ✅ Best Practices for 0.1.6
+## Best Practices for 0.1.6
 
 ### Use ClassNames for Shared Styles
 With the new engine, `className` is resolved **after** the inline `.style()` but **before** modifiers. This means modifiers will always override class-based styles.
@@ -83,7 +83,7 @@ Because styles are now accumulated into a single object, the order of most modif
 
 ---
 
-## 🆘 Troubleshooting
+## Troubleshooting
 
 **"My ParentData is still breaking!"**
 Ensure you are using the latest `Fx` factories. If you are wrapping a native Flutter widget in `Expanded`, make sure the `Expanded` is the **outermost** element in your DSL chain, or use the `.expand()` modifier directly.

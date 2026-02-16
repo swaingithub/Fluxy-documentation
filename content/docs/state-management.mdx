@@ -1,16 +1,151 @@
 ---
 title: State Management
-description: Global and local state architecture in Fluxy.
+description: The Fluxy State System - Ultra-scale reactive state management.
 ---
 
 # State Management
 
-Fluxy provides a unified approach to both local and global state management using the same reactive primitives.
+Fluxy v0.1.8 introduces the **Fluxy State System** - a comprehensive reactive state management engine that provides enterprise-grade features while maintaining 100% backward compatibility.
 
-## Advanced Reactivity
+## The New Fluxy State Units
 
-### Batching Updates
-When making multiple signal changes at once, use `batch()` to prevent intermediate rebuilds and ensure a single notification at the end.
+Fluxy now uses its own branded, conflict-free keywords instead of generic "Signals":
+
+| Concept | New Permanent Unit | Legacy Alias (Still Works) |
+|---------|-------------------|---------------------------|
+| Core State | `Flux<T>` | `Signal<T>` |
+| Derived State | `FluxComputed<T>` | `Computed<T>` |
+| Side Effects | `FluxEffect` | `Effect` |
+| Async State | `AsyncFlux<T>` | `AsyncSignal<T>` |
+| Persistence | `PersistentFlux<T>` | `PersistentSignal<T>` |
+| Collections | `FluxList`, `FluxMap` | `SignalList`, `SignalMap` |
+
+### Basic Usage
+
+```dart
+// Create a flux
+final count = flux(0); 
+
+// Create a computed flux
+final isDouble = fluxComputed(() => count.value * 2);
+
+// Use it in UI (Still the same ultra-clean Fx)
+Fx(() => Fx.text("Count is: ${count.value}"))
+```
+
+## The "Holy Trinity" of Advanced Features
+
+### 1. `fluxSelector` (Targeted Rebuilds)
+
+Solves the "Riverpod Rebuild" problem by allowing you to listen to tiny parts of large objects.
+
+```dart
+final userFlux = flux(User(name: "John", age: 30));
+final userName = fluxSelector(userFlux, (u) => u.name);
+
+// userName widget only rebuilds when name changes, not age!
+Fx(() => Fx.text("Name: ${userName.value}"))
+```
+
+**Benefit**: If `userFlux.age` changes, the `userName` widget will not rebuild. 100% atomic.
+
+### 2. `fluxWorker` (Zero-Jank Computations)
+
+Never freeze your UI again. Automatically moves expensive work to a background Dart Isolate.
+
+```dart
+// Runs in background isolate
+final processedData = fluxWorker(heavyTask, data);
+
+// UI stays responsive
+Fx(() => heavyResult.when(
+  loading: () => Fx.text("Processing..."),
+  data: (d) => Fx.text("Result: $d"),
+  error: (e) => Fx.text("Error: $e"),
+))
+```
+
+**Perfect for**: Searching large lists, parsing complex JSON, image processing.
+
+### 3. `FluxyLocalMixin` (Auto-Cleaning State)
+
+Prevents memory leaks by making state "local" to a widget with automatic cleanup.
+
+```dart
+class _MyState extends State<MyWidget> with FluxyLocalMixin {
+  late final localCount = fluxLocal(0); // Auto-disposed!
+  late final localComputed = fluxLocalComputed(() => localCount.value * 2);
+  late final localWorker = fluxLocalWorker(_expensiveTask, data);
+  
+  @override
+  Widget build(BuildContext context) {
+    return Fx(() => Fx.button("Count: ${localCount.value}")
+      .onPressed(() => localCount.value++));
+  }
+}
+```
+
+## Offline-First Architecture
+
+### `FluxyRepository` for Multi-User Apps
+
+Specialized helpers for multi-user scoping and database stream binding.
+
+```dart
+class ChatRepository extends FluxyRepository {
+  // 1. Scoped Persistence (Prevents data leakage between users)
+  late final messages = flux([], 
+    persistKey: userScope(auth.userId, 'chat_history')
+  );
+  
+  // 2. Database Subscription (Auto-cleans up on dispose)
+  void init() {
+    bindStream(database.watchMessages(), messages);
+  }
+}
+```
+
+### State Hydration
+
+Automatic state persistence and restoration across app restarts.
+
+```dart
+void main() async {
+  await Fluxy.init(); // Loads ALL saved state from disk!
+  runApp(MyApp());
+}
+
+// Any flux with persistKey is automatically hydrated
+final theme = flux("dark", persistKey: "app_theme");
+final userPrefs = flux({}, persistKey: "user_preferences");
+```
+
+## Performance Optimizations
+
+### `.peek()` - Read Without Listening
+
+Read a value without creating a reactive dependency.
+
+```dart
+// For logging or non-reactive logic
+print(count.peek()); // Won't trigger rebuild if count changes
+```
+
+### `untracked()` - Zero Dependency Blocks
+
+Run code blocks without tracking dependencies.
+
+```dart
+untracked(() {
+  // Read multiple fluxes without creating circular dependencies
+  print(count.value);
+  print(name.value);
+});
+```
+
+### `batch()` - Group Updates
+
+Prevent intermediate rebuilds when making multiple changes.
 
 ```dart
 batch(() {
@@ -20,100 +155,93 @@ batch(() {
 });
 ```
 
-### Numeric Operators
-Numeric signals support operator overloading, automatically creating `Computed` signals for concise arithmetic.
+## Global Middleware System
+
+Intercept every state change across your application for analytics, logging, or state-guarding.
 
 ```dart
-final a = flux(10);
-final b = flux(5);
-final sum = a + b; // Automatically a `Computed<num>`
-```
-
-### Signal Persistence
-Fluxy 0.1.1 supports built-in persistence for signals using `SharedPreferences` or `FlutterSecureStorage`.
-
-```dart
-final theme = flux("dark", persistKey: "app_theme");
-final token = flux("", persistKey: "user_token", secure: true);
-```
-
-### Computed Error Handling
-Derived signals can handle errors during computation to prevent app crashes.
-
-```dart
-final result = computed(
-  () => throw Exception("Failed"),
-  onError: (error, stack) => print("Log error: $error"),
-);
-```
-
-## Local State
-
-For state that only lives within a single widget, you can define your signals inside the `State` class.
-
-```dart
-class _MyWidgetState extends State<MyWidget> {
-  final count = flux(0); // Shorthand for Signal(0)
-
+// Create a middleware
+class LoggerMiddleware extends FluxyMiddleware {
   @override
-  Widget build(BuildContext context) {
-    return Fx(() => Fx.button("Count: ${count.value}")
-      .p(16)
-      .bg(FxTokens.primary)
-      .onPressed(() => count.value++)
-      );
+  void onUpdate(String key, dynamic oldValue, dynamic newValue) {
+    print('[FLUX UPDATE] $key | $oldValue -> $newValue');
   }
 }
+
+// Register globally
+void main() async {
+  Fluxy.use(LoggerMiddleware());
+  await Fluxy.init();
+  runApp(MyApp());
+}
 ```
 
-## Global State
+## Time Travel (Undo/Redo)
 
-For shared state, define signals in a central Controller or Service. You can use the `find` and `put` methods of `Fluxy` for Dependency Injection.
+Built-in history management for any flux.
 
 ```dart
-// controllers/auth_controller.dart
-class AuthController {
-  final user = flux<User?>(null); // Uses `Signal<User?>`
-  final isLoggedIn = computed(() => user.value != null);
-}
+final textHistory = fluxHistory("Hello");
 
-// In main or init
-Fluxy.put(AuthController());
+// Push new state
+textHistory.value = "Rocks";
 
-// In any widget
-final auth = Fluxy.find<AuthController>();
+// Undo/Redo
+textHistory.undo(); // Back to "Hello"
+textHistory.redo(); // Forward to "Rocks"
+
+// Reactive buttons
+Fx(() => Fx.button("Undo")
+  .onPressed(textHistory.canUndo ? textHistory.undo : null)
+  .opacity(textHistory.canUndo ? 1.0 : 0.5))
+```
+
+## Async State Management
+
+Enhanced async state with smart error handling and loading states.
+
+```dart
+final apiResult = fluxAsync(() => fetchData());
+
+// Functional state handling
+Fx(() => apiResult.when(
+  loading: () => Fx.loader(),
+  data: (data) => Fx.text("Data: $data"),
+  error: (error) => Fx.text("Error: $error").color(FxTokens.error),
+))
+
+// Or using the simplified on() method
+Fx(() => apiResult.on(
+  data: (d) => Fx.text(d),
+  loading: () => Fx.loader(),
+  error: (e) => Fx.text("Error: $e"),
+))
 ```
 
 ## Dependency Injection
 
-Fluxy includes a robust DI system to manage your application logic and services.
+Fluxy includes a robust DI system for managing application logic.
 
-### `Fluxy.put()` & `Fluxy.find()`
-Register and retrieve singletons globally.
+### Basic Usage
 
 ```dart
-Fluxy.put(AuthService());
-final service = Fluxy.find<AuthService>();
+// Register services
+Fluxy.put(AuthController());
+Fluxy.lazyPut(() => ExpensiveController()); // Lazy loading
+
+// Retrieve services
+final auth = Fluxy.find<AuthController>();
+final expensive = Fluxy.find<ExpensiveController>();
 ```
 
-### Shorthands: `inject` & `use`
-For an even more concise experience, use the `inject` and `use` global functions.
+### Shorthands
 
 ```dart
 inject(SettingsController());
 final settings = use<SettingsController>();
 ```
 
-### Lazy Loading
-Register services that are only instantiated when first accessed to save memory.
-
-```dart
-Fluxy.lazyPut(() => ExpensiveController());
-```
-
-## Controllers & LifeCycle
-
-For organized business logic, extend `FluxyController`. This provides built-in lifecycle management.
+### Controllers with Lifecycle
 
 ```dart
 class UserController extends FluxyController {
@@ -121,29 +249,19 @@ class UserController extends FluxyController {
 
   @override
   void onInit() {
-    // Called when the controller is first instantiated
     print("User Controller Ready");
   }
 
   @override
   void onDispose() {
-    // Called when Fluxy.delete<UserController>() is called
     print("Cleaning up resources");
   }
 }
 ```
 
-### Manual Cleanup
-If you need to remove a dependency from memory manually:
+## Scoped State
 
-```dart
-Fluxy.delete<UserController>();
-```
-
-
-## State Inversion & Scoping
-
-You can also pass signals down the tree or provide them via `FluxyProvider` for scoped state restricted to a specific widget subtree.
+Restrict state to specific widget subtrees.
 
 ```dart
 FluxyProvider(
@@ -151,5 +269,60 @@ FluxyProvider(
   child: ChildWidget(),
 );
 ```
+
+## Advanced Features
+
+### Numeric Operators
+
+Automatic computed signals for arithmetic operations.
+
+```dart
+final a = flux(10);
+final b = flux(5);
+final sum = a + b; // Automatically a `FluxComputed<num>`
+```
+
+### Error Handling
+
+Derived fluxes with error recovery.
+
+```dart
+final result = fluxComputed(
+  () => throw Exception("Failed"),
+  onError: (error, stack) => print("Log error: $error"),
+);
+```
+
+## Local State
+
+For state that only lives within a single widget.
+
+```dart
+class _MyWidgetState extends State<MyWidget> {
+  final count = flux(0); // Auto-disposed with widget
+
+  @override
+  Widget build(BuildContext context) {
+    return Fx(() => Fx.button("Count: ${count.value}")
+      .onPressed(() => count.value++));
+  }
+}
+```
+
+## Backward Compatibility
+
+All existing `Signal` code continues to work without modification:
+
+```dart
+// This still works perfectly
+Signal<String> count = flux("hello");
+Computed<int> length = computed(() => count.value.length);
+```
+
+Legacy aliases are marked with `@Deprecated` to guide developers toward the new branded API while maintaining compatibility.
+
+---
+
+Fluxy's state management system now provides enterprise-grade features including background processing, automatic cleanup, offline-first architecture, and global middleware - making it ready for production-scale applications.
 
 

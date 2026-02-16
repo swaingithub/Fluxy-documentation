@@ -1,0 +1,304 @@
+---
+title: Migration Guide v0.1.8
+description: How to migrate to the new Fluxy State System in v0.1.8.
+---
+
+# Migration Guide v0.1.8
+
+Fluxy v0.1.8 introduces the **Fluxy State System** - a major upgrade that gives Fluxy a unique identity while maintaining 100% backward compatibility.
+
+## What Changed?
+
+### New Branded Keywords
+
+Fluxy now uses its own branded, conflict-free keywords instead of generic "Signals":
+
+| Old Keyword | New Fluxy Keyword | Status |
+|-------------|-------------------|---------|
+| `Signal<T>` | `Flux<T>` | Recommended |
+| `Computed<T>` | `FluxComputed<T>` | Recommended |
+| `Effect` | `FluxEffect` | Recommended |
+| `AsyncSignal<T>` | `AsyncFlux<T>` | Recommended |
+| `PersistentSignal<T>` | `PersistentFlux<T>` | Recommended |
+| `SignalList`, `SignalMap` | `FluxList`, `FluxMap` | Recommended |
+
+### New Advanced Features
+
+- `fluxSelector` - Targeted rebuilds to prevent unnecessary UI updates
+- `fluxWorker` - Background isolate processing for heavy computations
+- `FluxyLocalMixin` - Automatic state cleanup to prevent memory leaks
+- `FluxyRepository` - Offline-first architecture with multi-user support
+- Global Middleware - Intercept all state changes for analytics/logging
+- State Hydration - Automatic state persistence across app restarts
+
+## Backward Compatibility
+
+**Your existing code will continue to work without any changes!**
+
+```dart
+// This still works perfectly in v0.1.8
+Signal<String> count = flux("hello");
+Computed<int> length = computed(() => count.value.length);
+Effect(() => print(count.value), [count]);
+```
+
+Legacy aliases are marked with `@Deprecated` but will continue to function. You'll see deprecation warnings to guide you toward the new API.
+
+## Recommended Migration Path
+
+### Step 1: Update Core Types
+
+Replace the basic types with their Fluxy equivalents:
+
+```dart
+// Before
+Signal<int> count = flux(0);
+Computed<String> displayName = computed(() => "Count: ${count.value}");
+
+// After
+Flux<int> count = flux(0);
+FluxComputed<String> displayName = fluxComputed(() => "Count: ${count.value}");
+```
+
+### Step 2: Update Function Names
+
+Use the new `flux...` prefixed functions:
+
+```dart
+// Before
+final computed = computed(() => value * 2);
+final effect = Effect(() => print(value), [value]);
+
+// After
+final computed = fluxComputed(() => value * 2);
+final effect = FluxEffect(() => print(value), [value]);
+```
+
+### Step 3: Add Performance Optimizations
+
+Take advantage of the new performance features:
+
+```dart
+// Replace manual optimization with fluxSelector
+// Before
+final userName = fluxComputed(() => user.value.name);
+
+// After - only rebuilds when name changes, not entire user object
+final userName = fluxSelector(user, (u) => u.name);
+```
+
+### Step 4: Add Automatic Cleanup
+
+Use `FluxyLocalMixin` for widget-local state:
+
+```dart
+// Before
+class _MyWidgetState extends State<MyWidget> {
+  late final count = flux(0);
+  
+  @override
+  void dispose() {
+    count.dispose(); // Manual cleanup
+    super.dispose();
+  }
+}
+
+// After - automatic cleanup
+class _MyState extends State<MyWidget> with FluxyLocalMixin {
+  late final count = fluxLocal(0); // Auto-disposed!
+}
+```
+
+### Step 5: Enable State Hydration
+
+Add automatic state persistence:
+
+```dart
+// Before
+void main() {
+  runApp(MyApp());
+}
+
+// After
+void main() async {
+  await Fluxy.init(); // Load all saved state
+  runApp(MyApp());
+}
+
+// Any flux with persistKey is now automatically hydrated
+final theme = flux("dark", persistKey: "app_theme");
+```
+
+## Code Examples
+
+### Basic Counter Migration
+
+```dart
+// Before (v0.1.7)
+class CounterController {
+  final count = Signal(0);
+  final isEven = Computed(() => count.value % 2 == 0);
+  
+  void increment() => count.value++;
+}
+
+// After (v0.1.8)
+class CounterController {
+  final count = flux(0);
+  final isEven = fluxComputed(() => count.value % 2 == 0);
+  
+  void increment() => count.value++;
+}
+```
+
+### Advanced State Management
+
+```dart
+// Before
+class UserController extends FluxyController {
+  final user = Signal<User?>(null);
+  final isLoading = Signal(false);
+  
+  Future<void> loadUser(String id) async {
+    isLoading.value = true;
+    try {
+      user.value = await api.getUser(id);
+    } finally {
+      isLoading.value = false;
+    }
+  }
+}
+
+// After - with new features
+class UserController extends FluxyController {
+  final user = flux<User?>(null);
+  final isLoading = flux(false);
+  
+  // Use fluxWorker for heavy operations
+  late final userLoader = fluxWorker(_loadUser, '');
+  
+  // Use fluxSelector for derived state
+  late final userName = fluxSelector(user, (u) => u?.name ?? 'Guest');
+  
+  Future<void> loadUser(String id) async {
+    isLoading.value = true;
+    userLoader.value = id; // Runs in background isolate
+  }
+  
+  Future<User> _loadUser(String id) async {
+    return await api.getUser(id);
+  }
+}
+```
+
+### Repository Pattern
+
+```dart
+// Before
+class ChatRepository {
+  final messages = Signal<List<Message>>([]);
+  
+  void init() {
+    // Manual stream handling
+    database.watchMessages().listen((data) {
+      messages.value = data;
+    });
+  }
+}
+
+// After - with FluxyRepository
+class ChatRepository extends FluxyRepository {
+  // Scoped persistence prevents data leakage between users
+  late final messages = flux([], 
+    persistKey: userScope(auth.userId, 'chat_history')
+  );
+  
+  void init() {
+    // Automatic cleanup on dispose
+    bindStream(database.watchMessages(), messages);
+  }
+}
+```
+
+## New Features You Should Use
+
+### 1. Targeted Rebuilds
+
+```dart
+// Instead of recomputing everything when user changes
+final user = flux(User(name: "John", age: 30, email: "john@example.com"));
+
+// Use fluxSelector for specific properties
+final userName = fluxSelector(user, (u) => u.name); // Only rebuilds for name changes
+final userAge = fluxSelector(user, (u) => u.age);   // Only rebuilds for age changes
+```
+
+### 2. Background Processing
+
+```dart
+// Heavy computations no longer block UI
+final searchResults = fluxWorker(searchDatabase, "");
+
+// UI stays responsive
+Fx(() => searchResults.when(
+  loading: () => Fx.loader(),
+  data: (results) => Fx.list(results),
+  error: (e) => Fx.text("Search failed: $e"),
+))
+```
+
+### 3. Global Middleware
+
+```dart
+// Add analytics to every state change
+class AnalyticsMiddleware extends FluxyMiddleware {
+  @override
+  void onUpdate(String key, dynamic oldValue, dynamic newValue) {
+    Analytics.trackStateChange(key, newValue);
+  }
+}
+
+void main() async {
+  Fluxy.use(AnalyticsMiddleware());
+  await Fluxy.init();
+  runApp(MyApp());
+}
+```
+
+## Breaking Changes
+
+There are **no breaking changes** in v0.1.8. All existing code continues to work.
+
+However, these deprecation warnings will appear:
+
+- `Signal` is deprecated, use `Flux`
+- `Computed` is deprecated, use `FluxComputed`
+- `Effect` is deprecated, use `FluxEffect`
+- `AsyncSignal` is deprecated, use `AsyncFlux`
+
+## Benefits of Migrating
+
+1. **Performance**: `fluxSelector` prevents unnecessary rebuilds
+2. **Responsiveness**: `fluxWorker` keeps UI smooth during heavy operations
+3. **Memory Safety**: `FluxyLocalMixin` prevents memory leaks
+4. **Offline-First**: `FluxyRepository` enables robust offline apps
+5. **Analytics**: Global middleware provides insights
+6. **Persistence**: Automatic state hydration
+7. **Branding**: Unique identity that won't conflict with other packages
+
+## Migration Checklist
+
+- [ ] Replace `Signal<T>` with `Flux<T>`
+- [ ] Replace `Computed<T>` with `FluxComputed<T>`
+- [ ] Replace `Effect` with `FluxEffect`
+- [ ] Replace `AsyncSignal<T>` with `AsyncFlux<T>`
+- [ ] Add `await Fluxy.init()` to main()
+- [ ] Use `FluxyLocalMixin` for widget-local state
+- [ ] Add `fluxSelector` for derived state
+- [ ] Use `fluxWorker` for heavy computations
+- [ ] Consider `FluxyRepository` for offline features
+- [ ] Add middleware for analytics if needed
+
+---
+
+**Ready for production**: The new Fluxy State System provides enterprise-grade features while maintaining the simple, clean API you love.

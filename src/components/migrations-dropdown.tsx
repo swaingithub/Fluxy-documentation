@@ -8,8 +8,10 @@ import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const migrations = [
-  { version: 'v0.1.7', href: '/docs/migration-0-1-7', description: 'Latest stable' },
-  { version: 'v0.1.6', href: '/docs/migration-0-1-6', description: 'Stability release' },
+  { version: 'v0.1.8', href: '/docs/migration/migration-0-1-8', description: 'Latest stable - Fluxy State System' },
+  { version: 'v0.1.7', href: '/docs/migration/migration-0-1-7', description: 'Previous stable' },
+  { version: 'v0.1.6', href: '/docs/migration/migration-0-1-6', description: 'Stability release' },
+  { href: '/docs/migration/#', description: 'Migration Guides' },
 ];
 
 export function MigrationsDropdown() {
@@ -68,8 +70,8 @@ export function MigrationsDropdown() {
               <div className="p-1">
                 {migrations.map((m) => (
                   <Link
-                    key={m.version}
-                    href={m.href}
+                    key={m.version || m.description}
+                    href={m.href || '#'}
                     className={cn(
                       "flex flex-col gap-0.5 px-3 py-2 text-sm transition-all rounded-md hover:bg-accent hover:text-accent-foreground",
                       pathname === m.href ? "bg-primary/10 text-primary font-medium border-l-2 border-primary rounded-l-none" : "text-muted-foreground"

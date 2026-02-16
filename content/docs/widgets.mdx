@@ -5,7 +5,7 @@ description: High-quality, pre-styled widgets for modern Flutter apps.
 
 # Premium Widget Suite
 
-Fluxy v0.1.6 introduces a suite of "Premium" widgets designed to handle common UI patterns with minimal configuration and built-in reactivity.
+Fluxy v0.1.7 introduces a suite of "Premium" widgets designed to handle common UI patterns with minimal configuration and built-in reactivity.
 
 ## FxAvatar
 
@@ -154,6 +154,41 @@ A fully responsive, theme-aware button component with multiple variants and flue
 
 ```dart
 Fx.button("Click Me", onTap: () => print("Clicked"))
+```
+
+### Atomic Interaction API (New in 0.1.7)
+
+You can now turn any `String` or `Widget` into a button directly using **Buttonizers**:
+
+```dart
+"Save".primaryBtn(onTap: () => save())
+"Cancel".outlineBtn(onTap: () => back())
+myIcon.btn(onTap: () => search()) // FxButtonVariant.none
+```
+
+### Custom Content Injection
+
+Buttons are now content-first. Use `.withChild()` for complex layouts:
+
+```dart
+Fx.button("Loading")
+  .withChild(
+    Fx.row().children([
+      Fx.loader.shimmer().square(20),
+      Fx.text("Processing...").ml(8),
+    ])
+  )
+```
+
+### Interaction-Only Primitive
+
+Use `Fx.btn()` to create custom interactive elements (like cards or list items) that utilize the framework's internal hover, focus, and pressed logic without any default styling.
+
+```dart
+Fx.btn(
+  onTap: () => navigate(),
+  child: MyCustomCard(),
+)
 ```
 
 ### Variants

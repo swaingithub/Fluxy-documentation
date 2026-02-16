@@ -20,6 +20,19 @@ Fx.box()
   ;
 ```
 
+## Buttonizers (New in 0.1.7)
+
+Fluxy 0.1.7 introduces **Buttonizers**, which allow you to turn any `String` or `Widget` into a functional button with a single method call:
+
+- **Strings**: `"Save".primaryBtn()` creates a primary action button.
+- **Widgets**: `myIcon.btn()` creates an unstyled interactive button.
+
+```dart
+"Confirm".primaryBtn(onTap: () => doConfirm())
+"Cancel".outlineBtn(onTap: () => doCancel())
+myImage.btn(onTap: () => showPreview())
+```
+
 ## Proxy-based DSL (New in 0.1.6)
 
 Fluxy v0.1.6 continues to refine the **Proxy-based DSL**, allowing you to access style properties as fields rather than methods.
@@ -73,7 +86,8 @@ Fluxy makes it easy to add dynamic interactions and smooth transitions directly 
 
 - `.onHover( (s) => s.scale(1.1) )`: Apply styles when the mouse hovers over the widget.
 - `.onPressed( (s) => s.op(0.8) )`: Apply styles when the widget is pressed.
-- **Animations**: Use `.animate()` to implicitly animate any style changes (background, size, opacity, etc.).
+- **Animations**: Use `.animate()` to implicitly animate any style changes.
+- **Enhanced Motion (New in 0.1.7)**: `FxMotion` now supports `.loop()`, `.repeat()`, and `.reverse()` for creating attention-grabbing effects like pulse or bounce.
 
 ```dart
 Fx.box()
@@ -81,6 +95,14 @@ Fx.box()
   .bg(Colors.blue)
   .animate(duration: 500.ms, curve: Curves.easeOut)
   .onHover((s) => s.bg(Colors.blueAccent).scale(1.1))
+  ;
+
+// Pulse Effect
+Fx.text("Flash Sale!")
+  .bold
+  .scale(1.2)
+  .animate(duration: 800.ms)
+  .loop() // Repeats forever
   ;
 ```
 

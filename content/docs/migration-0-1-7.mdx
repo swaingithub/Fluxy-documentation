@@ -1,0 +1,69 @@
+---
+title: v0.1.7 Migration Guide
+description: Upgrade your project from Fluxy 0.1.6 to 0.1.7.
+---
+
+# Fluxy 0.1.6 → 0.1.7 Migration Guide
+
+Fluxy 0.1.7 introduces the **Atomic Interaction API**, a major upgrade to the button system, alongside powerful new visual filters and motion enhancements. This release focuses on "Interaction Fidelity" and "Visual Polish".
+
+## 🚀 Key Features
+
+### 1. Atomic Interaction API (Next-Gen Buttons)
+The `FxButton` system has been completely re-engineered. Buttons now use a **content-first architecture**, ensuring perfect centering and flexible layout options.
+
+- **Expressive Buttonizers**: You can now turn any `String` or `Widget` into a button directly using `.primaryBtn()`, `.secondaryBtn()`, or `.btn()`.
+- **Custom Content Injection**: Use the `.withChild()` modifier to inject complex layouts into buttons.
+
+### 2. Premium Visual FX Engine
+New native modifiers for images and generic widgets:
+- `.blur(radius)`: Apply high-performance gaussian blur.
+- `.grayscale()`: Instantly desaturate any widget or image.
+- `.circle()`: Professional-grade circular clipping with optimized anti-aliasing.
+
+### 3. Chainable Transitions
+The new `.transition(Duration)` modifier allows for automatic interpolation of style changes. When properties like `background` or `padding` change due to state, Fluxy will now smoothly animate the transition.
+
+---
+
+## 🛠 Breaking Changes & Deprecations
+
+### 1. FxButton Internal Centering
+We renamed some internal properties to avoid collisions. If you were using custom `FxButton` implementations that relied on internal layout fields, you might need to update them.
+
+**Recommendation**: Use the new `.withChild()` or standard label-based buttons.
+
+### 2. FxBadge Parent Container Fix
+In 0.1.6, styling applied to an `FxBadge` sometimes leaked into the notification dot. In 0.1.7, these styles are correctly applied to the **parent container**.
+
+**Action**: Check your `FxBadge` instances. If you were relying on the "leaked" styles for the dot, you should now use the badge-specific parameters for styling the dot.
+
+---
+
+## ✅ Best Practices for 0.1.7
+
+### Use `.primaryBtn()` for Strings
+Instead of `Fx.primaryButton("Save")`, use the more concise:
+```dart
+"Save".primaryBtn(onTap: () => save())
+```
+
+### Automatic Image Shimmers
+You no longer need to manually add shimmers to network images. `Fx.loader.shimmer()` is now the default loading engine for `Fx.image`.
+
+### Staggered Row/Col Animations
+Use the `.stagger(interval)` modifier on `Fx.row` and `Fx.col` to create professional entrance animations with a single line of code.
+
+```dart
+Fx.col().children([...]).stagger(100.ms)
+```
+
+---
+
+## 🆘 Troubleshooting
+
+**"My button content isn't centered!"**
+0.1.7 fixed a centering engine bug. If you had "hacks" (like manual padding) to center button content in 0.1.6, those hacks may now cause off-center layout. Remove them to let the new engine handle it.
+
+**"Transition isn't firing!"**
+Ensure the modifier that triggers the style change is called *before* or *after* the `.transition()` modifier. Transition builds a "tweening" wrapper around the accumulated style.

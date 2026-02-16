@@ -55,7 +55,45 @@ if (FxStyle.media(context).isMobile) {
 }
 ```
 
-## Theme Management
+## Visual FX & Filters (New in 0.1.7)
+
+Fluxy 0.1.7 introduces high-performance native modifiers for manipulating the visual state of any widget.
+
+- `.blur(double)`: Applies a Gaussian blur.
+- `.grayscale()`: Desaturates the widget.
+- `.circle()`: Clips the widget into a perfect circle.
+
+```dart
+Fx.image("https://...").blur(5).grayscale();
+Fx.avatar(image: "...").circle();
+```
+
+## Chainable Transitions
+
+The `.transition(Duration)` modifier enables automatic interpolation of style changes. When state-driven style changes occur (e.g., background color shift), they will animate smoothly.
+
+```dart
+final isExpanded = flux(false);
+
+Fx.box()
+  .bg(isExpanded.value ? Colors.blue : Colors.grey)
+  .width(isExpanded.value ? 200 : 100)
+  .transition(300.ms)
+  .onTap(() => isExpanded.toggle());
+```
+
+## Contrast Shortcuts
+
+Quickly apply high-visibility typography settings with semantic shortcuts:
+
+- `.whiteText()`: Sets text color to white with appropriate contrast settings.
+- `.blackText()`: Sets text color to black with appropriate contrast settings.
+
+```dart
+Fx.text("High Contrast").whiteText();
+```
+
+## theme Management
 
 FxTheme provides a zero-boilerplate way to manage your app's theme.
 

@@ -41,6 +41,27 @@ Fx.col(
 )
 ```
 
+### Staggered Animations (New in 0.1.7)
+
+You can now animate the entrance of children in a `Fx.row` or `Fx.col` with a single modifier:
+
+```dart
+Fx.col(gap: 12)
+  .children([...])
+  .stagger(100.ms) // Intervals of 100ms
+```
+
+### Layout Intelligence
+
+Refined `.expanded()`, `.flex()`, and `.shrink()` now automatically handle **Structural Recursion**. These modifiers "peer through" layout containers to ensure the correct `ParentData` is applied to the target widget, preventing common Flutter layout errors.
+
+```dart
+Fx.row().children([
+  Fx.text("Fixed Width"),
+  Fx.box().expanded(), // Safely takes remaining space
+]);
+```
+
 ### Deprecation Notice
 
 > **Deprecated**: Chained flex modifiers (e.g., `Fx.row().between().center()`) are deprecated in v0.1.5. Please migrate to the declarative syntax above for better readability and tool support.

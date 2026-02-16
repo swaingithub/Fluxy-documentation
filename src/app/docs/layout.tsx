@@ -2,6 +2,7 @@ import { DocsLayout } from 'fumadocs-ui/layouts/docs';
 import type { ReactNode } from 'react';
 import { source } from '@/lib/source';
 import { FluxyLogo } from '@/components/logo';
+import { MigrationsDropdown } from '@/components/migrations-dropdown';
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
@@ -14,6 +15,9 @@ export default function Layout({ children }: { children: ReactNode }) {
             <span className="text-foreground">Fluxy</span>
           </div>
         ),
+      }}
+      sidebar={{
+        banner: <MigrationsDropdown />,
       }}
       links={[
         {

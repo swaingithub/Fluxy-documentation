@@ -1,0 +1,24 @@
+---
+title: Migration to v0.2.2
+description: Stability refinements and minor context fixes for Fluxy v0.2.2.
+---
+
+# Migration to v0.2.2
+
+Fluxy v0.2.2 is a minor maintenance release focusing on internal stabilization and finalizing the context-independent architecture of the DevTools.
+
+## Summary of Changes
+
+### Internal Stabilization
+This version addresses edge cases in the Scoped Dependency Injection (`FxScope`) engine where certain `FxScope.route` objects might remain in memory under specific nested navigation scenarios.
+
+### DevTools Context Refinements
+Fine-tuned the internal `GlobalKey` management for the inspector shield to ensure consistent overlay behavior across all Flutter navigation stacks (Navigator 1.0 and 2.0).
+
+---
+
+## Recommended Upgrade Path
+
+1. Update your `pubspec.yaml` to `fluxy: ^0.2.2`.
+2. Run `flutter pub get`.
+3. No code changes are required for this update.

@@ -5,7 +5,7 @@ description: Inspect state and performance in real-time.
 
 # DevTools & Fluxy Inspector
 
-Fluxy v0.2.0 introduces a premium, glassmorphic **Fluxy Inspector** that provides unprecedented visibility into your application's internals.
+Fluxy v0.2.3 introduces a premium, glassmorphic **Fluxy Inspector** with real-time feedback and advanced productivity features.
 
 ## Enable Inspector
 
@@ -17,25 +17,35 @@ runApp(Fluxy.debug(child: MyApp()));
 
 ## Core Inspector Modules
 
-### 1. Glassmorphic HUD
-A Floating Action Button appears in debug mode. Tapping it opens the primary inspector shield, featuring a modern glassmorphic UI with real-time system mirrors.
+### 1. Premium Glassmorphic HUD
+A Floating Action Button appears in debug mode. Tapping it opens the primary inspector shield, featuring a modern glassmorphic UI with high-performance blur effects and real-time system mirrors.
 
-### 2. DI Registry Inspector
+### 2. Flux Registry (Search & Live Edit)
+Inspect every registered flux/signal in your system.
+- **Search & Filter**: Find fluxes by name or ID instantly.
+- **Live Value Editing**: Update `boolean`, `string`, and `numeric` values directly from the UI to test edge cases without hot-reloads.
+- **Update Flashing**: Signals now briefly flash blue in the list when their value changes.
+
+### 3. DI Registry Inspector
 Inspect every registered dependency within the `FluxyDI` container.
-- View lifecycle scopes (`app`, `route`, `factory`).
-- Check initialization status and lazy-loading states.
-- Monitor active instances to prevent memory leaks.
+- **Lifecycle Scopes**: View `app`, `route`, and `factory` scopes.
+- **Initialization Tracking**: Check initialization status and lazy-loading states.
+- **Auto-Cleanup**: Monitor dependencies that are disposed when routes are popped.
 
-### 3. Network Activity Logs
+### 4. Network Activity Logs
 A specialized engine that monitors all HTTP traffic.
+- **JSON Prettifier**: Request and response bodies are automatically formatted with indentation.
+- **Clipboard API**: One-tap copy for headers, bodies, and URLs.
 - **Latency Tracking**: See exactly how long each request takes.
-- **Payload Inspection**: View request headers, response bodies, and error codes in a formatted JSON viewer.
-- **Timeline**: Chronological view of all network events.
 
-### 4. State Update Timeline
-A real-time ticker showing every flux/signal update across the system. 
-- Trace the origin of state changes.
-- Identify "dirty" updates that might be triggering unnecessary re-renders.
+### 5. State Update Timeline
+A real-time ticker showing every flux update across the system. 
+- **Timeline Controls**: Search, pause/resume, and clear functionality.
+- **Trace Origins**: Identify exactly when and where state changes occurred.
+
+## Self-Contained Performance
+
+As of v0.2.1, the Inspector is fully **context-independent**. It no longer requires a `ScaffoldMessenger`, `Overlay`, or `MaterialLocalizations` in your app tree to function, making it safe to use even in minimal app configurations.
 
 ## Global Error Pipeline (`Fx.onError`)
 

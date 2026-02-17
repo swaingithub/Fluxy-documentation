@@ -1,0 +1,53 @@
+---
+title: Migration to v0.2.3
+description: Guide for Fluxy v0.2.3, featuring the Premium DevTools Overhaul and stability refinements.
+---
+
+# Migration to v0.2.3
+
+Fluxy v0.2.3 is a refinement release focused on the **Premium DevTools Overhaul** and preparing for the 1.0 stability milestone. This version includes significant improvements to the debugging experience and several internal bug fixes.
+
+## Major New Features
+
+### 1. Premium DevTools Overhaul
+The Fluxy Inspector has been completely redesigned with a high-end Material 3 aesthetic and high-performance glassmorphism.
+- **Glassmorphic HUD**: Redesigned FAB and inspector shield with smoother blur effects.
+- **Real-time Update Flashing**: Flux/Signal items in the list now briefly flash blue when their value changes, making it easier to track state flow at a glance.
+- **JSON Prettifier**: Direct inspection of network payloads is now much easier with automatic formatting and indentation.
+- **Advanced Timeline Controls**: You can now search, pause, resume, and clear the state update timeline.
+- **Persistent Search**: Search states in the Flux registry, DI container, and Network logs now persist across tab switches.
+- **Clipboard API**: Integrated "Copy to Clipboard" buttons for signal values, network bodies, and log entries.
+
+### 2. Context-Independent Inspector (v0.2.1+)
+The DevTools are now fully self-contained. The framework no longer relies on the application's widget tree context for snackbars or overlays.
+- Fixed the "No ScaffoldMessenger found" exception.
+- Fixed "No Overlay widget found" and "No MaterialLocalizations found" errors.
+
+---
+
+## Technical Refinements
+
+### Layout Safety
+The DevTools Floating Action Button (FAB) has been moved up by **60dp** to prevent overlap with standard Flutter `BottomNavigationBar` items, ensuring it doesn't block your app's core navigation.
+
+### Search & Live Editing (v0.2.1)
+- **Flux Search**: Quickly filter through hundreds of signals by name or ID.
+- **Live Value Editing**: You can now update `boolean`, `string`, and `numeric` values directly from the inspector, allowing for rapid state testing without hot-reloads.
+
+### Performance & Size
+- **Package Size**: Reduced the published package size by **~40%** by optimizing the example and internal assets.
+- **Isolate Safety**: Improved crash-resistance in the DI and Network detail views for malformed or large data payloads.
+
+---
+
+## Recommended Upgrade Path
+
+1. Update your `pubspec.yaml` to `fluxy: ^0.2.3`.
+2. Run `flutter pub get`.
+3. If using the CLI, run `dart pub global activate fluxy` to ensure your blueprints are up to date.
+4. If you had previously hidden the DevTools due to context errors, you can now safely re-enable them using `Fluxy.debug`.
+
+---
+
+## Branding Update
+The framework has transitioned to using **Flux** as the primary branding term for state units, replacing the generic 'Signal' terminology in the DevTools and documentation for better clarity and conflict avoidance.

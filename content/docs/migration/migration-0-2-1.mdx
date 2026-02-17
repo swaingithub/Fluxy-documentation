@@ -1,0 +1,37 @@
+---
+title: Migration to v0.2.1
+description: Guide for Fluxy v0.2.1, introducing the DevTools Search, Live Editing, and context fixes.
+---
+
+# Migration to v0.2.1
+
+Fluxy v0.2.1 is a significant refinement release that fixes common DevTools initialization errors and introduces powerful new debugging capabilities.
+
+## Major Changes
+
+### 1. DevTools Power-Up
+- **Search & Filter**: You can now search through your fluxes by name or ID. This is essential for large applications with hundreds of state objects.
+- **Live Value Editing**: The inspector now allows you to change values of `bool`, `String`, and `num` fluxes directly from the UI. This allows for immediate testing of UI states without recompiling.
+
+### 2. Branding: Flux vs. Signal
+The DevTools and documentation have transitioned to using the term **Flux** (e.g., "Flux Registry") instead of "Signal". 
+- **Code Impact**: None. All `Signal` aliases still work perfectly.
+- **Visual Impact**: You will see "Flux" in the inspector interface.
+
+### 3. Context-Independent Inspector (Hotfix)
+Previously, the `FluxyDevTools` required an `Overlay` and `MaterialLocalizations` existing in the widget tree above it.
+- **Change**: The inspector is now fully self-contained. 
+- **Benefit**: You can now safely use `Fluxy.debug` even in the most minimal `MaterialApp` or `CupertinoApp` configurations without running into "No Overlay widget found" errors.
+
+## Technical Improvements
+
+### Package Size Optimization
+The published package size has been reduced by approximately **40% (103 KB)**. This was achieved by stripping platform-specific boilerplate from the internal example directory and optimizing asset compression.
+
+---
+
+## Recommended Upgrade Path
+
+1. Update your `pubspec.yaml` to `fluxy: ^0.2.1`.
+2. Run `flutter pub get`.
+3. If you were getting "No Overlay" or "No MaterialLocalizations" errors in v0.2.0, they will be resolved automatically after this update.

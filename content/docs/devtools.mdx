@@ -3,26 +3,56 @@ title: DevTools & Debugging
 description: Inspect state and performance in real-time.
 ---
 
-# DevTools & Debugging
+# DevTools & Fluxy Inspector
 
-Inspect state and performance in real-time with Fluxy DevTools.
+Fluxy v0.2.0 introduces a premium, glassmorphic **Fluxy Inspector** that provides unprecedented visibility into your application's internals.
 
-## Enable DevTools
+## Enable Inspector
 
-Wrap your root application with `Fluxy.debug` to enable the development tools:
+To activate the high-end debugging interface, wrap your root application with `Fluxy.debug`:
 
 ```dart
 runApp(Fluxy.debug(child: MyApp()));
 ```
 
-## Signal Graph
+## Core Inspector Modules
 
-The **Signal Graph** visualizes your application's reactive state. It shows all active signals, their current values, and the number of active subscribers. This helps you understand data flow and identify potential memory leaks or unexpected dependencies.
+### 1. Glassmorphic HUD
+A Floating Action Button appears in debug mode. Tapping it opens the primary inspector shield, featuring a modern glassmorphic UI with real-time system mirrors.
 
-## Timeline
+### 2. DI Registry Inspector
+Inspect every registered dependency within the `FluxyDI` container.
+- View lifecycle scopes (`app`, `route`, `factory`).
+- Check initialization status and lazy-loading states.
+- Monitor active instances to prevent memory leaks.
 
-The **Timeline** acts as a logger for state changes. It records every signal update with a timestamp, allowing you to trace exactly when and why your application state changed.
+### 3. Network Activity Logs
+A specialized engine that monitors all HTTP traffic.
+- **Latency Tracking**: See exactly how long each request takes.
+- **Payload Inspection**: View request headers, response bodies, and error codes in a formatted JSON viewer.
+- **Timeline**: Chronological view of all network events.
 
-## Global Error Boundary
+### 4. State Update Timeline
+A real-time ticker showing every flux/signal update across the system. 
+- Trace the origin of state changes.
+- Identify "dirty" updates that might be triggering unnecessary re-renders.
 
-`FluxyApp` includes a built-in **Global Error Boundary**. This feature automatically catches unhandled exceptions in your widget tree, preventing the entire application from crashing in production. Instead, it displays a user-friendly error screen (which you can customize) while logging the error details for debugging.
+## Global Error Pipeline (`Fx.onError`)
+
+Starting from v0.2.0, you can pipe all framework and platform errors to a single expressive sink:
+
+```dart
+void main() {
+  Fx.onError((error, stack) {
+    // Pipe to Sentry, Firebase, or your own backend
+    print("Intercepted Error: $error");
+  });
+  
+  runApp(Fluxy.debug(child: MyApp()));
+}
+```
+
+This pipeline captures:
+- Flutter framework exceptions (Widget errors).
+- Asynchronous errors (Future/Stream failures).
+- Platform-level exceptions.

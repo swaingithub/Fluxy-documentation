@@ -20,6 +20,27 @@ Fx.box()
   .rounded(FxTokens.radius.lg) // Large rounded corners
 ```
 
+### Typography DSL
+Fluxy provides a rich set of font size tokens and text modifiers.
+
+**Available Sizes:**
+- `.font.xs()`, `.font.sm()`, `.font.md()`, `.font.lg()`, `.font.xl()`
+- `.font.xl2()`, `.font.xl3()`, `.font.xl4()`, `.font.xl5()`, `.font.xl6()`
+
+**Text Modifiers:**
+- `.bold()`: Apply font weight 700.
+- `.italic()`: Apply italic style.
+- `.letterSpacing(double)`: Semantically adjust spacing between letters.
+
+```dart
+Fx.text("Premium Title")
+  .font.xl4()
+  .bold()
+  .italic()
+  .letterSpacing(1.2);
+```
+
+
 ### Shadows
 Standardized shadow depths for elevating UI elements.
 

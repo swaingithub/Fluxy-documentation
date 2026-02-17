@@ -1,0 +1,76 @@
+---
+title: Migration to v0.2.0
+description: Major architectural update guide for Fluxy v0.2.0, introducing Scoped DI, Fluxy Inspector, and Plugin Architecture.
+---
+
+# Migration to v0.2.0
+
+Fluxy v0.2.0 is a major release designated as the **Professional Inspector & Architectural Authority**. It introduces scoped dependency injection, a first-class devtools suite, and a modular plugin architecture.
+
+## Major New Features
+
+### 1. Fluxy Inspector (Premium DevTools)
+Launched a high-end, glassmorphic debug interface accessible during development.
+- **DI Registry**: Real-time inspection of registered dependencies and their lifecycles.
+- **Network Logs**: Full inspection of HTTP traffic with latency tracking.
+- **State Timeline**: Visual log of every state update across the system.
+
+### 2. Scoped Dependency Injection (`FxScope`)
+Introduced structured scopes to manage memory automatically and prevent memory leaks.
+- **`FxScope.app`**: Singletons that live for the lifetime of the application.
+- **`FxScope.route`**: Dependencies tied to a specific route, automatically disposed when the route is popped.
+- **`FxScope.factory`**: Creates a fresh instance every time it is requested.
+
+**Example:**
+```dart
+FluxyDI.put(MyController(), scope: FxScope.route);
+```
+
+### 3. Modular Plugin Architecture
+New `FluxyPlugin` interface allows developers to build framework extensions that hook into lifecycle events:
+- `onRegister`: Called when the plugin is registered.
+- `onAppReady`: Called after the app is fully initialized.
+- `onDispose`: Called when the app or plugin is being shut down.
+
+### 4. Global Error Pipeline (`Fx.onError`)
+Unified system to capture Flutter, Platform, and manual errors.
+- **`Fx.onError`**: Expressive shorthand for piping errors to external sinks (Sentry, Firebase, etc.).
+
+```dart
+Fx.onError((error, stack) {
+  // Pass to crash reporting
+  Sentry.captureException(error, stackTrace: stack);
+});
+```
+
+---
+
+## Breaking Changes & Adjustments
+
+### DI Engine Modernization
+While `FluxyDI.put()` remains backward compatible, the internal engine now enforces circular dependency detection. If your app has two controllers that depend on each other, the app will now block and throw a descriptive error rather than hanging or crashing.
+
+### Blueprint Syntax (v0.1.10 Carry-over)
+If you haven't upgraded from version older than v0.1.10, remember that font sizes are now **methods** instead of getters:
+```dart
+// Old
+.font.lg.bold
+// New
+.font.lg().bold
+```
+
+---
+
+## Recommended Upgrade Path
+
+1. Update your `pubspec.yaml` to `fluxy: ^0.2.0`.
+2. Run `flutter pub get`.
+3. If using the CLI, run `dart pub global activate fluxy` to get the latest blueprints and inspector support.
+4. Review your `main.dart` and consider integrating `Fx.onError` for better crash reporting.
+5. (Optional) Migrate manual controller disposal logic to use `FxScope.route`.
+
+---
+
+## CLI Enhancements
+- Added blueprints for `plugin`, `layout`, `model`, and `controller`.
+- Use `fluxy generate plugin MyNewPlugin` to scaffold a structured framework extension.

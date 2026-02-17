@@ -231,26 +231,45 @@ Fx(() => apiResult.on(
 
 ## Dependency Injection
 
-Fluxy includes a robust DI system for managing application logic.
+Fluxy includes a robust, scope-aware DI system for managing application logic and service lifecycles.
+
+### Scoped Lifecycles (`FxScope`)
+
+v0.2.0 introduces structured scopes to manage memory automatically and prevent leaks.
+
+| Scope | Lifecycle | Best For |
+|-------|-----------|----------|
+| `FxScope.app` | Lives for the entire app duration. | Auth, Theme, Settings. |
+| `FxScope.route` | Disposed when the parent route is popped. | Feature Controllers, Page Logic. |
+| `FxScope.factory` | Creates a new instance on every request. | Transient utilities, DTOs. |
 
 ### Basic Usage
 
 ```dart
-// Register services
-Fluxy.put(AuthController());
-Fluxy.lazyPut(() => ExpensiveController()); // Lazy loading
+// Register services with specific scopes
+FluxyDI.put(AuthController(), scope: FxScope.app);
+FluxyDI.put(ProfileController(), scope: FxScope.route);
 
-// Retrieve services
-final auth = Fluxy.find<AuthController>();
-final expensive = Fluxy.find<ExpensiveController>();
+// Lazy loading (instance created only when first used)
+FluxyDI.lazyPut(() => ExpensiveController()); 
 ```
 
-### Shorthands
+### Retrieving Dependencies
 
 ```dart
-inject(SettingsController());
-final settings = use<SettingsController>();
+// Standard retrieval
+final auth = FluxyDI.find<AuthController>();
+
+// Using shorthands
+final profile = use<ProfileController>();
 ```
+
+### Automatic Route Cleanup
+When using `FxScope.route`, Fluxy automatically identifies the active route context. When that route is removed from the navigation stack, the dependency is disposed and its `onClose()` method is called.
+
+### Circular Dependency Detection
+The v0.2.0 DI engine includes a proactive tracker that blocks infinite resolution loops. If `ServiceA` requires `ServiceB` and vice-versa, Fluxy will throw a descriptive `FluxyDIException` during initialization instead of hanging the application.
+
 
 ### Controllers with Lifecycle
 

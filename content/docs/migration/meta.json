@@ -1,9 +1,12 @@
 {
   "pages": [
     "index",
-    "migration-0-1-6",
-    "migration-0-1-7",
+    "migration-0-2-0",
+    "migration-0-1-11",
+    "migration-0-1-10",
+    "migration-0-1-9",
     "migration-0-1-8",
-    "migration-0-1-9"
+    "migration-0-1-7",
+    "migration-0-1-6"
   ]
 }

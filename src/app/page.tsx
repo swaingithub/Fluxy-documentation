@@ -36,7 +36,7 @@ export default function LandingPage() {
               Fluxy
             </span>
             <div className="px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-[10px] font-bold tracking-widest text-white/40 ml-2">
-              v0.1.11
+              v0.2.0
             </div>
           </div>
           <div className="hidden lg:flex items-center gap-10 text-sm font-bold tracking-wide text-white/50">
@@ -70,7 +70,7 @@ export default function LandingPage() {
               <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full glass mb-10 animate-fade-in">
                 <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                 <span className="text-[10px] font-black tracking-[0.3em] uppercase text-emerald-500/80">
-                  New v0.1.11: Routing & DI Stabilization
+                  New v0.2.0: Professional Inspector & Scoped DI
                 </span>
               </div>
 
@@ -129,7 +129,7 @@ export default function LandingPage() {
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
                 </Link>
                 <div className="flex items-center gap-10">
-                  <StatItem value="0.1.9" label="Stable" />
+                  <StatItem value="v0.2.0" label="Stable" />
                   <div className="w-px h-10 bg-white/10" />
                   <StatItem value="60fps" label="Isolate Engine" />
                 </div>

@@ -1,0 +1,68 @@
+---
+title: FxImage
+description: A chainable, reactive image widget with filters and loaders.
+---
+
+# FxImage
+
+`FxImage` is a versatile image primitive that supports both network and asset sources, chainable visual filters like blur and grayscale, and declarative loading/error states.
+
+## Usage
+
+```dart
+FxImage(
+  "https://example.com/image.png",
+  style: FxStyle(
+    width: 200,
+    height: 200,
+    borderRadius: Fx.radius.xl,
+    fit: BoxFit.cover,
+  ),
+  onTap: () => print("Clicked"),
+)
+```
+
+## Advanced Filters
+
+Chain filters directly on the style object.
+
+```dart
+FxImage(
+  "assets/photo.jpg",
+  style: FxStyle(
+    imageBlur: 5.0, // Gaussian Blur (sigma 5)
+    grayscale: true, // Convert to B&W
+  ),
+)
+```
+
+## Loading & Error Fallback
+
+Provide custom widgets for network loading states.
+
+```dart
+FxImage(
+  imageUrl,
+  style: FxStyle(
+    loading: FxShimmer(
+      width: 200, 
+      height: 200
+    ),
+    error: Icon(Icons.broken_image),
+  ),
+)
+```
+
+## Responsive Images (`Fx.responsiveImage`)
+
+Serve different images based on screen width for performance.
+
+```dart
+Fx.responsiveImage(
+  xs: "mobile-banner.jpg",
+  md: "tablet-banner.jpg",
+  lg: "desktop-huge.jpg",
+  height: 300,
+  fit: BoxFit.cover,
+)
+```

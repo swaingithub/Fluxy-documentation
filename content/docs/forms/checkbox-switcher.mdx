@@ -1,0 +1,53 @@
+---
+title: Checkbox & Switcher
+description: Reactive boolean input controls.
+---
+
+# Checkbox & Switcher
+
+Fluxy provides reactive boolean controls for settings and preferences within your forms.
+
+## FxCheckbox
+
+A customizable checkbox that binds directly to a `Signal<bool>`.
+
+```dart
+final accepted = flux(false);
+
+FxCheckbox(
+  signal: accepted,
+  label: "I agree to the Terms",
+)
+```
+
+## FxSwitcher
+
+A modern, animated toggle switch for boolean preferences.
+
+```dart
+final darkMode = flux(false);
+
+FxSwitcher(
+  signal: darkMode,
+  activeColor: Colors.blue,
+)
+```
+
+## API Reference
+
+### FxCheckbox
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `signal` | `Signal<bool>` | required | The reactive boolean state. |
+| `label` | `String?` | `null` | Context label text. |
+| `activeColor` | `Color?` | `primary` | Color when selected. |
+| `size` | `FxCheckboxSize` | `md` | Size token. |
+
+### FxSwitcher
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `signal` | `Signal<bool>` | required | The reactive boolean state. |
+| `activeColor` | `Color?` | `success` | Color when switched on. |
+| `inactiveColor` | `Color?` | `grey` | Track color when switched off. |

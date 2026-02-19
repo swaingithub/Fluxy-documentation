@@ -8,49 +8,61 @@ import {
   Code2, 
   ArrowRight, 
   Github, 
-  ExternalLink,
   Cpu,
+  Terminal,
+  Box,
   Smartphone,
-  Sparkles,
-  Terminal
+  Globe,
+  Database,
+  CheckCircle2,
+  Sparkles
 } from 'lucide-react';
 import { FluxyLogo } from '@/components/logo';
 
 export default function LandingPage() {
   return (
-    <div className="flex flex-col min-h-screen bg-[#020617] text-slate-50 selection:bg-primary/30">
-      {/* Dynamic Background Overlay */}
-      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div className="absolute top-[-20%] left-[-10%] w-[70%] h-[70%] bg-blue-600/20 blur-[160px] rounded-full animate-pulse-slow" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-purple-600/10 blur-[160px] rounded-full" />
-        <div className="absolute top-[20%] right-[10%] w-[30%] h-[30%] bg-emerald-500/5 blur-[120px] rounded-full animate-float" />
-        <div className="absolute inset-0 bg-grid-white/10 [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
+    <div className="flex flex-col min-h-screen bg-black text-white selection:bg-indigo-500/30 font-sans antialiased overflow-hidden">
+      
+      {/* Dynamic Background */}
+      <div className="fixed inset-0 z-0">
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-indigo-500/20 blur-[120px] rounded-full mix-blend-screen opacity-40 animate-pulse" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-blue-500/20 blur-[120px] rounded-full mix-blend-screen opacity-40" />
+        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150 mix-blend-overlay"></div>
+        <div className="absolute inset-0 bg-grid-white/[0.04] [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
       </div>
 
-      {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 border-b border-white/5 bg-[#020617]/40 backdrop-blur-xl">
+      {/* Navbar */}
+      <nav className="fixed top-0 w-full z-50 border-b border-white/5 bg-black/60 backdrop-blur-xl supports-[backdrop-filter]:bg-black/30">
         <div className="container mx-auto px-6 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <FluxyLogo className="w-10 h-10 drop-shadow-[0_0_8px_rgba(var(--primary),0.5)]" />
-            <span className="text-2xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60">
+          <div className="flex items-center gap-3 group cursor-pointer">
+            <div className="relative">
+              <div className="absolute inset-0 bg-indigo-500 blur-lg opacity-40 group-hover:opacity-60 transition-opacity" />
+              <FluxyLogo className="w-9 h-9 relative z-10" />
+            </div>
+            <span className="text-xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60">
               Fluxy
             </span>
-            <div className="px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-[10px] font-bold tracking-widest text-white/40 ml-2">
-              v0.2.3
+            <div className="hidden sm:flex px-2 py-0.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-[10px] font-bold tracking-widest text-indigo-400 ml-2">
+              v0.2.4
             </div>
           </div>
-          <div className="hidden lg:flex items-center gap-10 text-sm font-bold tracking-wide text-white/50">
-            <Link href="/docs" className="hover:text-white transition-colors">Documentation</Link>
-            <Link href="/docs/core-concepts" className="hover:text-white transition-colors">Engine</Link>
-            <Link href="/docs/examples" className="hover:text-white transition-colors">Showcase</Link>
-            <Link href="https://github.com/swaingithub/fluxy" className="flex items-center gap-2 hover:text-white transition-colors">
-              GitHub <Github size={14} />
-            </Link>
+          
+          <div className="hidden md:flex items-center gap-8 text-sm font-medium text-white/60">
+            <NavLink href="/docs">Documentation</NavLink>
+            <NavLink href="/docs/components">Components</NavLink>
+            <NavLink href="/docs/core-concepts">Engine</NavLink>
           </div>
+
           <div className="flex items-center gap-4">
             <Link 
+              href="https://github.com/swaingithub/fluxy" 
+              className="p-2 text-white/60 hover:text-white hover:bg-white/5 rounded-full transition-all"
+            >
+              <Github size={20} />
+            </Link>
+            <Link 
               href="/docs" 
-              className="px-6 py-2.5 bg-white text-black rounded-full text-sm font-black hover:scale-105 transition-all shadow-xl active:scale-95"
+              className="hidden sm:flex px-5 py-2.5 bg-white text-black rounded-lg text-sm font-bold tracking-wide hover:scale-105 transition-transform shadow-[0_0_20px_-5px_rgba(255,255,255,0.3)]"
             >
               Get Started
             </Link>
@@ -58,279 +70,218 @@ export default function LandingPage() {
         </div>
       </nav>
 
-      <main className="relative z-10">
+      <main className="relative z-10 pt-40 pb-20">
+        
         {/* Hero Section */}
-        <section className="pt-48 pb-32 px-6">
-          <div className="container mx-auto text-center">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            >
-              <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full glass mb-10 animate-fade-in">
-                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                <span className="text-[10px] font-black tracking-[0.3em] uppercase text-emerald-500/80">
-                  New v0.2.3: Premium DevTools Overhaul & 1.0 Stability Prep
-                </span>
-              </div>
-
-              <h1 className="text-7xl md:text-[9rem] font-black tracking-tighter leading-[0.85] mb-12">
-                REACTIVE <br />
-                <span className="text-gradient">AUTHORITY.</span>
-              </h1>
-
-              <p className="text-xl md:text-3xl text-slate-400 max-w-4xl mx-auto mb-16 leading-relaxed font-medium tracking-tight">
-                The high-performance engine for Flutter that unifies <span className="text-white">State</span>, <span className="text-white">Networking</span>, and <span className="text-white">Style</span> into a single, cohesive application platform.
-              </p>
-
-              <div className="max-w-xl mx-auto mb-16 group">
-                <div className="relative">
-                  <div className="absolute -inset-1 bg-gradient-to-r from-primary/50 to-purple-500/50 rounded-2xl blur opacity-20 group-hover:opacity-40 transition-opacity" />
-                  <div className="relative glass rounded-2xl px-6 py-4 flex flex-col gap-3 border-white/10">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3 font-mono text-sm md:text-base text-white/70">
-                        <span className="text-emerald-500">$</span>
-                        <span>dart pub global activate fluxy</span>
-                      </div>
-                      <button 
-                        onClick={() => navigator.clipboard.writeText('dart pub global activate fluxy')}
-                        className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white/40 hover:text-white"
-                        title="Copy to clipboard"
-                      >
-                        <Code2 size={18} />
-                      </button>
-                    </div>
-                    <div className="h-px bg-white/5 w-full" />
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3 font-mono text-sm md:text-base text-white/70">
-                        <span className="text-emerald-500">$</span>
-                        <span>fluxy init my_awesome_app</span>
-                      </div>
-                      <button 
-                        onClick={() => navigator.clipboard.writeText('fluxy init my_awesome_app')}
-                        className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white/40 hover:text-white"
-                        title="Copy to clipboard"
-                      >
-                        <Code2 size={18} />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-8">
-                <Link
-                  href="/docs" 
-                  className="w-full sm:w-auto px-12 py-6 bg-primary text-primary-foreground rounded-2xl text-2xl font-black hover:scale-105 transition-all shadow-[0_0_60px_-15px_rgba(var(--primary),0.6)] group relative overflow-hidden"
-                >
-                  <span className="relative z-10 flex items-center gap-3">
-                    Start Building <ArrowRight size={24} className="group-hover:translate-x-1 transition-transform" />
-                  </span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-                </Link>
-                <div className="flex items-center gap-10">
-                  <StatItem value="v0.2.3" label="Stable" />
-                  <div className="w-px h-10 bg-white/10" />
-                  <StatItem value="60fps" label="Isolate Engine" />
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Code Experience */}
-            <motion.div 
-              initial={{ opacity: 0, y: 100 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4, duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-              className="mt-32 max-w-6xl mx-auto"
-            >
-              <div className="relative">
-                <div className="absolute -inset-1 bg-gradient-to-r from-primary/50 to-purple-500/50 rounded-[2.5rem] blur-2xl opacity-20" />
-                <div className="relative glass rounded-[2.5rem] overflow-hidden">
-                  <div className="flex items-center justify-between px-8 py-5 border-b border-white/5 bg-white/5">
-                    <div className="flex gap-2">
-                      <div className="w-3.5 h-3.5 rounded-full bg-red-500/20 border border-red-500/50" />
-                      <div className="w-3.5 h-3.5 rounded-full bg-yellow-500/20 border border-yellow-500/50" />
-                      <div className="w-3.5 h-3.5 rounded-full bg-green-500/20 border border-green-500/50" />
-                    </div>
-                    <div className="text-[10px] font-black tracking-widest uppercase text-white/30">lib/features/auth/controller.dart</div>
-                    <div className="w-20" />
-                  </div>
-                  <div className="p-12 text-left md:text-xl font-mono leading-relaxed overflow-x-auto text-white/80">
-                    <pre>
-                      <code>
-                        <span className="text-purple-400">class</span> <span className="text-emerald-400">LoginController</span> <span className="text-purple-400">extends</span> <span className="text-emerald-400">FluxController</span> &#123;<br />
-                        &nbsp;&nbsp;<span className="text-blue-400">final</span> user = <span className="text-orange-400">flux</span>&lt;User?&gt;(<span className="text-blue-400">null</span>);<br /><br />
-                        &nbsp;&nbsp;<span className="text-blue-400">@override</span><br />
-                        &nbsp;&nbsp;<span className="text-blue-400">void</span> <span className="text-orange-400">onInit</span>() &#123;<br />
-                        &nbsp;&nbsp;&nbsp;&nbsp;<span className="text-slate-500">// Native Fluxy Networking</span><br />
-                        &nbsp;&nbsp;&nbsp;&nbsp;<span className="text-orange-400">Fx</span>.http.<span className="text-orange-400">get</span>(<span className="text-emerald-400">&apos;/auth/me&apos;</span>).<span className="text-orange-400">then</span>((v) =&gt; user.value = v);<br />
-                        &nbsp;&nbsp;&#125;<br />
-                        &#125;
-                      </code>
-                    </pre>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* Bento Feature Grid */}
-        <section className="py-40 container mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 h-full">
-            <BentoCard
-              className="md:col-span-8 md:row-span-2"
-              icon={<Zap className="text-primary" size={40} />}
-              title="Flux State System"
-              description="Enterprise reactive engine with fluxSelector and fluxWorker. Background isolate execution for zero-jank UI."
-              variant="featured"
-            />
-            <BentoCard
-              className="md:col-span-4"
-              icon={<Cpu className="text-blue-400" size={32} />}
-              title="FluxyHttp"
-              description="Zero-dependency HTTP engine built on native dart:io."
-            />
-            <BentoCard
-              className="md:col-span-4"
-              icon={<Terminal className="text-orange-400" size={32} />}
-              title="Blueprints"
-              description="CLI-driven architectural scaffolding for scalable apps."
-            />
-            <BentoCard
-              className="md:col-span-4"
-              icon={<Layers className="text-purple-400" size={32} />}
-              title="Architecture"
-              description="Formalized patterns with FluxController & Repository."
-            />
-            <BentoCard
-              className="md:col-span-8"
-              icon={<Code2 className="text-emerald-400" size={32} />}
-              title="Atomic Styling DSL"
-              description="Chainable modifiers that reduce nesting by over 80%. Build beautiful UIs with speed and precision."
-              variant="wide"
-            />
-          </div>
-        </section>
-
-        {/* Comparison: The Future of Flutter */}
-        <section className="py-48 bg-white/5 border-y border-white/5 relative overflow-hidden">
-          <div className="absolute inset-0 bg-grid-white/5 [mask-image:linear-gradient(to_bottom,transparent,black,transparent)]" />
-          <div className="container mx-auto px-6 relative">
-            <div className="text-center max-w-4xl mx-auto mb-32">
-              <h2 className="text-5xl md:text-7xl font-black mb-8 leading-[0.9]">EFFORTLESS <br /><span className="text-gradient">COMPOSITION.</span></h2>
-              <p className="text-xl text-slate-400 font-medium">Why struggle with the widget tree when you can flow through it?</p>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 max-w-7xl mx-auto items-center">
-              <div className="space-y-10 group opacity-50 hover:opacity-100 transition-opacity">
-                <div className="inline-flex items-center gap-2 text-red-500 font-black tracking-widest text-[10px] uppercase bg-red-500/10 px-3 py-1 rounded-full">The Widget Mess</div>
-                <div className="glass p-10 rounded-[2.5rem] border-white/5 grayscale">
-                  <pre className="text-base font-mono leading-relaxed opacity-40">
-                    <code>
-                      Padding(<br />
-                      &nbsp;&nbsp;padding: EdgeInsets.all(16),<br />
-                      &nbsp;&nbsp;child: Center(<br />
-                      &nbsp;&nbsp;&nbsp;&nbsp;child: Container(<br />
-                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;decoration: BoxDecoration(<br />
-                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;color: Colors.blue,<br />
-                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;),<br />
-                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;child: Text(&quot;Count: $c&quot;),<br />
-                      &nbsp;&nbsp;&nbsp;&nbsp;),<br />
-                      &nbsp;&nbsp;),<br />
-                      )
-                    </code>
-                  </pre>
-                </div>
-              </div>
-
-              <div className="space-y-10">
-                <div className="inline-flex items-center gap-2 text-emerald-500 font-black tracking-widest text-[10px] uppercase bg-emerald-500/10 px-3 py-1 rounded-full">Reactive Flow</div>
-                <div className="glass p-10 rounded-[2.5rem] border-primary/20 shadow-[0_0_80px_-20px_rgba(var(--primary),0.3)] animate-float">
-                  <pre className="text-base md:text-xl font-mono leading-relaxed text-primary/90">
-                    <code>
-                      Fx.center()<br />
-                      &nbsp;&nbsp;.child(<br />
-                      &nbsp;&nbsp;&nbsp;&nbsp;Fx.text(&quot;Count: $&#123;c.value&#125;&quot;)<br />
-                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.p(16)<br />
-                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.bg.blue500<br />
-                      &nbsp;&nbsp;)<br />
-                      &nbsp;&nbsp;.render();
-                    </code>
-                  </pre>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Global CTA */}
-        <section className="py-60 text-center relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-t from-primary/20 to-transparent -z-10" />
+        <section className="container mx-auto px-6 text-center mb-32">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="container mx-auto px-6"
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            <h2 className="text-6xl md:text-[8rem] font-black tracking-tighter mb-16 leading-[0.8] text-gradient">
-              STOP PORTING. <br /> START DESIGNING.
-            </h2>
-            <div className="flex flex-col md:flex-row items-center justify-center gap-10">
-              <Link
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-md text-xs font-medium text-indigo-300 mb-8 hover:bg-white/10 transition-colors cursor-default">
+              <Sparkles size={12} className="text-indigo-400" />
+              <span className="text-white/80">Fluxy v0.2.4 is now stable</span>
+            </div>
+
+            <h1 className="text-6xl md:text-8xl font-bold tracking-tighter leading-[1] mb-8 bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-white/40 drop-shadow-2xl">
+              Build Flutter apps <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 animate-gradient-x">
+                at Light Speed.
+              </span>
+            </h1>
+
+            <p className="text-lg md:text-2xl text-white/50 max-w-3xl mx-auto mb-12 leading-relaxed font-light">
+              The high-performance framework that unifies <span className="text-indigo-400 font-medium">State</span>, <span className="text-purple-400 font-medium">Networking</span>, and <span className="text-pink-400 font-medium">Style</span>. <br className="hidden md:block"/>
+              Write 80% less boilerplate. Ship 10x faster.
+            </p>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-5">
+              <Link 
                 href="/docs" 
-                className="px-16 py-8 bg-white text-black rounded-3xl text-3xl font-black hover:scale-110 hover:-rotate-1 transition-all shadow-[0_20px_80px_-15px_rgba(255,255,255,0.3)] active:scale-95"
+                className="group relative px-8 py-4 bg-white text-black rounded-xl text-base font-bold tracking-wide hover:scale-105 transition-transform overflow-hidden"
               >
-                Go Documentation
+                <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 opacity-0 group-hover:opacity-10 transition-opacity" />
+                <span className="flex items-center gap-2">
+                  Start Building <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                </span>
               </Link>
-              <Link
-                href="https://pub.dev/packages/fluxy" 
-                className="px-16 py-8 border-4 border-white/10 text-white rounded-3xl text-3xl font-black hover:bg-white/5 transition-all active:scale-95"
-              >
-                Get the Package
-              </Link>
+              
+              <div className="flex items-center gap-3 px-6 py-4 rounded-xl border border-white/10 bg-white/[0.02] backdrop-blur-md font-mono text-sm text-white/60 hover:bg-white/[0.05] transition-colors cursor-text group">
+                <span className="text-indigo-400 select-none">$</span>
+                <span className="group-hover:text-white transition-colors">fluxy init my_app</span>
+                <button 
+                  onClick={() => navigator.clipboard.writeText('fluxy init my_app')}
+                  className="ml-4 p-1.5 rounded-md hover:bg-white/10 text-white/30 hover:text-white transition-all"
+                  title="Copy"
+                >
+                  <Code2 size={14} />
+                </button>
+              </div>
             </div>
           </motion.div>
         </section>
-      </main>
 
-      {/* Footer */}
-      <footer className="py-24 border-t border-white/5 relative z-10 bg-[#020617]">
-        <div className="container mx-auto px-6">
-          <div className="flex flex-col lg:flex-row justify-between gap-20">
-            <div className="max-w-sm space-y-8">
-              <div className="flex items-center gap-3">
-                <FluxyLogo className="w-12 h-12" />
-                <span className="text-3xl font-black tracking-tighter">Fluxy</span>
-              </div>
-              <p className="text-slate-400 font-bold leading-relaxed">
-                The high-performance application platform for Flutter. Built for scale, designed for speed. Optimized for the next decade of development.
+        {/* Feature Grid */}
+        <section className="container mx-auto px-6 py-20">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <BentoCard 
+              title="Reactive Engine"
+              desc="Granular updates with Signals. No context hell."
+              icon={<Zap className="text-yellow-400" size={24} />}
+              gradient="from-yellow-500/20 to-orange-500/5"
+            />
+            <BentoCard 
+              title="Global Networking"
+              desc="Zero-dependency HTTP client with smart caching."
+              icon={<Globe className="text-blue-400" size={24} />}
+              gradient="from-blue-500/20 to-cyan-500/5"
+            />
+            <BentoCard 
+              title="Atomic Styling"
+              desc="Tailwind-like logic for Flutter widgets."
+              icon={<Box className="text-purple-400" size={24} />}
+              gradient="from-purple-500/20 to-pink-500/5"
+            />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+             <BentoCard 
+              title="Offline Architecture"
+              desc="Local-first repositories with auto-sync."
+              icon={<Database className="text-emerald-400" size={24} />}
+              gradient="from-emerald-500/20 to-green-500/5"
+              className="md:col-span-1"
+            />
+             <BentoCard 
+              title="CLI Automation"
+              desc="Generate features, models, and controllers instantly."
+              icon={<Terminal className="text-white" size={24} />}
+              gradient="from-slate-500/20 to-slate-800/5"
+              className="md:col-span-1"
+            />
+          </div>
+        </section>
+
+        {/* Code Comparison */}
+        <section className="container mx-auto px-6 py-32">
+          <div className="flex flex-col md:flex-row gap-12 items-center">
+            
+            <div className="flex-1 space-y-8">
+              <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
+                Stop writing <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-orange-400">Spaghetti Code.</span>
+              </h2>
+              <p className="text-xl text-white/60 leading-relaxed">
+                Fluxy eliminates deeply nested widget trees. Chain your styles, bind your state, and let the engine handle the rest.
               </p>
+              
+              <ul className="space-y-4 pt-4">
+                <CheckItem text="80% less boilerplate code" />
+                <CheckItem text="No explicit BuildContext required" />
+                <CheckItem text="Automatic memory management" />
+                <CheckItem text="Type-safe responsive design" />
+              </ul>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-20">
-              <FooterColumn title="Docs" links={[
-                { label: 'Quick Start', href: '/docs/quick-start' },
-                { label: 'Blueprints', href: '/docs/cli' },
-                { label: 'Flux System', href: '/docs/state-management' },
-                { label: 'Showcase', href: '/docs/examples' }
-              ]} />
-              <FooterColumn title="Community" links={[
-                { label: 'GitHub', href: 'https://github.com/swaingithub/fluxy' },
-                { label: 'Pub.dev', href: 'https://pub.dev/packages/fluxy' },
-                { label: 'Release Notes', href: '/docs/migration/' }
-              ]} />
-              <div className="flex flex-col gap-6 lg:col-span-1 col-span-2">
-                <span className="text-[10px] font-black tracking-[0.4em] uppercase text-white/20">Operational</span>
-                <div className="flex items-center gap-3 px-6 py-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 font-black text-xs w-fit">
-                  <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                  INFRASTRUCTURE ONLINE
+
+            <div className="flex-1 w-full max-w-2xl relative">
+              <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-2xl opacity-20 blur-xl animate-pulse-slow"></div>
+              <div className="relative bg-[#0F0F10] border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
+                {/* Window Header */}
+                <div className="flex items-center px-4 py-3 border-b border-white/5 bg-white/[0.02]">
+                  <div className="flex gap-2">
+                    <div className="w-3 h-3 rounded-full bg-red-500/20 border border-red-500/50" />
+                    <div className="w-3 h-3 rounded-full bg-yellow-500/20 border border-yellow-500/50" />
+                    <div className="w-3 h-3 rounded-full bg-green-500/20 border border-green-500/50" />
+                  </div>
+                  <div className="ml-4 text-xs font-mono text-white/30">user_card.dart</div>
+                </div>
+                
+                {/* Code Content */}
+                <div className="p-6 overflow-x-auto">
+                  <pre className="font-mono text-sm leading-relaxed">
+                    <code>
+                      <span className="text-purple-400">Fluxy</span>.<span className="text-blue-400">box</span>()<br/>
+                      &nbsp;&nbsp;.<span className="text-yellow-400">p</span>(20).<span className="text-yellow-400">rounded</span>(16)<br/>
+                      &nbsp;&nbsp;.<span className="text-yellow-400">bg</span>(Colors.white)<br/>
+                      &nbsp;&nbsp;.<span className="text-yellow-400">shadow</span>.lg<br/>
+                      &nbsp;&nbsp;.<span className="text-yellow-400">onTap</span>(() =&gt; controller.<span className="text-blue-400">login</span>())<br/>
+                      &nbsp;&nbsp;.<span className="text-yellow-400">child</span>(<br/>
+                      &nbsp;&nbsp;&nbsp;&nbsp;<span className="text-purple-400">Fx</span>.<span className="text-blue-400">col</span>()<br/>
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.<span className="text-yellow-400">gap</span>(8)<br/>
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.<span className="text-yellow-400">children</span>([<br/>
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span className="text-purple-400">Fx</span>.<span className="text-blue-400">text</span>(<span className="text-green-400">"Welcome Back"</span>).<span className="text-yellow-400">h2</span>(),<br/>
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span className="text-purple-400">Fx</span>.<span className="text-blue-400">text</span>(user.name).<span className="text-yellow-400">muted</span>(),<br/>
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;])<br/>
+                      &nbsp;&nbsp;)
+                    </code>
+                  </pre>
                 </div>
               </div>
             </div>
+
           </div>
-          <div className="mt-24 pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between gap-8 text-[10px] font-black tracking-[0.3em] uppercase text-white/20">
-            <span>© 2024 SWAINGITHUB. ALL RIGHTS RESERVED.</span>
-            <span>DEVELOPED WITH PRECISION IN FLUTTER.</span>
+        </section>
+
+        {/* CTA */}
+        <section className="container mx-auto px-6 py-20 text-center">
+            <div className="p-12 md:p-24 rounded-[3rem] bg-gradient-to-b from-white/5 to-transparent border border-white/5 relative overflow-hidden">
+                <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+                
+                <h2 className="text-4xl md:text-6xl font-bold mb-8 tracking-tight">
+                  Ready to upgrade your workflow?
+                </h2>
+                
+                <Link 
+                  href="/docs" 
+                  className="inline-flex px-10 py-5 bg-white text-black rounded-full text-xl font-bold tracking-wide hover:scale-105 transition-transform shadow-xl"
+                >
+                  Read the Docs
+                </Link>
+            </div>
+        </section>
+
+      </main>
+
+      {/* Footer */}
+      <footer className="border-t border-white/10 bg-black pt-20 pb-10">
+        <div className="container mx-auto px-6">
+          <div className="flex flex-col md:flex-row justify-between gap-12 mb-16">
+            <div className="space-y-4 max-w-sm">
+              <div className="flex items-center gap-2">
+                <FluxyLogo className="w-8 h-8" />
+                <span className="text-2xl font-bold">Fluxy</span>
+              </div>
+              <p className="text-white/40 text-sm leading-relaxed">
+                The modern application framework for Flutter. 
+                Built by developers, for developers who value speed and aesthetics.
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-16">
+                <div className="space-y-4">
+                    <h4 className="font-bold text-white">Resources</h4>
+                    <FooterLink href="/docs">Documentation</FooterLink>
+                    <FooterLink href="/docs/guide">Guides</FooterLink>
+                    <FooterLink href="/docs/api">API Reference</FooterLink>
+                </div>
+                <div className="space-y-4">
+                    <h4 className="font-bold text-white">Ecosystem</h4>
+                    <FooterLink href="/docs/cli">Fluxy CLI</FooterLink>
+                    <FooterLink href="/docs/networking">Networking</FooterLink>
+                    <FooterLink href="/docs/state">Reactivity</FooterLink>
+                </div>
+                <div className="space-y-4">
+                    <h4 className="font-bold text-white">Community</h4>
+                    <FooterLink href="https://github.com/swaingithub/fluxy">GitHub</FooterLink>
+                    <FooterLink href="https://pub.dev/packages/fluxy">Pub.dev</FooterLink>
+                    <FooterLink href="https://twitter.com/swaingithub">Twitter</FooterLink>
+                </div>
+            </div>
+          </div>
+          
+          <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-white/30 font-medium">
+             <span>© 2024 Swaingithub. MIT License.</span>
+             <span className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" /> All Systems Operational</span>
           </div>
         </div>
       </footer>
@@ -338,53 +289,43 @@ export default function LandingPage() {
   );
 }
 
-function StatItem({ value, label }: { value: string, label: string }) {
+function NavLink({ href, children }: { href: string, children: React.ReactNode }) {
   return (
-    <div className="text-left">
-      <div className="text-2xl font-black text-white">{value}</div>
-      <div className="text-[9px] font-black tracking-widest text-white/30 uppercase">{label}</div>
-    </div>
+    <Link href={href} className="relative group py-2">
+      <span className="relative z-10 hover:text-white transition-colors">{children}</span>
+      <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-indigo-500 group-hover:w-full transition-all duration-300" />
+    </Link>
   );
 }
 
-function BentoCard({ className, icon, title, description, variant }: {
-  className?: string,
-  icon: React.ReactNode,
-  title: string,
-  description: string,
-  variant?: 'featured' | 'wide'
-}) {
+function BentoCard({ title, desc, icon, gradient, className }: any) {
   return (
-    <div className={`p-10 rounded-[3rem] glass hover:border-white/20 transition-all duration-500 group flex flex-col justify-end gap-6 overflow-hidden relative ${className}`}>
-      {variant === 'featured' && (
-        <div className="absolute top-0 right-0 w-[40%] h-[40%] bg-primary/10 blur-[80px] -z-10 group-hover:scale-150 transition-transform duration-1000" />
-      )}
-      <div className={`w-16 h-16 rounded-[1.5rem] bg-white/5 border border-white/5 flex items-center justify-center mb-auto group-hover:scale-110 group-hover:bg-white/10 transition-all duration-500`}>
+    <div className={`p-8 rounded-3xl bg-[#0A0A0B] border border-white/5 hover:border-white/10 transition-colors group relative overflow-hidden ${className}`}>
+      <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${gradient} blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+      
+      <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center mb-6 text-white group-hover:scale-110 transition-transform duration-500 relative z-10">
         {icon}
       </div>
-      <div className="space-y-4">
-        <h3 className={`font-black tracking-tight ${variant === 'featured' ? 'text-4xl' : 'text-2xl'}`}>{title}</h3>
-        <p className={`text-slate-400 font-bold leading-relaxed ${variant === 'featured' ? 'text-xl' : 'text-sm'}`}>
-          {description}
-        </p>
-      </div>
+      
+      <h3 className="text-xl font-bold mb-2 text-white relative z-10">{title}</h3>
+      <p className="text-sm text-white/50 leading-relaxed relative z-10">{desc}</p>
     </div>
   );
 }
 
-function FooterColumn({ title, links }: { title: string, links: { label: string, href: string }[] }) {
+function CheckItem({ text }: { text: string }) {
   return (
-    <div className="flex flex-col gap-8">
-      <span className="text-[10px] font-black tracking-[0.4em] uppercase text-white/20">{title}</span>
-      <div className="flex flex-col gap-4">
-        {links.map((link, idx) => (
-          <Link key={idx} href={link.href} className="text-sm font-bold text-slate-400 hover:text-white transition-colors">
-            {link.label}
-          </Link>
-        ))}
-      </div>
+    <div className="flex items-center gap-3 text-white/80">
+      <CheckCircle2 size={18} className="text-emerald-500" />
+      <span>{text}</span>
     </div>
   );
 }
 
-
+function FooterLink({ href, children }: { href: string, children: React.ReactNode }) {
+  return (
+    <Link href={href} className="block text-sm text-white/50 hover:text-indigo-400 transition-colors">
+      {children}
+    </Link>
+  );
+}

@@ -1,0 +1,65 @@
+---
+title: FxGrid
+description: A flexible responsive grid system with advanced presets.
+---
+
+# FxGrid
+
+`FxGrid` simplifies creating responsive grid layouts with easy column control and spacing.
+
+## Usage
+
+```dart
+FxGrid(
+  gap: 16,
+  children: items.map((i) => Card(i)).toList(),
+  style: FxStyle(gridCols: 1), // Default: 1 Col (Mobile)
+  responsive: FxResponsiveStyle(
+    md: FxStyle(gridCols: 2),  // Tablet: 2 Cols
+    lg: FxStyle(gridCols: 4),  // Desktop: 4 Cols
+  ),
+)
+```
+
+## Advanced Presets
+
+### Auto Grid
+`Fx.grid.auto()` calculates columns based on available width, perfect for responsive lists that adapt to any screen size.
+
+```dart
+Fx.grid.auto(
+  minItemWidth: 160,
+  gap: 16,
+  children: products.map((p) => ProductCard(p)).toList(),
+);
+```
+
+### Cards Grid
+Optimized for e-commerce or content listings.
+
+```dart
+Fx.grid.cards(
+  items: products,
+  builder: (product) => ProductCard(product),
+)
+```
+
+### Gallery Grid
+Optimized for images and media display.
+
+```dart
+Fx.grid.gallery(
+  items: images,
+  builder: (img) => Fx.image(img).cover(),
+)
+```
+
+## API Reference
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `List<Widget>` | required | Grid items. |
+| `gap` | `double` | `0` | Spacing between items. |
+| `minItemWidth` | `double` | `null` | (Auto only) Min width before wrapping. |
+| `style` | `FxStyle?` | `null` | Base grid style (esp. `gridCols`). |
+| `responsive` | `FxResponsiveStyle?` | `null` | Responsive overrides. |

@@ -1,0 +1,20 @@
+{
+  "title": "Fundamentals",
+  "pages": [
+    "---Core & Reactivity---",
+    "architecture",
+    "fluxy-core",
+    "core-concepts",
+    "state-management",
+    "reactive-engine",
+    "reactivity",
+    "---Patterns---",
+    "workflow",
+    "dependency-injection",
+    "data-layer",
+    "---Tooling---",
+    "cli",
+    "testing",
+    "performance"
+  ]
+}

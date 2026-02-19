@@ -1,0 +1,67 @@
+---
+title: FxTable
+description: A premium data table with sticky headers and responsive scrolling.
+---
+
+# FxTable`
+
+`FxTable` is a responsive data grid designed for web and desktop applications. It offers built-in sorting, sticky headers, and robust column definitions.
+
+## Usage
+
+```dart
+FxTable<User>(
+  data: users, // List<User>
+  columns: [
+    FxTableColumn(
+      header: "Name", 
+      cellBuilder: (user) => Fx.text(user.name).bold(),
+    ),
+    FxTableColumn(
+      header: "Status", 
+      cellBuilder: (user) => FxBadge(label: user.status),
+    ),
+  ],
+)
+```
+
+## Features
+
+### Sticky Headers
+The header row stays fixed at the top while scrolling, ensuring column context is always visible.
+
+### Custom Cells
+Use `cellBuilder` to render complex widgets inside table cells.
+
+```dart
+FxTableColumn(
+  header: "Actions",
+  cellBuilder: (user) => Fx.button("Edit").onTap(() => edit(user)),
+)
+```
+
+## API Reference
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `data` | `List<T>` | required | The list of data objects. |
+| `columns` | `List<FxTableColumn<T>>` | required | List of column definitions. |
+| `striped` | `bool` | `false` | Whether to stripe alternate rows. |
+| `onRowTap` | `ValueChanged<T>?` | `null` | Callback for row selection. |
+| `style` | `FxStyle?` | `null` | Custom table container style. |
+| `headerStyle` | `FxStyle?` | `null` | Custom header row style. |
+
+## Modifiers
+
+The table supports standard `FxStyle` properties for padding, borders, and shadows.
+
+```dart
+FxTable<User>(
+  style: FxStyle(
+    padding: 20,
+    backgroundColor: Colors.white,
+    borderRadius: BorderRadius.circular(12),
+    boxShadow: [BoxShadow(blurRadius: 10)],
+  ),
+)
+```

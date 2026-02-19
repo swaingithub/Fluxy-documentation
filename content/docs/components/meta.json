@@ -1,0 +1,20 @@
+{
+  "title": "Components",
+  "pages": [
+    "---Elements---",
+    "avatar",
+    "badge",
+    "button",
+    "image",
+    "---Layout & Navigation---",
+    "layout",
+    "grid",
+    "bottom-bar",
+    "tab-scaffold",
+    "---Data & Feedback---",
+    "chart",
+    "table",
+    "shimmer",
+    "dashboard"
+  ]
+}

@@ -1,0 +1,84 @@
+---
+title: Tokens & Typography
+description: The global design system foundation.
+---
+
+# Tokens & Typography
+
+Fluxy encourages a consistent design language through highly-optimized **Design Tokens**. These ensure that spacing, radius, typography, and shadows remain uniform.
+
+## FxTokens
+
+`FxTokens` is your global entry point for the design system. It follows a predictable t-shirt sizing convention:
+
+- `xs` (Extra Small)
+- `sm` (Small)
+- `md` (Medium)
+- `lg` (Large)
+- `xl` (Extra Large)
+- `xxl` (Double Extra Large)
+
+### Spacing & Radius
+
+Access predefined sizes for layout and corner radius.
+
+```dart
+Fx.box()
+  .p(FxTokens.space.md)      // 16dp spacing
+  .rounded(FxTokens.radius.lg) // 12dp radius
+```
+
+### Shadows
+
+Standardized shadow depths for elevating UI elements.
+
+```dart
+Fx.box()
+  .shadow.md // Medium shadow (elevation 4)
+  .shadow.xl // Extra large shadow (elevation 16)
+```
+
+## Typography DSL
+
+Fluxy provides a rich set of font size tokens and text modifiers.
+
+### Font Sizes
+
+| Token | Size | Example |
+|-------|------|---------|
+| `.xs()` | 12sp | `.font.xs()` |
+| `.sm()` | 14sp | `.font.sm()` |
+| `.md()` | 16sp | `.font.md()` |
+| `.lg()` | 18sp | `.font.lg()` |
+| `.xl()` | 20sp | `.font.xl()` |
+| `.xl2()` - `.xl6()` | 24sp - 60sp | `.font.xl4()` |
+
+### Text Modifiers
+
+Chain these modifiers to style text elements instantly.
+
+- `.bold()`: Applies font weight 700.
+- `.italic()`: Applies italic style.
+- `.letterSpacing(double)`: Adjusts kerning.
+- `.whiteText()` / `.blackText()`: High-contrast shortcuts.
+
+```dart
+Fx.text("Premium Title")
+  .font.xl4()
+  .bold()
+  .italic()
+  .letterSpacing(1.2)
+  .whiteText();
+```
+
+## Colors
+
+All color transparency should use the modern `withValues` API.
+
+```dart
+// Preferred
+Colors.blue.withValues(alpha: 0.8)
+
+// Avoid (Deprecated in Flutter)
+Colors.blue.withOpacity(0.8)
+```

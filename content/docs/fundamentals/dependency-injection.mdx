@@ -1,0 +1,86 @@
+---
+title: Dependency Injection
+description: Managing dependencies with Fluxy's built-in DI container.
+---
+
+# Dependency Injection (DI)
+
+Fluxy includes a lightweight, powerful Dependency Injection system that eliminates the need for `Provider`, `GetIt`, or `Riverpod` for basic service location. It supports lazy loading, scoping, and automatic lifecycle management for controllers.
+
+## Basic Usage
+
+The DI system is accessed via `Fluxy` static methods.
+
+```dart
+// 1. Register a service
+Fluxy.put(AuthService());
+
+// 2. Retrieve it anywhere
+final auth = Fluxy.find<AuthService>();
+```
+
+## Lazy Loading
+
+To optimize startup time, use `lazyPut`. The dependency is only created when `find` is called for the first time.
+
+```dart
+Fluxy.lazyPut(() => VeryHeavyService());
+// Service is NOT created yet.
+
+// ... later in the app
+final service = Fluxy.find<VeryHeavyService>();
+// Now it's created and cached.
+```
+
+## Scoping
+
+Fluxy supports different scopes for dependencies to manage memory efficiently.
+
+| Scope | Description |
+|-------|-------------|
+| `FxScope.app` | **Singleton**. Lives as long as the app runs. (Default) |
+| `FxScope.route` | **Ephemeral**. Associated with a route or feature. Disposed when not needed. |
+| `FxScope.factory` | **Transient**. A new instance is created every time `find` is called. |
+
+```dart
+// Factory Scope: Always get a fresh instance
+Fluxy.put(
+  MyWidgetController(), 
+  scope: FxScope.factory
+);
+
+// Route Scope: Cleaned up manually or by router
+Fluxy.put(
+  DetailsController(),
+  scope: FxScope.route
+);
+```
+
+## Lifecycle Management
+
+If the injected dependency implements `FluxyDisposable` (like `FluxController`), its `onDispose()` method is automatically called when the dependency is removed from memory.
+
+```dart
+class MyService extends FluxController {
+  @override
+  void onInit() {
+    print("Service Initialized");
+  }
+
+  @override
+  void onDispose() {
+    print("Service Disposed"); // Called automatically by DI
+    super.onDispose();
+  }
+}
+```
+
+## Testing
+
+For unit tests, you can reset the DI container to ensure a clean slate between tests.
+
+```dart
+void tearDown() {
+  FluxyDI.reset();
+}
+```

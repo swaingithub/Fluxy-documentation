@@ -1,0 +1,82 @@
+---
+title: FxButton
+description: A pre-styled, responsive button component with multiple variants, fluent modifiers, and loading support.
+---
+
+# FxButton
+
+`FxButton` is a high-level wrapper around Flutter's Material buttons, enhanced with atomic styling and built-in reactivity.
+
+## Usage
+
+```dart
+Fx.button("Click Me")
+  .primary
+  .onTap(() => print("Clicked"))
+```
+
+## Variants
+
+Fluxy provides semantic variants that automatically adjust colors and interactions.
+
+<div className="flex gap-4 p-4 border rounded-lg bg-muted">
+  <img src="/images/buttons-dark.png" alt="Button Variants" className="rounded-lg shadow-sm" />
+</div>
+
+```dart
+Fx.button("Primary").primary
+Fx.button("Secondary").secondary
+Fx.button("Danger").danger
+Fx.button("Outline").outline
+Fx.button("Ghost").ghost
+Fx.button("Text").text
+```
+
+## Sizes
+
+Control button density using preset size modifiers.
+
+```dart
+Fx.button("Tiny").sizeXs()
+Fx.button("Small").sizeSm()
+Fx.button("Default") // md
+Fx.button("Large").sizeLg()
+Fx.button("Extra Large").sizeXl()
+```
+
+## Modifiers
+
+Fluxy buttons support fluent modifiers for rapid customization.
+
+| Modifier | Description | Example |
+|----------|-------------|---------|
+| `.rounded` | Makes the button pill-shaped | `.rounded` |
+| `.square` | Removes all border radius | `.square` |
+| `.fullWidth()` | Expands to fill available width | `.fullWidth()` |
+| `.loading(bool)` | Replaces content with a spinner | `.loading(isLoading.value)` |
+| `.withIcon(Widget)` | Adds a leading icon | `.withIcon(Icon(Icons.add))` |
+| `.withTrailing(Widget)` | Adds a trailing icon | `.withTrailing(Icon(Icons.arrow_right))` |
+| `.shadowSm()` | Adds subtle elevation | `.shadowSm()` |
+
+## API Reference
+
+### Properties
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `label` | `String` | required | The text content of the button. |
+| `onTap` | `VoidCallback?` | `null` | Callback when button is pressed. |
+| `variant` | `FxButtonVariant` | `primary` | Visual style of the button. |
+| `size` | `FxButtonSize` | `md` | Size density token. |
+| `isLoading` | `bool` | `false` | Whether to show a spinner. |
+| `style` | `FxStyle?` | `null` | Custom atomic style override. |
+
+### Buttonizers (Extension API)
+
+Turn any String or Widget into a button instantly using the `.btn()` extension.
+
+```dart
+"Login".primaryBtn(onTap: () => login())
+
+Icon(Icons.settings).btn(onTap: () => openSettings())
+```

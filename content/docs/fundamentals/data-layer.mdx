@@ -1,0 +1,82 @@
+---
+title: Data & Repository
+description: Managing offline data flow with FluxyRepository.
+---
+
+# Data & Repository
+
+The `FluxRepository` is a foundational abstraction in Fluxy designed for building robust, offline-first applications. It connects your UI to remote data sources (like REST APIs or Databases) while synchronizing with local storage (like SQLite or Shared Preferences).
+
+## FluxRepository
+
+A `FluxRepository` is essentially a `FluxController` enhanced with data management capabilities:
+
+*   **Offline Sync Logic**: Built-in support for "Local First, Then Remote" synchronization.
+*   **Stream Binding**: Automatic lifecycle management for database streams (e.g., Firebase, realm).
+*   **Data Guard Integration**: Uses `FluxyDataGuard` for retries and resilience.
+
+## Creating a Repository
+
+Extend `FluxRepository` and implement the `sync()` usage or bind streams directly.
+
+```dart
+class UserRepository extends FluxRepository {
+  // Define Reactive State
+  final user = flux<User?>(null);
+
+  @override
+  void onInit() {
+    // Automatically load data when repo starts
+    loadUser();
+  }
+
+  Future<void> loadUser() async {
+    // Use DataGuard for SWR (Stale-While-Revalidate)
+    await FluxyDataGuard.swr(
+      local: _fetchLocalUser(),
+      remote: _fetchRemoteUser(),
+      onData: (data) => user.value = data,
+    );
+  }
+
+  Future<User?> _fetchLocalUser() async {
+    // Fetch from Hive/SQLite
+  }
+
+  Future<User> _fetchRemoteUser() async {
+    // Fetch from API
+    return await Fx.http.get('/me');
+  }
+}
+```
+
+## Stream Subscriptions
+
+If you work with real-time databases (like Firebase), manual subscription management is error-prone. `FluxRepository` simplifies this with `bindStream`.
+
+```dart
+class ChatRepository extends FluxRepository {
+  final messages = flux<List<Message>>([]);
+
+  void listenToChat(String chatId) {
+    // This subscription is automatically canceled when 
+    // the repository is disposed. No memory leaks!
+    bindStream(
+      MyDatabase.chatStream(chatId), 
+      messages
+    );
+  }
+}
+```
+
+## Connectivity Awareness
+
+Every `FluxRepository` comes with a built-in `isOnline` signal that you can use to adjust UI or logic based on network availability.
+
+```dart
+if (repo.isOnline.value) {
+  // Sync
+} else {
+  // Show offline banner
+}
+```

@@ -1,0 +1,102 @@
+---
+title: The Fluxy Class
+description: The global entry point and service locator for the framework.
+---
+
+# The Fluxy Class
+
+`Fluxy` is the central nervous system of your application. It acts as a **Global Service Locator**, **Navigation Hub**, and **Configuration Center**.
+
+Instead of importing dozens of packages for routing, DI, and networking, you access them all through this single static class.
+
+## Initialization
+
+You must initialize Fluxy at the start of your app's `main()` function. This boots up the dependency injection, storage, and plugin systems.
+
+```dart
+void main() async {
+  // 1. Initialize Core Services
+  await Fluxy.init();
+  
+  runApp(const MyApp());
+}
+```
+
+## Navigation Shortcuts
+
+Fluxy provides a context-free navigation API, allowing you to navigate from anywhere (even inside Controllers).
+
+```dart
+// Navigate to a route
+Fluxy.to('/details', arguments: {'id': 123});
+
+// Navigate and replace current route (e.g., Login -> Home)
+Fluxy.off('/home');
+
+// Navigate and clear entire stack (e.g., Logout)
+Fluxy.offAll('/login');
+
+// Go back
+Fluxy.back();
+```
+
+## Dependency Injection (DI)
+
+Manage your app's dependencies with a simple key-value store.
+
+```dart
+// Register a dependency
+Fluxy.put(AuthService());
+
+// Lazy load (only created when first used)
+Fluxy.lazyPut(() => UserController());
+
+// Retrieve a dependency
+final auth = Fluxy.find<AuthService>();
+```
+
+## Networking
+
+Access the globally configured `FluxyHttp` client.
+
+```dart
+// GET request
+final response = await Fluxy.http.get('/users/1');
+
+// POST request
+await Fluxy.http.post('/login', data: {'email': '...'});
+```
+
+## Plugins & Configuration
+
+### Registering Plugins
+Extend Fluxy's capabilities by registering plugins before initialization.
+
+```dart
+Fluxy.register(MyAnalyticsPlugin());
+await Fluxy.init();
+```
+
+### Strict Mode (Layout)
+Enable strict mode during development to catch layout errors immediately.
+
+```dart
+Fluxy.setStrictMode(true);
+```
+
+### Stability Metrics
+View a summary of how many crashes Fluxy has prevented in the current session.
+
+```dart
+Fluxy.printStabilitySummary();
+```
+
+## Debugging
+
+Wrap your root widget in `Fluxy.debug` to enable the visual inspector overlay.
+
+```dart
+runApp(
+  Fluxy.debug(child: MyApp())
+);
+```

@@ -1,120 +1,129 @@
 ---
-title: One Engine. Infinite Possibilities.
-description: Fluxy is a "Full-Stack" Flutter platform (v0.2.3) that unifies high-performance networking, architectural authority, and reactive state management.
+title: The Full-Stack Flutter Platform
+description: Fluxy unifies modern state management, atomic styling, and robust networking into a single, cohesive engine.
 ---
 
-# Fluxy v0.2.3
-**DevTools Overhaul & 1.0 Stability Prep.**
+import { Cpu, Layers, Zap, Network, Box, Code } from 'lucide-react';
 
-<div className="grid grid-cols-1 md:grid-cols-3 gap-4 my-6">
-  <div>
-    <h4 className="text-sm font-bold mb-2 uppercase tracking-widest text-muted-foreground">1. Install CLI</h4>
-    ```bash
-    dart pub global activate fluxy
-    ```
-  </div>
-  <div>
-    <h4 className="text-sm font-bold mb-2 uppercase tracking-widest text-muted-foreground">2. New Project</h4>
-    ```bash
-    fluxy init my_awesome_app
-    ```
-  </div>
-  <div>
-    <h4 className="text-sm font-bold mb-2 uppercase tracking-widest text-muted-foreground">3. Existing Project</h4>
-    ```bash
-    flutter pub add fluxy
-    ```
-  </div>
+# The Full-Stack SDK for Flutter
+
+Fluxy is a production-grade application platform that replaces the "glue code" in your Flutter apps. It unifies specific tooling for State, DI, Networking, and UI into one cohesive engine.
+
+<div className="flex gap-4 my-8">
+  <a className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-10 px-8" href="/docs/quick-start">
+    Get Started
+  </a>
+  <a className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-10 px-8" href="/docs/components/button">
+    Explore Components
+  </a>
 </div>
 
-Fluxy is a "Full-Stack" Flutter platform designed to modernize mobile and web development. It unifies high-performance **Native Networking**, **Architectural Authority**, and the **Fluxy State System** into a single, cohesive engine for building enterprise-grade applications at scale.
-
-<div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-8">
-  <div className="p-4 border rounded-lg bg-card text-card-foreground">
-    <h3 className="text-xl font-bold mb-2">Premium DevTools</h3>
-    <p>High-end glassmorphic HUD with real-time signal flashing, JSON prettifier, and advanced timeline controls.</p>
-  </div>
-  <div className="p-4 border rounded-lg bg-card text-card-foreground">
-    <h3 className="text-xl font-bold mb-2">Architectural Authority</h3>
-    <p>Standardized patterns with Scoped DI, FluxController (lifecycle hooks), and Fluxy Blueprints for scalable apps.</p>
-  </div>
-  <div className="p-4 border rounded-lg bg-card text-card-foreground">
-    <h3 className="text-xl font-bold mb-2">Fluxy State System</h3>
-    <p>Enterprise-grade reactive state with fluxSelector, fluxWorker, and automatic hydration. Zero jank, infinite scalability.</p>
-  </div>
-  <div className="p-4 border rounded-lg bg-card text-card-foreground">
-    <h3 className="text-xl font-bold mb-2">CLI Intelligence</h3>
-    <p>Generate complete features with `fluxy g`, scaffold plugins/models/layouts, and run local OTA servers.</p>
-  </div>
-</div>
-
-## The Fluxy Philosophy
-
-Fluxy isn't just a state management library; it's an **all-in-one Flutter ecosystem**. 
-
-Traditional Flutter development often requires stitching together multiple packages: one for state, one for networking, and one for styling. Fluxy provides all of these as first-class citizens, integrated into a single **Reactive Engine** that minimizes boilerplate and maximizes flow.
-
-### v0.2.3 Highlights - DevTools Overhaul
-
-- **Premium Glassmorphism**: Redesigned inspector with high-performance blur effects.
-- **Real-time Update Flashing**: Visual feedback when flux values change.
-- **JSON Prettifier**: Automatic formatting for network request/response bodies.
-- **Clipboard API**: Instant copying of signal values and logs with snackbar feedback.
-- **Context-Independent**: Fully self-contained DevTools (fixed ScaffoldMessenger errors).
-
-### v0.2.1 Highlights - Search & Live Editing
-
-- **Flux Search**: Filter fluxes, DI registry, and Network logs instantly.
-- **Live Value Editing**: Update boolean, string, and numeric values directly from the inspector.
-- **Atomic Branding**: Updated terminology to use 'Flux' instead of 'Signal'.
-
-### v0.2.0 Highlights - Professional Inspector
-
-- **Fluxy Inspector**: Glassmorphic HUD with real-time system mirrors.
-- **Scoped DI (`FxScope`)**: Structured lifecycles (`app`, `route`, `factory`) with auto-cleanup.
-- **Global Error Pipeline**: Capture all application and platform errors via `Fx.onError`.
-- **Modular Plugin System**: Built-in interface for extending the framework logic.
-- **Enhanced CLI**: New blueprints for `plugin`, `layout`, `model`, and `controller`.
-
-### v0.1.11 Highlights - Routing & DI Stabilization
-
-- **Automatic Route DI**: `FxRoute` now handles controller registration and disposal automatically.
-- **Enhanced DI Engine**: Better internal framework orchestration with `putByRuntimeType`.
-- **Blueprint Polish**: Reverted property getters back to methods for stable DSL chaining.
-
-
-### v0.1.8 Highlights - The Fluxy State System
-
-- **Branded State Units**: `Flux<T>`, `FluxComputed<T>`, `FluxEffect` - conflict-free professional keywords
-- **Targeted Rebuilds**: `fluxSelector` prevents unnecessary UI updates for atomic performance
-- **Background Processing**: `fluxWorker` runs heavy computations in isolates for zero-jank UI
-- **Auto-Cleanup**: `FluxyLocalMixin` prevents memory leaks with automatic state disposal
-- **Offline-First**: `FluxyRepository` with multi-user scoping and automatic state hydration
-- **Global Middleware**: Intercept all state changes for analytics and logging
-- **Time Travel**: Built-in undo/redo with `fluxHistory`
-- **100% Backward Compatible**: All existing Signal code continues to work
-
-### v0.1.7 Highlights
-
-- **Atomic Interaction API**: Expressive buttonizers for strings and widgets (`"Save".primaryBtn()`).
-- **Visual FX Engine**: Native modifiers for `.blur()`, `.grayscale()`, and `.circle()`.
-- **Chainable Transitions**: Smooth interpolation of styles via `.transition(Duration)`.
-- **Sequence DSL**: Unified `.stagger()` animations for rows and columns.
-- **Enhanced Motion**: Looping and repeating animations for attention-grabbing effects.
-
-### v0.1.6 Highlights
-
-- **Declarative Conditionals**: Render UI states cleaner with `Fx.cond()`.
-- **Intelligent Spacing**: Independent gap widgets (`Fx.gap`, `Fx.hgap`) for precise layouts.
-- **Enhanced Inputs**: Multi-function validators and better formatting for `Fx.input`.
-- **Next-Gen Layouts**: Explicit `Fx.row`, `Fx.col`, and `Fx.stack` with standard parameters.
-
-## Getting Started
-
-Ready to build your first Fluxy app?
+## Why Fluxy?
 
 <Cards>
-  <Card href="/docs/quick-start" title="Quick Start" description="Install Fluxy CLI and create your first project in under 5 minutes." />
-  <Card href="/docs/state-management" title="Fluxy State System" description="Learn about enterprise-grade reactive state management." />
-  <Card href="/docs/ui-dsl" title="Atomic Styling DSL" description="Learn how to build beautiful UIs with chainable modifiers." />
+  <Card 
+    icon={<Zap />}
+    title="Atomic Reactivity" 
+    href="/docs/fundamentals/state-management"
+    description="Fine-grained signals that only rebuild what changes. No more full-tree rebuilds." 
+  />
+  <Card 
+    icon={<Layers />}
+    title="Atomic Styling" 
+    href="/docs/style/tokens"
+    description="Style widgets with a Tailwind-like DSL directly in Dart. Write 50% less UI code." 
+  />
+  <Card 
+    icon={<Network />}
+    title="Built-in Networking" 
+    href="/docs/ecosystem/networking"
+    description="Zero-config HTTP client with caching, retries, and offline-first support." 
+  />
+  <Card 
+    icon={<Box />}
+    title="Enterprise Shells" 
+    href="/docs/components/dashboard"
+    description="Pre-built layouts for Dashboards, Auth flows, and Multi-tab apps." 
+  />
+</Cards>
+
+## Experience the Difference.
+
+Fluxy removes the friction of stitching together 10+ different packages.
+
+<div className="grid grid-cols-1 md:grid-cols-2 gap-8 my-10">
+
+```dart title="Standard Flutter"
+// 30 Lines for a Button
+Container(
+  height: 48,
+  decoration: BoxDecoration(
+    color: Colors.blue,
+    borderRadius: BorderRadius.circular(8),
+    boxShadow: [
+      BoxShadow(
+        color: Colors.black12, 
+        blurRadius: 4
+      )
+    ],
+  ),
+  child: Material(
+    color: Colors.transparent,
+    child: InkWell(
+      onTap: () {},
+      child: Center(
+        child: Text(
+          "Submit", 
+          style: TextStyle(
+            color: Colors.white, 
+            fontWeight: FontWeight.bold
+          )
+        ),
+      ),
+    ),
+  ),
+)
+```
+
+```dart title="Fluxy DSL"
+// 5 Lines. Same Result.
+Fx.text("Submit")
+  .bold()
+  .whiteText()
+  .center()
+  .box
+  .h(48)
+  .bg(Colors.blue)
+  .rounded(8)
+  .shadow.md
+  .onTap(() {})
+```
+
+</div>
+
+## Architecture that Scales
+
+Fluxy enforces a clean, consistent structure for your team.
+
+- **Controllers**: Logic lives outside the UI.
+- **Services**: Global singletons for data.
+- **Repositories**: Standardized data access.
+
+```dart
+class UserController extends FluxController {
+  final user = flux<User?>(null);
+  
+  void login() async {
+    user.value = await api.login();
+  }
+}
+```
+
+## Join the Community
+
+Fluxy is built for developers who want to ship faster without sacrificing quality. 
+
+<Cards>
+  <Card href="/docs/migration" title="Migration Guides" description="Upgrading from an older version? Check our detailed guides." />
+  <Card href="https://github.com/swaingithub/fluxy" title="GitHub" description="Star the repo and contribute to the ecosystem." />
 </Cards>

@@ -1,0 +1,48 @@
+---
+title: FxBottomBar
+description: A pill-style, animated navigation bar for primary app shell navigation.
+---
+
+# FxBottomBar
+
+`FxBottomBar` is a navigation component designed for primary app shells. It features physics-based selection tracking and smooth transitions.
+
+## Usage
+
+```dart
+FxBottomBar(
+  selectedIndex: currentTab, // Signal<int>
+  items: [
+    FxBottomBarItem(icon: Icons.home, label: "Home"),
+    FxBottomBarItem(icon: Icons.search, label: "Search"),
+    FxBottomBarItem(icon: Icons.person, label: "Profile"),
+  ],
+  onTap: (index) => currentTab.value = index,
+)
+```
+
+## API Reference
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `selectedIndex` | `Signal<int>` | required | The active tab index. |
+| `items` | `List<FxBottomBarItem>` | required | List of navigation items. |
+| `onTap` | `ValueChanged<int>?` | `null` | Optional callback when tab is selected. |
+| `style` | `FxStyle?` | `null` | Custom styling for the bar container. |
+
+## Customization
+
+The bottom bar can be styled using standard Fluxy styles.
+
+```dart
+FxBottomBar(
+  style: FxStyle(
+    backgroundColor: Colors.white,
+    boxShadow: [BoxShadow(blurRadius: 10)],
+  ),
+  items: [
+    FxBottomBarItem(icon: Icons.home, label: "Home"),
+    FxBottomBarItem(icon: Icons.search, label: "Explore"),
+  ],
+)
+```

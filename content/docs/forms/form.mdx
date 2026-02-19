@@ -1,0 +1,48 @@
+---
+title: FxForm
+description: A high-level wrapper for managing input focus and submission.
+---
+
+# FxForm
+
+`FxForm` wraps a collection of input widgets, providing automatic focus management and keyboard handling.
+
+## Usage
+
+```dart
+FxForm(
+  child: Fx.column().children([
+    FxInput(placeholder: "Name"),
+    FxInput(placeholder: "Email"),
+  ]),
+)
+```
+
+## Features
+
+### Smart Keyboard Dismissal
+Tapping anywhere outside of an input field automatically hides the keyboard without needing `GestureDetector` boilerplate.
+
+### Form Validation
+Use the `fluxForm` helper to group fields and validate them all at once.
+
+```dart
+final form = fluxForm({
+  "name": fluxField("").required(),
+  "email": fluxField("").email(),
+});
+
+FxButton("Submit", onTap: () {
+  if (form.validate()) {
+    // Proceed
+  }
+});
+```
+
+## API Reference
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `child` | `Widget` | required | The scrollable or layout widget containing inputs. |
+| `dismissKeyboardOnTap` | `bool` | `true` | Hides keyboard on outside tap. |
+| `autovalidate` | `bool` | `false` | Enables live validation feedback. |

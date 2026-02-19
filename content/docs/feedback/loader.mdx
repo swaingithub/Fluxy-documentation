@@ -1,0 +1,38 @@
+---
+title: FxLoader
+description: A global loading indicator for blocking UI interactions.
+---
+
+# FxLoader
+
+`FxLoader` is a global loading overlay designed to be shown during critical operations, such as network requests or database transactions.
+
+## Usage
+
+```dart
+Fx.loader.show();
+
+await api.login();
+
+Fx.loader.hide();
+```
+
+## Features
+
+### Context-Free Blocking
+The loader is rendered on the `Overlay` stack, meaning it can be shown from anywhere in your logic without needing a widget tree reference.
+
+### Customizability
+You can override the default spinner with your own loading widget.
+
+```dart
+Fx.loader.setWidget(MyLottieSpinner());
+```
+
+## API Reference
+
+| Method | Description |
+|--------|-------------|
+| `show()` | Displays the full-screen loader. |
+| `hide()` | Removes the loader. |
+| `setWidget(Widget)` | Updates the global loading indicator. |

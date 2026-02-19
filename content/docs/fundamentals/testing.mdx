@@ -1,0 +1,82 @@
+---
+title: Testing
+description: Unit and Widget testing strategies with FluxyTest.
+---
+
+# Testing Fluxy Apps
+
+Fluxy is designed with testability in mind. The framework provides a dedicated testing library to simplify dependency mocking and state verification.
+
+## Unit Testing
+
+For Controllers and Repositories, you can use standard `test`. However, Fluxy provides `FluxyTest` to help reset the DI container between tests.
+
+```dart
+import 'package:test/test.dart';
+import 'package:fluxy/fluxy_test.dart';
+
+void main() {
+  setUp(() {
+    FluxyTest.setUp(); // Resets DI
+  });
+
+  test('Counter increments', () {
+    // Arrange
+    final controller = CounterController();
+    FluxyTest.inject(controller);
+
+    // Act
+    controller.increment();
+
+    // Assert
+    expect(controller.count.value, 1);
+  });
+}
+```
+
+## Mocking Dependencies (DI)
+
+You can inject mock services easily into the Fluxy DI container before running your tests.
+
+```dart
+class MockAuthService extends Mock implements AuthService {}
+
+test('Login calls auth service', () async {
+  final mockAuth = MockAuthService();
+  FluxyTest.inject<AuthService>(mockAuth);
+
+  final loginController = LoginController();
+  await loginController.login();
+
+  verify(() => mockAuth.signIn()).called(1);
+});
+```
+
+## Widget Testing
+
+Testing widgets that use `Fx()` signals requires no special setup. The Fluxy reactive engine works seamlessly with `tester.pumpWidget`.
+
+```dart
+testWidgets('Counter button updates text', (tester) async {
+  final counter = flux(0);
+  
+  await tester.pumpWidget(
+    MaterialApp(
+      home: Fx.col().children([
+        Fx.text(counter),
+        Fx.button("Add", onTap: () => counter.value++),
+      ]),
+    ),
+  );
+
+  // Initial State
+  expect(find.text('0'), findsOneWidget);
+
+  // Tap Button
+  await tester.tap(find.text('Add'));
+  await tester.pump();
+
+  // Updated State
+  expect(find.text('1'), findsOneWidget);
+});
+```

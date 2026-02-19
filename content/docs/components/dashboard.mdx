@@ -1,0 +1,37 @@
+---
+title: Fx.dashboard
+description: An enterprise-grade shell for admin panels and dashboard apps.
+---
+
+# Fx.dashboard
+
+`Fx.dashboard` handles the complex layout requirements of professional admin panels, including a responsive sidebar, sticky navbar, and scrolling content area.
+
+## Usage
+
+```dart
+Fx.dashboard(
+  sidebar: MySidebar(),
+  navbar: MyNavbar(),
+  body: MainContent(),
+  sidebarWidth: 280,
+)
+```
+
+## Features
+
+### Responsive Transitions
+Automatically handles the transition between mobile (drawer) and desktop (sidebar) modes.
+
+### Stacking Context
+Operates as a high-level stacking context, ensuring that modals and overlays triggered from within the dashboard appear correctly above all other content.
+
+## API Reference
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `sidebar` | `Widget` | required | Left navigation panel. |
+| `navbar` | `Widget` | required | Top header bar. |
+| `body` | `Widget` | required | Main content area. |
+| `sidebarWidth` | `double` | `280` | Width of the sidebar. |
+| `breakpoint` | `double` | `1024` | Width to switch to mobile drawer. |

@@ -1,0 +1,49 @@
+---
+title: FxModal
+description: Custom bottom sheets and modal dialogs.
+---
+
+# FxModal
+
+While `FxDialog` handles simple alerts, `FxModal` is designed for rich, custom content. It supports both center-aligned dialogs and bottom sheets.
+
+## Usage
+
+### Bottom Sheet
+A sliding sheet from the bottom, perfect for mobile menus or complex forms.
+
+```dart
+Fx.modal.sheet(
+  child: Fx.col().children([
+    Fx.text("Edit Profile").font.xl.bold,
+    FxInput(placeholder: "Name"),
+    FxButton("Save"),
+  ]).p(20),
+);
+```
+
+### Center Modal
+A custom dialog centered on the screen.
+
+```dart
+Fx.modal.center(
+  child: MyCustomWidget(),
+  barrierDismissible: false,
+);
+```
+
+## Features
+
+### Context-Free
+Like all overlays in Fluxy, `FxModal` can be triggered from anywhere without a `BuildContext`.
+
+### Stacked Management
+Fluxy correctly handles multiple modals. Calling `Fx.back()` will always close the topmost modal.
+
+## API Reference
+
+| Method | Parameters | Description |
+|--------|------------|-------------|
+| `sheet` | `(child, isScrollControlled)` | Shows a bottom sheet. |
+| `center` | `(child, barrierDismissible)` | Shows a centered dialog. |
+| `custom` | `(builder)` | Fully custom overlay builder. |

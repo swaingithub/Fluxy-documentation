@@ -1,0 +1,9 @@
+{
+  "title": "Forms & Inputs",
+  "pages": [
+    "input",
+    "form",
+    "checkbox-switcher",
+    "dropdown"
+  ]
+}

@@ -1,0 +1,50 @@
+---
+title: FxToast
+description: Context-free notifications for user feedback.
+---
+
+# FxToast
+
+`FxToast` provides non-intrusive notifications that can be triggered from anywhere in your application, without needing a `BuildContext`.
+
+## Usage
+
+```dart
+Fx.toast.success("Profile Updated");
+Fx.toast.error("Network Error");
+```
+
+## Features
+
+### Context-Free API
+Trigger toasts directly from your `FluxController` or service classes.
+
+```dart
+class AuthController extends FluxController {
+  Future<void> login() async {
+    try {
+      await api.login();
+      Fx.toast.success("Welcome back!");
+    } catch (e) {
+      Fx.toast.error(e.toString());
+    }
+  }
+}
+```
+
+## API Reference
+
+| Method | Parameters | Description |
+|--------|------------|-------------|
+| `success` | `(message)` | Shows a green success toast. |
+| `error` | `(message)` | Shows a red error toast. |
+| `info` | `(message)` | Shows a blue informational toast. |
+| `warning` | `(message)` | Shows an amber warning toast. |
+| `show` | `(message, icon, color)` | Customizable toast content. |
+
+## Configuration
+
+You can customize the global toast settings in `Fluxy.init()`.
+
+- **Position**: `Top` or `Bottom`
+- **Duration**: How long the toast stays visible.

@@ -1,0 +1,64 @@
+---
+title: v0.2.4 Migration Guide
+description: Breaking changes and new features in Fluxy v0.2.4.
+---
+
+# Fluxy v0.2.4
+
+Fluxy v0.2.4 focuses on **Layout Stability** and solving persistent Flutter layout issues, particularly with Slivers and scrollable content.
+
+## Breaking Changes
+
+### `Fx.scrollCenter` (New Recommended Primitive)
+The existing `.hFull()` modifier is now actively discouraged inside scrollable views. While not strictly "removed", using `.hFull()` inside a `FxScroll` or `SingleChildScrollView` will now trigger a **Fluxy Layout Alert** in debug mode.
+
+**Before (Prone to infinite height crashes):**
+```dart
+Fx.scroll(
+  child: Fx.col().children([...]).hFull() // ❌ Crash: Infinite height
+)
+```
+
+**After (Safe & Center-Aligned):**
+```dart
+Fx.scrollCenter(
+  child: Fx.col().children([...]) // ✅ Safe: Uses minHeight constraint
+)
+```
+
+## New Features
+
+### 1. Sliver-Aware Builder
+The `Fx()` builder now intelligently detects when its child is a `Sliver` widget and bypasses the default `SizedBox` constraints that cause "RenderBox was not a RenderSliver" errors.
+
+```dart
+CustomScrollView(
+  slivers: [
+    SliverAppBar(title: Text("Sliver Awareness")),
+    
+    // Now works perfectly!
+    Fx(() => SliverList(
+      delegate: SliverChildBuilderDelegate(
+        (context, index) => Fx.text("Item $index"),
+        childCount: items.value.length,
+      ),
+    )),
+  ],
+)
+```
+
+### 2. Layout Alert System
+Fluxy now intercepts specific Flutter layout errors and translates them into semantic, actionable warnings in your console.
+
+> **Fluxy Layout Alert**: Infinite height detected. Did you use `.hFull()` inside a `FxScroll`? Use `.h(minHeight)` or `Fx.scrollCenter()` instead.
+
+### 3. `Fx.scrollCenter`
+A high-level layout primitive designed for full-page scrollable content (like Login screens or Forms) where you want the content centered if it fits, but scrollable if it overflows.
+
+- **Content Centering**: Uses `LayoutBuilder` + `ConstrainedBox` to ensure content is vertically centered on large screens.
+- **Keyboard Safety**: Includes automatic safe area handling for bottom insets (keyboard).
+- **Infinite Height Protection**: Prevents the common overflow errors associated with `Column` inside `SingleChildScrollView`.
+
+## Deprecations
+
+- **`.hFull()` in Scroll Views**: While still valid in `Row/Column/Stack`, using `.hFull()` inside an unconstrained scroll view is now considered an anti-pattern and will be flagged.

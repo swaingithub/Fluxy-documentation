@@ -111,7 +111,7 @@
 
 @layer utilities {
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-br from-foreground via-foreground/90 to-foreground/40;
+    @apply bg-clip-text text-transparent bg-gradient-to-br from-current via-current/70 to-current/30;
   }
   
   .glass {

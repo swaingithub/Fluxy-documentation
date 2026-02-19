@@ -1,0 +1,71 @@
+---
+title: Safe UI & Stability
+description: Fluxy's built-in engine for preventing layout crashes and ensuring app stability.
+---
+
+# Safe UI & Stability
+
+Flutter developers often dread the "Red Screen of Death" caused by layout overflows, unbounded constraints, or render errors. Fluxy introduces a **Stability Engine** that actively guards against these issues, auto-repairing them in production while warning you in debug mode.
+
+## Fluxy Layout Guard
+
+`FluxyLayoutGuard` is a background system that intercepts common layout violations before they crash your app.
+
+### 1. Unbounded Scrollable Protection
+
+Placing a scrollable widget (like `ListView`) inside another scrollable widget makes the inner one infinite, causing a crash. Fluxy detects this and automatically applies `shrinkWrap: true` or bounded constraints.
+
+### 2. Intelligent Expansion
+
+Wrapping a widget in `Expanded` or `Flexible` inside an unbounded parent (like a `Column` inside a `SingleChildScrollView`) is a classic Flutter error.
+
+Fluxy's **Safe Expansion** algorithm checks the surrounding layout context. If it detects an illegal expansion, it gracefully falls back to `FlexFit.loose`, preventing the crash.
+
+### 3. Infinite Constraint Protection
+
+Using `.hFull()` or `.wFull()` in an unconstrained parent (like `ListView`) usually throws an error. Fluxy ignores these modifiers when they would cause infinite recursion, logging a warning instead.
+
+## Strict vs. Relaxed Mode
+
+By default, Fluxy runs in **Relaxed Mode**, meaning it auto-repairs errors so your user never sees a crash. You can enable **Strict Mode** during development to throw exceptions and catch bugs early.
+
+```dart
+void main() {
+  FluxyLayoutGuard.strictMode = true; // Throws exceptions on violation
+  runApp(MyApp());
+}
+```
+
+## Render Guard
+
+`FluxyRenderGuard` wraps critical UI components to catch painting errors. If a widget crashes during the `paint` phase, instead of crashing the entire app, Fluxy renders a fallback placeholder (or nothing) and logs the error.
+
+```dart
+FluxyRenderGuard(
+  child: ComplexThirdPartyWidget(),
+)
+```
+
+## Data Guard
+
+Fluxy also protects your data layer with `DataGuard`.
+
+### Auto-Retry
+Network requests failed? `DataGuard` handles exponential backoff retries automatically.
+
+### Stale-While-Revalidate
+It implements the SWR pattern, showing cached data instantly while fetching fresh data in the background.
+
+```dart
+FluxyDataGuard.swr(
+  local: db.getUser(),
+  remote: api.getUser(),
+  onData: (user) => state.value = user,
+);
+```
+
+## Best Practices
+
+1.  **Check the Console**: Fluxy logs "🛡️ [SafeUI]" warnings when it auto-repairs a layout. Pay attention to these!
+2.  **Use `.scrollCenter()`**: For centered content that should scroll on small screens, use `Fx.scrollCenter()` instead of complex Column/Center nesting.
+3.  **Enable Strict Mode in CI/CD**: specialized tests can run in strict mode to ensure no layout violations ship to production.

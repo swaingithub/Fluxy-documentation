@@ -1,0 +1,47 @@
+---
+title: FxChart
+description: A high-performance, reactive charting primitive.
+---
+
+# FxChart
+
+`FxChart` provides a simple way to visualize data using bar and line charts. It is 100% reactive and automatically animates when data changes.
+
+## Usage
+
+```dart
+final data = flux([
+  FxChartPoint(label: "Mon", value: 10),
+  FxChartPoint(label: "Tue", value: 15),
+  FxChartPoint(label: "Wed", value: 8),
+]);
+
+FxChart(
+  data: data,
+  type: FxChartType.line,
+  height: 250,
+  style: FxStyle(
+    color: Colors.blue, 
+    strokeWidth: 4
+  ),
+)
+```
+
+## Chart Types
+
+| Type | Description |
+|------|-------------|
+| `FxChartType.bar` | Vertical bar chart for categorical data. |
+| `FxChartType.line` | Smooth line chart for trend data. |
+
+## Reactive Updates
+
+The `data` parameter accepts either a raw `List<FxChartPoint>` or a `Flux<List<FxChartPoint>>`. When passing a Flux, the chart will automatically re-render and animate to the new values whenever `.value` is updated.
+
+## Styling
+
+You can style the chart using standard `FxStyle`:
+
+- **Primary Color**: Controlled by `style.color`.
+- **Dimensions**: Controlled by `height` property.
+- **Animation**: Customize `animationDuration` and `animationCurve`.

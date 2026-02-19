@@ -1,0 +1,41 @@
+---
+title: FxDialog
+description: Context-free alerts, confirmations, and prompts.
+---
+
+# FxDialog
+
+`FxDialog` provides a set of context-free methods for displaying standard dialogs (Alert, Confirm, Prompt) from anywhere in your codebase.
+
+## Usage
+
+```dart
+final confirmed = await Fx.dialog.confirm(
+  title: "Delete item?",
+  message: "This action cannot be undone.",
+);
+
+if (confirmed) {
+  // Proceed
+}
+```
+
+## Features
+
+### Alert
+A simple informational dialog that requires user acknowledgment.
+
+```dart
+await Fx.dialog.alert("Permission Required", "Please enable camera access.");
+```
+
+### Prompt
+(Coming Soon) A dialog for collecting simple text input.
+
+## API Reference
+
+| Method | Returns | Description |
+|--------|---------|-------------|
+| `alert` | `Future<void>` | Shows a message with an OK button. |
+| `confirm` | `Future<bool>` | Shows a message with OK/Cancel buttons. |
+| `custom` | `Future<T?>` | Shows a custom widget dialog. |

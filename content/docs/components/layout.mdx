@@ -1,0 +1,53 @@
+---
+title: FxLayout
+description: A semantic layout builder for creating responsive designs.
+---
+
+# FxLayout
+
+`FxLayout` simplifies building responsive user interfaces by providing semantic targeting for common layout breakpoints.
+
+## Usage
+
+```dart
+FxLayout(
+  mobile: (context) => MobileLayout(),
+  tablet: (context) => TabletLayout(),
+  desktop: (context) => DesktopLayout(),
+)
+```
+
+## Features
+
+### Breakpoints
+Fluxy uses standard breakpoints for responsive designs:
+- `mobile`: < 600px
+- `tablet`: 600px - 1024px
+- `desktop`: > 1024px
+
+### Fallback Logic
+If you omit `tablet`, it will fall back to `mobile` on smaller tablets and `desktop` on larger tablets (or vice versa, depending on internal logic). Generally, `mobile` is the *default* fallback if others are missing.
+
+## API Reference
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `mobile` | `WidgetBuilder` | required | Layout for screens < 600px. |
+| `tablet` | `WidgetBuilder?` | `null` | Layout for screens 600px - 1024px. |
+| `desktop` | `WidgetBuilder?` | `null` | Layout for screens > 1024px. |
+| `builder` | `Widget Function(context, constraints)?` | `null` | Custom constraint-based builder. |
+
+## Constraint-Based Layouts
+
+You can also use the generic `builder` property for custom logic that goes beyond standard breakpoints.
+
+```dart
+FxLayout(
+  builder: (context, constraints) {
+    if (constraints.maxWidth > 1200) {
+      return UltraWideLayout();
+    }
+    return StandardLayout();
+  },
+)
+```

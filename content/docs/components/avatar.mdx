@@ -1,0 +1,62 @@
+---
+title: FxAvatar
+description: A versatile avatar component with smart fallback logic, shapes, and responsive sizing.
+---
+
+# FxAvatar
+
+`FxAvatar` is a specialized image display component that handles loading states, errors, and fallbacks automatically. It supports various shapes and integrates seamlessly with the Fluxy styling system.
+
+## Usage
+
+```dart
+FxAvatar(
+  image: "https://example.com/user.jpg",
+  fallback: "Jane Doe",
+  size: FxAvatarSize.lg,
+)
+```
+
+## Features
+
+### Smart Fallback
+If the image URL is invalid or fails to load, `FxAvatar` automatically generates a fallback.
+- **String Fallback**: Extracts initials from a name (e.g., "Jane Doe" -> "JD").
+- **Widget Fallback**: Renders a custom widget if provided.
+
+### Shapes
+Supports three standard shapes out of the box:
+- `circle` (default)
+- `square`
+- `rounded` (rounded corners)
+
+```dart
+FxAvatar(
+  image: url,
+  shape: FxAvatarShape.rounded,
+)
+```
+
+## API Reference
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `image` | `String?` | `null` | The URL of the avatar image. |
+| `fallback` | `String?` | `null` | Text to generate initials from if image fails. |
+| `fallbackWidget` | `Widget?` | `null` | Custom widget to show if image fails. |
+| `size` | `FxAvatarSize` | `md` | The size token of the avatar. |
+| `shape` | `FxAvatarShape` | `circle` | The shape of the avatar container. |
+| `style` | `FxStyle?` | `null` | Custom atomic style override. |
+| `className` | `String?` | `null` | String-based class name for shared styles. |
+
+## DSL Usage
+
+You can also use the `Fx.avatar` alias for a more fluent API feel.
+
+```dart
+Fx.avatar(
+  image: user.photoUrl,
+  fallback: user.fullName,
+)
+.shadow.md // Apply proxy styles
+```

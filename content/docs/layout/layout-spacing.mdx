@@ -99,6 +99,58 @@ Fx.row(
     Fx.text("Item 3"),
   ],
 )
+
+
+## Full-Page Layouts & Slivers (New in 0.2.4)
+
+Fluxy v0.2.4 introduces major enhancements for scrollable layouts, solving the classic "RenderBox vs RenderSliver" problem.
+
+### `Fx.scrollCenter()`
+
+A new primitive that simplifies "centered scrollable content" common in login screens and detail pages. It automatically handles `SingleChildScrollView` + `Center` + `ConstrainedBox` boilerplate correctly.
+
+```dart
+Fx.scrollCenter(
+  padding: 24,
+  child: Fx.col(gap: 16).children([
+    Fx.text("Sign In").h3(),
+    Fx.input(placeholder: "Email"),
+    Fx.button("Login").fullWidth(),
+  ]),
+)
+```
+
+**Why use this?**
+-   **Prevents Overflow**: Automatically scrolls on small screens.
+-   **Centers Content**: Uses `minHeight: constraints.maxHeight` to ensure content is centered on large screens.
+-   **Keyboard Aware**: Built-in safe area handling.
+
+### Sliver Awareness
+
+The `Fx()` widget is now "Sliver-Aware". You can return a `Sliver` directly from its builder without crashing.
+
+```dart
+CustomScrollView(
+  slivers: [
+    SliverAppBar(title: Text("Sliver App Bar")),
+    
+    // Fx() detects it's returning a Sliver and bypasses Box constraints
+    Fx(() => SliverList(
+      delegate: SliverChildBuilderDelegate(
+        (context, index) => Fx.text("Item $index").p(16),
+        childCount: items.value.length,
+      ),
+    )),
+  ],
+)
+```
+
+### Layout Crash Prevention
+
+Fluxy includes a semantic error mapping system for common layout mistakes. If you use `.hFull()` inside a scroll view (which causes infinite height errors), Fluxy will catch the Flutter error and suggest the correct fix:
+
+> **Fluxy Layout Alert**: Infinite height detected. Did you use `.hFull()` inside a `FxScroll`? Use `.h(minHeight)` or `Fx.scrollCenter()` instead.
+
 ```
 
 ## Spacing Utilities
@@ -115,4 +167,32 @@ Fx.container()
   .p(16)
   .m(8)
   .bg(Colors.blue)
+```
+
+## Safe Area Management
+
+Fluxy provides chainable modifiers to handle notches and safe areas without nesting `SafeArea` widgets manually.
+
+-   `.safe()`: Default safe area (top and bottom).
+-   `.safeArea()`: Full control over all sides.
+
+```dart
+Fx.col().children([
+  Fx.text("Header"),
+  Fx.text("Content"),
+])
+.bg(Colors.white)
+.safe() // Automatically wraps in SafeArea
+```
+
+### Advanced Control
+
+```dart
+Fx.box()
+  .safeArea(
+    top: true, 
+    bottom: false, 
+    minimum: EdgeInsets.all(16)
+  )
+
 ```

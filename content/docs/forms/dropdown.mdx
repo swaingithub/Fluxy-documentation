@@ -1,0 +1,73 @@
+---
+title: FxDropdown
+description: A modern, overlay-based selective input for forms and menus.
+---
+
+# FxDropdown
+
+`FxDropdown` is a premium selector component that uses a `CompositedTransformFollower` to ensure the menu follows the trigger widget even during scrolls and animations. It is fully reactive and binds directly to `Flux<T>` signals.
+
+## Usage
+
+```dart
+final selectedCity = flux("New York");
+
+FxDropdown(
+  signal: selectedCity,
+  items: ["New York", "London", "Tokyo"],
+  placeholder: "Select city",
+)
+```
+
+## Features
+
+### Smart Labeling
+Use `itemLabel` to transform complex objects into display strings automatically.
+
+```dart
+FxDropdown<User>(
+  signal: selectedUser,
+  items: userList,
+  itemLabel: (user) => user.lastName, // Displays last name in list
+)
+```
+
+### Custom Builders
+Provide `itemBuilder` for complete control over list item rendering.
+
+```dart
+FxDropdown<User>(
+  itemBuilder: (user) => Fx.row().children([
+    FxAvatar(image: user.avatar),
+    Fx.text(user.name).ml(8),
+  ]),
+)
+```
+
+### Dual Styling
+Control the trigger button and the overlay menu independently.
+
+```dart
+FxDropdown(
+  style: FxStyle(padding: 12), // Trigger Style
+  dropdownStyle: FxStyle(shadow: Shadows.lg), // Menu Style
+)
+```
+
+## API Reference
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `signal` | `Flux<T>?` | `null` | The reactive state to bind to. (Or `value`) |
+| `items` | `List<T>` | required | The list of selectable options. |
+| `value` | `T?` | `null` | Initial value if not using `signal`. |
+| `onChanged` | `ValueChanged<T>?` | `null` | Callback when selection changes. |
+| `itemLabel` | `String Function(T)?` | `toString()` | Transform item to display text. |
+| `itemBuilder` | `Widget Function(T)?` | `null` | Custom widget builder for dropdown items. |
+| `responsive` | `FxResponsiveStyle?` | `null` | Responsive style overrides. |
+
+## Implementation Notes
+
+- **Atomic Binding**: While `value` is supported, we strongly recommend `signal` for automatic UI updates.
+- **Scrolling**: The overlay correctly follows the trigger even inside scroll views.
+- **Constraints**: Menu width defaults to trigger width but can be customized via `dropdownStyle`.

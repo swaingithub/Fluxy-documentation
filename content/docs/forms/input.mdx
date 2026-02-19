@@ -1,0 +1,54 @@
+---
+title: FxInput
+description: A reactive text input field with built-in validation and atomic styling.
+---
+
+# FxInput
+
+`FxInput` is a reactive wrapper around Flutter's `TextField`, designed to work seamlessly with `FluxField` for automatic state binding and validation.
+
+## Usage
+
+```dart
+final email = fluxField("").required().email();
+
+FxInput(
+  signal: email,
+  placeholder: "Enter email",
+  keyboardType: TextInputType.emailAddress,
+)
+```
+
+## Features
+
+### Two-Way Binding
+The `signal` property handles both reading the current value and updating it when the user types.
+
+### Automatic Validation
+If the `signal` has validation rules (like `.required()` or `.email()`), the input automatically displays error messages when `validate()` is called or the user interacts with it.
+
+## API Reference
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `signal` | `FluxField<String>` | required | Reactive state for the input. |
+| `placeholder` | `String?` | `null` | Hint text displayed when empty. |
+| `label` | `String?` | `null` | Floating label text. |
+| `keyboardType` | `TextInputType` | `text` | Keypad type (email, phone, etc.). |
+| `obscureText` | `bool` | `false` | Whether to hide text (see `FxPassword`). |
+| `prefixIcon` | `Widget?` | `null` | Widget displayed before input. |
+| `suffixIcon` | `Widget?` | `null` | Widget displayed after input. |
+| `onChanged` | `ValueChanged<String>?` | `null` | Callback for manual updates. |
+| `style` | `FxStyle?` | `null` | Custom atomic styling. |
+
+## Variants
+
+### FxPassword
+A specialized input for passwords that includes a built-in visibility toggle.
+
+```dart
+FxPassword(
+  signal: passwordField,
+  placeholder: "Password",
+)
+```

@@ -1,0 +1,10 @@
+{
+  "title": "Layout & Design",
+  "pages": [
+    "layout-spacing",
+    "responsive-design",
+    "alignment",
+    "responsive-concepts",
+    "safe-ui"
+  ]
+}

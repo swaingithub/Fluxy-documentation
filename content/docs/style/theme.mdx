@@ -1,0 +1,65 @@
+---
+title: FxTheme
+description: Dynamic theme switching and global visual effects.
+---
+
+# FxTheme & Styling
+
+## Theme Management
+
+`FxTheme` provides a zero-boilerplate way to manage your app's theme lifecycle.
+
+### Theme Modes
+
+You can toggle between light and dark modes instantly.
+
+```dart
+Fx.toggleTheme(); // Switch theme
+```
+
+### Checking Theme State
+
+Reactively check the current theme state.
+
+```dart
+Fx(() {
+  return Fx.text(FxTheme.isDark ? "Dark Side" : "Light Side");
+});
+```
+
+### Accessing Colors
+
+Access theme colors directly without `Theme.of(context)`.
+
+```dart
+Color bg = FxTheme.colorScheme.background;
+Color primary = FxTheme.colorScheme.primary;
+```
+
+## Visual Effects (Filters)
+
+Fluxy 0.1.7 introduces a high-performance **Visual FX Engine** for applying native filters.
+
+These modifiers use GPU-accelerated layers to ensure 60fps performance even with complex blur effects.
+
+| Modifier | Description | Example |
+|----------|-------------|---------|
+| `.blur(double)` | Applies Gaussian blur. | `.blur(10)` |
+| `.grayscale()` | Desaturates colors. | `.grayscale()` |
+| `.circle()` | Clips to a perfect circle. | `.circle()` |
+
+```dart
+Fx.image("background.jpg")
+  .blur(5)
+  .grayscale()
+```
+
+## Responsive Styling
+
+`FxStyle` handles responsiveness seamlessly through direct prop-based breakpoints.
+
+```dart
+Fx.box()
+  .width(sm: 100, md: 200, lg: 300) // Adaptive width
+  .bg(sm: Colors.red, md: Colors.blue) // Adaptive color
+```

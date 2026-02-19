@@ -1,0 +1,69 @@
+---
+title: FxTabScaffold
+description: A high-level app shell with parallel navigation stacks.
+---
+
+# FxTabScaffold
+
+`FxTabScaffold` manages complex tab-based applications where each tab needs its own navigation history (parallel routing).
+
+## Usage
+
+```dart
+final currentTab = flux(0);
+
+FxTabScaffold(
+  currentIndex: currentTab,
+  tabs: [
+    FxTabItem(
+      label: "Home",
+      icon: Icons.home,
+      initialRoute: "/",
+      routes: homeRoutes,
+    ),
+    FxTabItem(
+      label: "Search",
+      icon: Icons.search,
+      initialRoute: "/discover",
+      routes: searchRoutes,
+    ),
+  ],
+)
+```
+
+## Features
+
+### Parallel Navigation
+Unlike standard tabs, `FxTabScaffold` maintains independent navigation stacks.
+- When you navigate 3 pages deep in "Search", then switch to "Home", and back to "Search", you will be exactly where you left off.
+- `Fluxy.to()` automatically targets the current tab's navigator.
+
+### Scoped Navigation
+Use the `scope` parameter to force navigation within a specific tab from anywhere in the app.
+
+```dart
+Fluxy.to("/some-path", scope: "Home")
+```
+
+## API Reference
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `currentIndex` | `Signal<int>` | required | The active tab index. |
+| `tabs` | `List<FxTabItem>` | required | List of tabs with their routes. |
+| `bottomBarBuilder` | `Widget Function(int, List<FxTabItem>, ValueChanged<int>)?` | `null` | Custom bottom bar builder. |
+
+## Custom Bottom Bar
+
+You can replace the default bottom bar with your own implementation.
+
+```dart
+FxTabScaffold(
+  bottomBarBuilder: (index, items, onTap) {
+    return MyCustomNavBar(
+      selectedIndex: index,
+      onTap: onTap,
+    );
+  },
+)
+```

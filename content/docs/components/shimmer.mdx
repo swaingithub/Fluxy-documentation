@@ -1,0 +1,43 @@
+---
+title: FxShimmer
+description: A premium kinetic loading effect.
+---
+
+# FxShimmer
+
+`FxShimmer` provides a gradient animation that mimics data loading. It is typically used as a placeholder before content arrives.
+
+## Usage
+
+```dart
+FxShimmer(
+  width: 200, 
+  height: 20
+)
+```
+
+## Nested Content
+
+You can wrap another widget inside a `FxShimmer` to animate its opacity/mask, or just use it as a standalone block.
+
+```dart
+FxShimmer(
+  child: Fx.box().wh(50, 50).roundedFull(),
+) 
+// Produces a shimmering circle
+```
+
+## Style
+
+Inherits styling from `FxStyle`. 
+- **borderRadius**: Controls rounded corners (Default: 8).
+- **width/height**: Dimensions of the shimmering block.
+
+## Integration
+
+Typically used with `.loading()` modifier on async widgets or `FxImage`.
+
+```dart
+Fx.text("Loaded!")
+  .loading(isLoading.value) // Shows shimmer if true
+```

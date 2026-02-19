@@ -8,12 +8,18 @@ import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const migrations = [
-  { version: 'v0.1.11', href: '/docs/migration/migration-0-1-11', description: 'Latest - Routing & DI stabilization' },
+  { version: 'v0.2.4', href: '/docs/migration/migration-0-2-4', description: 'Layout Stability, Slivers & Alerts' },
+  { version: 'v0.2.3', href: '/docs/migration/migration-0-2-3', description: 'Premium UI DevTools Overhaul' },
+  { version: 'v0.2.2', href: '/docs/migration/migration-0-2-2', description: 'Stability & Context Refinements' },
+  { version: 'v0.2.1', href: '/docs/migration/migration-0-2-1', description: 'Live Editing & Inspector Search' },
+  { version: 'v0.2.0', href: '/docs/migration/migration-0-2-0', description: 'Major Architecture & Scoped DI' },
+  { version: 'v0.1.11', href: '/docs/migration/migration-0-1-11', description: 'Route Injection & Font DSL' },
+  { version: 'v0.1.10', href: '/docs/migration/migration-0-1-10', description: 'Typography System Update' },
   { version: 'v0.1.9', href: '/docs/migration/migration-0-1-9', description: 'Application Platform' },
   { version: 'v0.1.8', href: '/docs/migration/migration-0-1-8', description: 'Fluxy State System' },
   { version: 'v0.1.7', href: '/docs/migration/migration-0-1-7', description: 'Visual FX update' },
   { version: 'v0.1.6', href: '/docs/migration/migration-0-1-6', description: 'Stability release' },
-  { href: '/docs/migration/#', description: 'Migration Guides' },
+  { version: 'Index', href: '/docs/migration', description: 'View all migration guides' },
 ];
 
 export function MigrationsDropdown() {
@@ -69,7 +75,7 @@ export function MigrationsDropdown() {
               transition={{ duration: 0.15, ease: "easeOut" }}
               className="absolute left-2 right-2 z-50 overflow-hidden border rounded-xl bg-popover text-popover-foreground shadow-xl ring-1 ring-black/5"
             >
-              <div className="p-1">
+              <div className="p-1 max-h-[300px] overflow-y-auto">
                 {migrations.map((m) => (
                   <Link
                     key={m.version || m.description}

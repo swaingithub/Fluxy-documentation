@@ -1,0 +1,56 @@
+---
+title: FxBadge
+description: A highly customizable notification overlay for any widget.
+---
+
+# FxBadge
+
+`FxBadge` wraps any widget with a notification dot, count, or custom label. It is fully layout-aware and respects structural constraints.
+
+## Usage
+
+```dart
+FxBadge(
+  label: "New",
+  color: Colors.red,
+  child: Icon(Icons.notifications),
+)
+```
+
+## Features
+
+### Layout-Aware
+As of v0.1.6, `FxBadge` respects **Structural Recursion**. When placed inside complex layouts, it correctly calculates its constraints.
+
+### Custom Positioning
+Control the exact location of the badge using `offset`.
+
+```dart
+FxBadge(
+  label: "5",
+  offset: Offset(10, -5), // Fine-tune position
+  child: MyIcon(),
+)
+```
+
+## API Reference
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `child` | `Widget` | required | The widget to badge. |
+| `label` | `String` | required | The text content of the badge. |
+| `color` | `Color` | `primary` | Background color of the badge. |
+| `textColor` | `Color` | `white` | Text color of the badge. |
+| `offset` | `Offset` | `Offset.zero` | Positional offset from the top-right corner. |
+| `style` | `FxStyle?` | `null` | Custom atomic style for the badge container. |
+| `responsive` | `FxResponsiveStyle?` | `null` | Responsive style overrides. |
+
+## Custom Content
+Instead of a simple label, you can pass a full `Widget` as content.
+
+```dart
+FxBadge(
+  content: Icon(Icons.star, size: 10),
+  child: MyAvatar(),
+)
+```

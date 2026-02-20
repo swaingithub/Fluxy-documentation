@@ -16,14 +16,16 @@ Write your logic in `auth.controller.dart`. Do not touch UI.
 
 ```dart
 // lib/features/auth/auth.controller.dart
-final email = fluxField("");
-final password = fluxField("");
-final isSubmitting = flux(false);
+class AuthController extends FluxController {
+  final email = fluxField("");
+  final password = fluxField("");
+  final isSubmitting = flux(false);
 
-Future<void> submit() async {
-  isSubmitting.value = true;
-  await _repo.login(email.value, password.value);
-  isSubmitting.value = false;
+  Future<void> submit() async {
+    isSubmitting.value = true;
+    await _repo.login(email.value, password.value);
+    isSubmitting.value = false;
+  }
 }
 ```
 
@@ -42,10 +44,12 @@ Fx.page(
 Combine generic signals with `.input()` and `.btn()` DSL.
 
 ```dart
+final controller = AuthController();
+
 Fx.col().children([
   // Inputs bind directly to signals (No text controllers needed)
   FxTextField(
-    signal: email,
+    signal: controller.email,
     placeholder: "Enter Email",
     icon: Icons.email,
     style: FxStyle(padding: EdgeInsets.all(16)),
@@ -53,15 +57,15 @@ Fx.col().children([
   ),
   
   FxTextField(
-    signal: password,
+    signal: controller.password,
     placeholder: "Enter Password", 
     obscureText: true,
   ),
   
   // States reflected in UI
-  Fx(() => isSubmitting.value 
+  Fx(() => controller.isSubmitting.value 
      ? Fx.loader() 
-     : "Login".primaryBtn(onTap: submit))
+     : "Login".primaryBtn(onTap: controller.submit))
 ])
 ```
 
@@ -81,12 +85,12 @@ Fluxy's core advantage is minimal rebuilds.
  Instead of rebuilding an entire `Scaffold`, wrap **only the text node** that changes.
 
 ```dart
-// BAD ❌
+// BAD 
 Fx(() => Fx.scaffold(
   body: Fx.text("Count: ${count.value}")
 ));
 
-// GOOD ✅ (Only the text rebuilds)
+// GOOD (Only the text rebuilds)
 Fx.scaffold(
   body: Fx(() => Fx.text("Count: ${count.value}"))
 );

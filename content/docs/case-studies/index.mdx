@@ -41,19 +41,21 @@ We utilized standard `http` with our custom logging wrapper in `app.networking.d
 **Solution**:
 ```dart
 // cart.controller.dart
-final cartItems = flux([]);
+class CartController extends FluxController {
+  final cartItems = flux([]);
 
-Future<void> addItem(String productId) async {
-  // 1. Optimistic Update
-  cartItems.value = [...cartItems.value, productId];
+  Future<void> addItem(String productId) async {
+    // 1. Optimistic Update
+    cartItems.value = [...cartItems.value, productId];
 
-  try {
-    // 2. Sync with Backend
-    await api.post('/cart', {id: productId});
-  } catch (e) {
-    // 3. Rollback
-    cartItems.value = cartItems.value.where((id) => id != productId).toList();
-    // Use Fx.snackbar or Fx.text to show error
+    try {
+      // 2. Sync with Backend
+      await api.post('/cart', {id: productId});
+    } catch (e) {
+      // 3. Rollback
+      cartItems.value = cartItems.value.where((id) => id != productId).toList();
+      // Use Fx.snackbar or Fx.text to show error
+    }
   }
 }
 ```

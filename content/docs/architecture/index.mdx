@@ -47,14 +47,17 @@ Fluxy uses a **dot-notation** naming convention for clarity.
 
 ## 1. The Controller (`.controller.dart`)
 
-The Controller holds your **State (Signals)** and **Actions**. It serves as the bridge between your UI and Data.
+The Controller holds your **State (Signals)** and **Actions**.
+
+It is highly recommended to extend `FluxController` to gain access to lifecycle methods (`onInit`, `onReady`, `onClose`) and automatic memory management.
 
 ```dart
+
 // features/home/home.controller.dart
 import 'package:fluxy/fluxy.dart';
 import 'home.repository.dart';
 
-class HomeController {
+class HomeController extends FluxController {
   // 1. Dependencies
   final _repo = HomeRepository();
 
@@ -62,6 +65,12 @@ class HomeController {
   final count = flux(0);
   final data = flux<List<String>>([]);
   final isLoading = flux(false);
+
+  @override
+  void onInit() {
+    print("Controller Initialized");
+    super.onInit();
+  }
 
   // 3. Actions
   Future<void> fetchData() async {

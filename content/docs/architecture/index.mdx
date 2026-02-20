@@ -1,0 +1,162 @@
+---
+title: Recommended Architecture
+description: A scalable, opinionated guide to structuring production Fluxy applications using the Feature-First pattern.
+---
+
+# Recommended Architecture
+
+Fluxy is designed to be **unopinionated about UI** but highly structured when it comes to **organization**. Using a consistent folder structure ensures your team can scale without friction.
+
+## The Feature-First Structure
+
+We strictly recommend grouping files by **Feature**, not by Type.
+
+### Folder Layout
+
+```text
+lib/
+├── core/
+│   ├── theme/          # AppTheme, Colors, Typography
+│   └── networking/     # API Client configuration
+├── features/
+│   ├── auth/
+│   │   ├── auth.controller.dart  # Business Logic & State
+│   │   ├── auth.repository.dart  # Data Fetching
+│   │   ├── auth.service.dart     # (Optional) pure business logic
+│   │   └── auth.view.dart        # UI Widget
+│   └── home/
+│       ├── home.controller.dart
+│       ├── home.repository.dart
+│       ├── home.routes.dart      # Route Definitions
+│       └── home.view.dart
+└── main.dart
+```
+
+## File Naming Conventions
+
+Fluxy uses a **dot-notation** naming convention for clarity.
+
+| Type | File Pattern | Class Name |
+| :--- | :--- | :--- |
+| **Controller** | `feature.controller.dart` | `FeatureController` |
+| **Repository** | `feature.repository.dart` | `FeatureRepository` |
+| **View** | `feature.view.dart` | `FeatureView` |
+| **Routes** | `feature.routes.dart` | `FeatureRoutes` |
+
+---
+
+## 1. The Controller (`.controller.dart`)
+
+The Controller holds your **State (Signals)** and **Actions**. It serves as the bridge between your UI and Data.
+
+```dart
+// features/home/home.controller.dart
+import 'package:fluxy/fluxy.dart';
+import 'home.repository.dart';
+
+class HomeController {
+  // 1. Dependencies
+  final _repo = HomeRepository();
+
+  // 2. State (Signals)
+  final count = flux(0);
+  final data = flux<List<String>>([]);
+  final isLoading = flux(false);
+
+  // 3. Actions
+  Future<void> fetchData() async {
+    isLoading.value = true;
+    try {
+      data.value = await _repo.getItems();
+    } catch (e) {
+      Fx.toast("Error loading data");
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  void increment() => count.value++;
+}
+```
+
+## 2. The Repository (`.repository.dart`)
+
+The Repository handles raw data fetching. It isolates your controller from API details.
+
+```dart
+// features/home/home.repository.dart
+import 'package:fluxy/fluxy.dart';
+
+class HomeRepository {
+  Future<List<String>> getItems() async {
+    // Standard HTTP call or Fluxy wrapper
+    await Future.delayed(Duration(seconds: 1));
+    return ["Item 1", "Item 2", "Item 3"];
+  }
+}
+```
+
+## 3. The View (`.view.dart`)
+
+The View is your UI, composed of **Atomic Widgets**. It listens to the controller's signals.
+
+```dart
+// features/home/home.view.dart
+import 'package:fluxy/fluxy.dart';
+import 'home.controller.dart';
+
+class HomeView extends StatelessWidget {
+  // Option A: Dependency Injection
+  final controller = Fluxy.put(HomeController());
+  
+  // Option B: Simple Instantiation (if global)
+  // final controller = homeController; 
+
+  @override
+  Widget build(BuildContext context) {
+    return Fx.scaffold(
+      appBar: Fx.text("Home").h3(),
+      body: Fx.col().children([
+        Fx(() => Fx.text("Count: ${controller.count.value}")),
+        "Increment".primaryBtn(onTap: controller.increment),
+        
+        // Async Data State
+        Fx(() => controller.isLoading.value 
+           ? Fx.loader()
+           : Fx.list(
+               itemCount: controller.data.value.length,
+               itemBuilder: (ctx, i) => Fx.text(controller.data.value[i])
+             )
+        )
+      ]),
+    );
+  }
+}
+```
+
+## 4. The Routes (`.routes.dart`)
+
+Define your feature's routes in a dedicated file to keep `main.dart` clean.
+
+```dart
+// features/home/home.routes.dart
+import 'home.view.dart';
+
+class HomeRoutes {
+  static const String path = '/home';
+  
+  static final routes = [
+    FxRoute(
+      path: path,
+      builder: () => HomeView(),
+    ),
+  ];
+}
+```
+
+## Summary
+
+By strictly following the `[feature].[type].dart` pattern, you get:
+1.  **Instant Searchability**: Ctrl+P "home.con" -> jumps straight to logic.
+2.  **Clear Separations**: You never accidentally mix UI code in your repository.
+3.  **Scalability**: Adding a new feature is just copy-pasting a folder structure.

@@ -1,0 +1,116 @@
+---
+title: Production Guide
+description: Strategies for building scalable, responsive, and performant Fluxy applications.
+---
+
+# Production-Grade Fluxy
+
+Building a production application requires structure. This guide covers how to scale Fluxy effectively using the Feature-First pattern.
+
+## 1. Professional Workflow
+
+For every new feature, follow this order:
+
+### 1. Define Logic (The Controller)
+Write your logic in `auth.controller.dart`. Do not touch UI.
+
+```dart
+// lib/features/auth/auth.controller.dart
+final email = fluxField("");
+final password = fluxField("");
+final isSubmitting = flux(false);
+
+Future<void> submit() async {
+  isSubmitting.value = true;
+  await _repo.login(email.value, password.value);
+  isSubmitting.value = false;
+}
+```
+
+### 2. Define Layout Shell
+Use `Fx.page` or `Fx.dashboard` for structure in `auth.view.dart`.
+
+```dart
+// lib/features/auth/auth.view.dart
+Fx.page(
+  appBar: Fx.text("Login").h3(),
+  body: LoginForm(),
+)
+```
+
+### 3. Assemble Atomic Components
+Combine generic signals with `.input()` and `.btn()` DSL.
+
+```dart
+Fx.col().children([
+  // Inputs bind directly to signals
+  Fx.input(label: "Email", signal: email),
+  Fx.input(label: "Password", signal: password, obscure: true),
+  
+  // States reflected in UI
+  Fx(() => isSubmitting.value 
+     ? Fx.loader() 
+     : "Login".primaryBtn(onTap: submit))
+])
+```
+
+## 2. Advanced Responsiveness
+
+Fluxy removes the need for `LayoutBuilder` by providing breakpoint-aware modifiers.
+
+-   **Adaptive Width**: `.wFull().width(md: 400)` -> Full width on mobile, fix to 400px on tablet.
+-   **Grid Systems**: Use `Fx.grid()` over standard `GridView` for better responsive control.
+-   **Conditional Rendering**: `.hideOnMobile()` or `.showPayload(lg: ...)`
+
+## 3. Performance Optimization
+
+Fluxy's core advantage is minimal rebuilds.
+
+### Granular Observers (`FxObserver`)
+ Instead of rebuilding an entire `Scaffold`, wrap **only the text node** that changes.
+
+```dart
+// BAD ❌
+Fx(() => Fx.scaffold(
+  body: Fx.text("Count: ${count.value}")
+));
+
+// GOOD ✅ (Only the text rebuilds)
+Fx.scaffold(
+  body: Fx(() => Fx.text("Count: ${count.value}"))
+);
+```
+
+### Avoid Heavy Computations in UI
+Use `computedFlux` (or similar reactive derivations) to perform math *outside* the build method.
+
+```dart
+final cartTotal = flux(() => items.fold(0, (p, c) => p + c.price));
+
+// UI just reads the value
+Fx(() => Fx.text("\$${cartTotal.value}")) 
+```
+
+## 4. Error Handling
+
+Fluxy encourages explicit error handling in your logic layer rather than UI `try/catch`.
+
+```dart
+final errorMsg = flux<String?>(null);
+
+Future<void> fetchData() async {
+  try {
+    // ... fetch ...
+  } catch (e) {
+    errorMsg.value = e.toString();
+    // Use Fx.toast or Fx.snackbar based on your logic
+  }
+}
+
+// In UI:
+Fx(() => errorMsg.value != null 
+   ? Fx.text(errorMsg.value!).color(Colors.red) 
+   : Fx.box())
+```
+
+By sticking to these simple primitives—Controllers, Atomic DSL, and Responsive Modifiers—you ensure your app remains lightweight and bug-free.

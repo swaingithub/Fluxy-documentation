@@ -1,0 +1,93 @@
+---
+title: Fluxy DevTools
+description: Unlocking powerful debugging and stability features with Fluxy.
+---
+
+# Fluxy DevTools
+
+Fluxy provides a suite of tools not just for debugging, but for **active stability management**.
+
+## 1. The Stability Engine (Layout Guard)
+
+Fluxy's standout feature is its **Layout Guard**, which wraps your app and intercepts common Flutter layout errors (like `RenderFlex overflowed` or `Vertical viewport was given unbounded height`).
+
+### Strict vs. Relaxed Mode
+
+Fluxy operates in two modes:
+
+1.  **Relaxed Mode (Default)**: Use this in **Production**.
+    -   **Auto-Fix**: If a widget overflows, Fluxy attempts to fix it automatically (e.g., by wrapping it in a scroll view or clipping it).
+    -   **No Crashes**: The user sees a slightly adjusted UI instead of a "Grey Screen of Death".
+    -   **Logs**: Errors are logged silently to your analytics service.
+
+2.  **Strict Mode**: Use this in **Development**.
+    -   **Crash Immediately**: Fluxy throws a loud exception when a layout rule is violated.
+    -   **Red Screen**: Visual feedback ensures you fix the bug before shipping.
+
+```dart
+void main() {
+  // Enable strict mode for dev builds
+  Fluxy.setStrictMode(kDebugMode); 
+  
+  runApp(MyApp());
+}
+```
+
+### Layout Detection
+
+The Guard automatically detects:
+-   **Infinite Height**: `Column` inside `ListView`.
+-   **Unbounded Width**: `Row` expanding infinitely.
+-   **Render Siver Errors**: Mixing box and sliver widgets incorrectly.
+
+## 2. Visual Layout Inspector
+
+Wrap your app root to enable the visual inspector overlay.
+
+```dart
+void main() {
+  runApp(
+    Fluxy.debug(
+      child: MyApp(),
+    ),
+  );
+}
+```
+
+-   **Toggle Inspector**: Shake device or press the on-screen generic button.
+-   **Highlight Overflows**: Draws red boxes around widgets that are clipping or overflowing.
+-   **Repaint Rainbow**: visualized via standard Flutter tools, but Fluxy integrates shortcuts.
+
+## 3. Stability Metrics
+
+View a summary of how many crashes Fluxy has prevented in the current session.
+
+```dart
+Fluxy.printStabilitySummary();
+```
+
+**Output:**
+```
+[Fluxy Stability] Session Report:
+- Prevented Crashes: 3
+- Layout Repairs: 12
+- Active Guards: 5
+```
+
+## 4. Network & State Logging
+
+While Fluxy works with any client, `Fluxy.http` provides built-in logging.
+
+```dart
+// Enable verbose network logs
+Fluxy.http.enableLogs = true;
+```
+
+State changes in `flux()` variables can also be traced:
+
+```dart
+final count = flux(0, name: 'Counter');
+// Logs: [Flux] Counter changed: 0 -> 1
+```
+
+By leveraging these tools, you ensure your app is not just "bug-free" but **resilient** to unexpected runtime conditions.

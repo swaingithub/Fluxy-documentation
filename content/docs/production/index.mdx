@@ -43,9 +43,20 @@ Combine generic signals with `.input()` and `.btn()` DSL.
 
 ```dart
 Fx.col().children([
-  // Inputs bind directly to signals
-  Fx.input(label: "Email", signal: email),
-  Fx.input(label: "Password", signal: password, obscure: true),
+  // Inputs bind directly to signals (No text controllers needed)
+  FxTextField(
+    signal: email,
+    placeholder: "Enter Email",
+    icon: Icons.email,
+    style: FxStyle(padding: EdgeInsets.all(16)),
+    validators: [(val) => !val.contains('@') ? "Invalid" : null],
+  ),
+  
+  FxTextField(
+    signal: password,
+    placeholder: "Enter Password", 
+    obscureText: true,
+  ),
   
   // States reflected in UI
   Fx(() => isSubmitting.value 

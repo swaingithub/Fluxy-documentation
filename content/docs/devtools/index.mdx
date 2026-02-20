@@ -5,7 +5,7 @@ description: Unlocking powerful debugging and stability features with Fluxy.
 
 # Fluxy DevTools
 
-Fluxy DevTools isn't just about debugging—it's about **Stability Management**. The framework includes a comprehensive "Stability Kernel" that actively guards against entire categories of Flutter crashes.
+Fluxy DevTools provides a suite of tools for **Stability Management**, guarding against categories of crashes that standard Flutter apps often succumb to.
 
 ## 1. The Stability Kernel
 
@@ -21,6 +21,8 @@ Fluxy proactively scans your widget tree for violations. You control its aggress
 2.  **Strict Mode**: Designed for **Development**.
     -   **Behavior**: Intentionally throws a `FluxyLayoutViolationException` immediately upon detection.
     -   **Goal**: Force you to fix the root cause instead of relying on Fluxy's safety net.
+
+> **Recommendation**: Always enable Strict Mode in debug builds to catch "lazy" layout practices that Fluxy is secretly fixing for you.
 
 ```dart
 void main() async {
@@ -39,9 +41,11 @@ void main() async {
 
 ## 2. Crash Prevention Categories
 
-Fluxy guards against three main types of crashes.
+Fluxy automatically wraps common primitives (like `Fx.scaffold`, `Fx.col`, `Fx.scroll`) in its internal guards (`FluxyViewportGuard`, `FxSafeExpansion`), making manual `SafeArea` or constraint checks often redundant.
 
 ### Type A: Layout Crashes (The "Red Screen")
+
+Fluxy translates cryptic RenderFlex errors into readable alerts.
 
 | Crash Scenario | Fluxy Detection | Relaxed Mode Auto-Fix |
 | :--- | :--- | :--- |
@@ -95,12 +99,11 @@ void main() {
 
 Fluxy tracks every intercepted crash and auto-repair. You can view this summary to audit your app's health.
 
-### Usage Patterns
+### Interpreting the Report
 
-There are two primary ways to use the stability summary:
-
-1.  **Manual Audit**: Trigger it from a debug dashboard or console to check session health.
-2.  **Error Reporting**: attach it to crash reports to see if the system was unstable before the crash.
+-   **Prevented Crashes**: Critical errors that would have stopped the app (e.g., Paint exceptions).
+-   **Layout Repairs**: "Lazy" code fixes (e.g., Infinite Scroll) that you should fix in Strict Mode.
+-   **Viewport Saves**: Number of times `FluxyViewportGuard` prevented content from being clipped or hidden.
 
 ### Example: Log on Crash
 
@@ -124,7 +127,9 @@ void main() {
 [Fluxy Stability] Session Report:
 - Prevented Crashes: 3
 - Layout Repairs: 12
-- Active Guards: 5
+  - Infinite Scroll Fixed: 8
+  - Safe Expansion Triggered: 4
+- Viewport Saves: 5
 ```
 
-By understanding these guards, you can decide when to fix a bug (Strict Mode) and when to let Fluxy handle it (Relaxed Mode).
+By understanding these metrics, you can audit your codebase for "silent failures" that Fluxy is handling for you.

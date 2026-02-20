@@ -50,7 +50,7 @@ export default function LandingPage() {
           <div className="hidden md:flex items-center gap-8 text-sm font-medium text-white/60">
             <NavLink href="/docs">Documentation</NavLink>
             <NavLink href="/docs/components">Components</NavLink>
-            <NavLink href="/docs/core-concepts">Engine</NavLink>
+            <NavLink href="/docs/fundamentals/reactive-engine">Engine</NavLink>
           </div>
 
           <div className="flex items-center gap-4">
@@ -62,9 +62,9 @@ export default function LandingPage() {
             </Link>
             <Link 
               href="/docs" 
-              className="hidden sm:flex px-5 py-2.5 bg-white text-black rounded-lg text-sm font-bold tracking-wide hover:scale-105 transition-transform shadow-[0_0_20px_-5px_rgba(255,255,255,0.3)]"
+              className="hidden sm:flex items-center gap-2 px-5 py-2.5 bg-white text-black rounded-lg text-sm font-bold tracking-wide transition-all hover:bg-gray-50 hover:scale-105 shadow-[0_0_20px_-5px_rgba(255,255,255,0.4)]"
             >
-              Get Started
+              Get Started <ArrowRight size={14} className="text-black/70" />
             </Link>
           </div>
         </div>
@@ -99,12 +99,12 @@ export default function LandingPage() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-5">
               <Link 
                 href="/docs" 
-                className="group relative px-8 py-4 bg-white text-black rounded-xl text-base font-bold tracking-wide hover:scale-105 transition-transform overflow-hidden"
+                className="group relative px-8 py-4 bg-white text-black rounded-xl text-base font-bold tracking-wide hover:bg-gray-50 hover:scale-105 transition-all shadow-[0_0_40px_-10px_rgba(255,255,255,0.4)] overflow-hidden"
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 opacity-0 group-hover:opacity-10 transition-opacity" />
-                <span className="flex items-center gap-2">
-                  Start Building <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                <span className="relative z-10 flex items-center gap-2">
+                  Start Building <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform text-black" />
                 </span>
+                <div className="absolute inset-0 bg-gradient-to-r from-gray-100 to-white opacity-0 group-hover:opacity-100 transition-opacity" />
               </Link>
               
               <div className="flex items-center gap-3 px-6 py-4 rounded-xl border border-white/10 bg-white/[0.02] backdrop-blur-md font-mono text-sm text-white/60 hover:bg-white/[0.05] transition-colors cursor-text group">
@@ -243,7 +243,7 @@ export default function LandingPage() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-white/10 bg-black pt-20 pb-10">
+      <footer className="relative z-10 border-t border-white/10 bg-black pt-20 pb-10">
         <div className="container mx-auto px-6">
           <div className="flex flex-col md:flex-row justify-between gap-12 mb-16">
             <div className="space-y-4 max-w-sm">
@@ -261,14 +261,14 @@ export default function LandingPage() {
                 <div className="space-y-4">
                     <h4 className="font-bold text-white">Resources</h4>
                     <FooterLink href="/docs">Documentation</FooterLink>
-                    <FooterLink href="/docs/guide">Guides</FooterLink>
-                    <FooterLink href="/docs/api">API Reference</FooterLink>
+                    <FooterLink href="/docs/production">Guides</FooterLink>
+                    <FooterLink href="/docs/fundamentals/fluxy-core">API Reference</FooterLink>
                 </div>
                 <div className="space-y-4">
                     <h4 className="font-bold text-white">Ecosystem</h4>
-                    <FooterLink href="/docs/cli">Fluxy CLI</FooterLink>
-                    <FooterLink href="/docs/networking">Networking</FooterLink>
-                    <FooterLink href="/docs/state">Reactivity</FooterLink>
+                    <FooterLink href="/docs/fundamentals/cli">Fluxy CLI</FooterLink>
+                    <FooterLink href="/docs/ecosystem/networking">Networking</FooterLink>
+                    <FooterLink href="/docs/fundamentals/state-management">Reactivity</FooterLink>
                 </div>
                 <div className="space-y-4">
                     <h4 className="font-bold text-white">Community</h4>
@@ -323,9 +323,14 @@ function CheckItem({ text }: { text: string }) {
 }
 
 function FooterLink({ href, children }: { href: string, children: React.ReactNode }) {
+  const isExternal = href.startsWith('http');
+  const Component = isExternal ? 'a' : Link;
+  const props = isExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {};
+
   return (
-    <Link href={href} className="block text-sm text-white/50 hover:text-indigo-400 transition-colors">
+    // @ts-ignore
+    <Component href={href} {...props} className="block text-sm text-white/50 hover:text-indigo-400 transition-colors cursor-pointer">
       {children}
-    </Link>
+    </Component>
   );
 }

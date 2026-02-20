@@ -86,13 +86,13 @@ export default function LandingPage() {
 
             <h1 className="text-6xl md:text-8xl font-bold tracking-tighter leading-[1] mb-8 bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-white/40 drop-shadow-2xl">
               Build Flutter apps <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 animate-gradient-x">
+              <span className="bg-clip-text text-transparent bg-gradient-to-b from-gray-100 to-gray-400">
                 at Light Speed.
               </span>
             </h1>
 
             <p className="text-lg md:text-2xl text-white/50 max-w-3xl mx-auto mb-12 leading-relaxed font-light">
-              The high-performance framework that unifies <span className="text-indigo-400 font-medium">State</span>, <span className="text-purple-400 font-medium">Networking</span>, and <span className="text-pink-400 font-medium">Style</span>. <br className="hidden md:block"/>
+              The high-performance framework that unifies <span className="text-gray-300 font-medium">State</span>, <span className="text-gray-300 font-medium">Networking</span>, and <span className="text-gray-300 font-medium">Style</span>. <br className="hidden md:block"/>
               Write 80% less boilerplate. Ship 10x faster.
             </p>
 
@@ -169,7 +169,7 @@ export default function LandingPage() {
             <div className="flex-1 space-y-8">
               <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
                 Stop writing <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-orange-400">Spaghetti Code.</span>
+                <span className="bg-clip-text text-transparent bg-gradient-to-b from-gray-100 to-gray-400">Spaghetti Code.</span>
               </h2>
               <p className="text-xl text-white/60 leading-relaxed">
                 Fluxy eliminates deeply nested widget trees. Chain your styles, bind your state, and let the engine handle the rest.

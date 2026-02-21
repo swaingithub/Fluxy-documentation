@@ -1,35 +1,76 @@
 'use client';
 
-import { useId, type SVGProps } from 'react';
+import { type SVGProps } from 'react';
+import { twMerge } from 'tailwind-merge';
 
-export function FluxyLogo(props: SVGProps<SVGSVGElement>) {
-  const id = useId();
-  const gradientId = `fluxy-logo-gradient-${id.replace(/:/g, '')}`;
-
+/**
+ * FluxyLogo - A professional, minimal geometric design representing 
+ * Structure (the stem) and Flow (the offset horizontal bars).
+ */
+export function FluxyLogo({ className, ...props }: SVGProps<SVGSVGElement>) {
   return (
     <svg
       viewBox="0 0 512 512"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className="inline-block"
+      className={twMerge("inline-block", className)}
       {...props}
     >
-      <defs>
-        <linearGradient id={gradientId} x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#3B82F6" />
-          <stop offset="100%" stopColor="#8B5CF6" />
-        </linearGradient>
-      </defs>
+      {/* Professional Slate Background */}
       <rect
         width="512"
         height="512"
-        rx="100"
-        fill="#3B82F6"
-        style={{ fill: `url(#${gradientId})` }}
+        rx="128"
+        fill="#0F172A"
       />
-      <path
-        d="M165 130H347C363.569 130 377 143.431 377 160V190C377 206.569 363.569 220 347 220H225V245H325C341.569 245 355 258.431 355 275V305C355 321.569 341.569 335 325 335H225V420C225 436.569 211.569 450 195 450H165C148.431 450 135 436.569 135 420V160C135 143.431 148.431 130 165 130Z"
+      
+      {/* 
+          Architectural 'F' Design
+          The design uses three precise geometric elements to create an 'F' 
+          that feels modern and structured.
+      */}
+      
+      {/* Vertical Stem - Represents Stability/Core */}
+      <rect
+        x="128"
+        y="128"
+        width="64"
+        height="256"
+        rx="8"
         fill="white"
+      />
+      
+      {/* Top Bar - Representing Extension/Growth */}
+      <rect
+        x="128"
+        y="128"
+        width="224"
+        height="64"
+        rx="8"
+        fill="white"
+      />
+      
+      {/* 
+          Middle Bar - Representing 'Flux' (Flow)
+          Offset slightly to imply motion and highlighted with a professional 
+          Sky Blue accent.
+      */}
+      <rect
+        x="160"
+        y="224"
+        width="160"
+        height="56"
+        rx="8"
+        fill="#38BDF8"
+      />
+
+      {/* Subtle Bottom 'Dot' - Representing Atomic State/Signals */}
+      <circle
+        cx="160"
+        cy="352"
+        r="28"
+        fill="#38BDF8"
+        fillOpacity="0.5"
       />
     </svg>
   );

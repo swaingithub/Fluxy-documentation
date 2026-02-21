@@ -5,11 +5,11 @@ description: Learn how to set up Fluxy in your Flutter project.
 
 # Installation
 
-Fluxy is composed of two main parts: the **CLI** for orchestration and the **Framework** for building.
+Fluxy is composed of two main parts: the **CLI** for orchestration and the **Framework** for building. In **v0.2.5 (The Platform Era)**, Fluxy transitions to a module-based platform architecture.
 
 ## 1. Install Fluxy CLI
 
-The Fluxy CLI handles project scaffolding, feature generation (Blueprints), and local OTA testing.
+The Fluxy CLI handles project scaffolding, module management, and local OTA testing.
 
 ```bash
 dart pub global activate fluxy
@@ -35,7 +35,7 @@ Alternatively, add it manually to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  fluxy: ^0.2.3
+  fluxy: ^0.2.5
 ```
 
 ## Basic Setup
@@ -48,35 +48,49 @@ import 'package:fluxy/fluxy.dart';
 
 ## Global Initialization
 
-Starting from v0.1.8, you must initialize the Fluxy engine at the start of your `main()` function. This handles framework setup, state hydration, and networking orchestration.
+In the Platform Era, initialization is two-fold: setting up the core engine and auto-registering installed modules.
 
 ```dart
 void main() async {
-  // 1. Ensure Flutter is initialized
-  WidgetsFlutterBinding.ensureInitialized();
-  
-  // 2. Initialize Fluxy Engine
+  // 1. Initialize Fluxy Engine
   await Fluxy.init(); 
+  
+  // 2. Auto-register Platform Modules
+  // This wires up all installed modules (auth, storage, etc.) automatically.
+  Fluxy.autoRegister();
   
   runApp(const MyApp());
 }
 ```
 
-## Wrapping your App (Optional)
+## The Module Paradigm
 
-While `Fluxy.init()` handles the core engine, wrapping your app with `FluxyRoot` provides additional context-aware features like global overlays and theme management:
+Instead of just "plugins", Fluxy now uses **Platform Modules**. You can add them using the new CLI command:
+
+```bash
+fluxy module add auth
+fluxy module add storage
+```
+
+This command handles installation and ensures they are picked up by `Fluxy.autoRegister()`.
+
+## Wrapping your App
+
+We recommend using `FluxyApp` (a pre-configured `MaterialApp`) or `Fx` builders for the best experience:
 
 ```dart
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
   await Fluxy.init();
+  Fluxy.autoRegister();
   
   runApp(
-    FluxyRoot(
-      child: MyApp(),
+    FluxyApp(
+      title: "My App",
+      initialRoute: HomeRoute(),
+      routes: [HomeRoute(), SettingsRoute()],
     ),
   );
 }
 ```
 
-Now you're ready to start building with Fluxy!
+Now you're ready to start building with the Fluxy Platform!

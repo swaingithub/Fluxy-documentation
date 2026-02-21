@@ -1,6 +1,7 @@
 {
   "pages": [
     "index",
+    "migration-0-2-5",
     "migration-0-2-4",
     "migration-0-2-3",
     "migration-0-2-2",

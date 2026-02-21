@@ -46,6 +46,34 @@ Fx.row(
 
 ---
 
+### The Stability-First Default (`MainAxisSize.min`)
+
+One of the most significant differences between Fluxy and standard Flutter is the default behavior of Flex containers.
+
+- **Standard Flutter**: `Row` and `Column` default to `MainAxisSize.max` (occupying all available space).
+- **Fluxy DSL**: `Fx.row` and `Fx.col` default to `MainAxisSize.min` (occupying only as much space as their children need).
+
+#### Why this matters for Alignment
+Because Fluxy containers default to `min`, using `justify: MainAxisAlignment.spaceBetween` will appear to "not work" out of the box. Since the row is only as wide as its children, there is no "leftover space" to distribute between them.
+
+**The Fix:** To use justified spacing (like pinning elements to the left and right edges), you must explicitly tell the container to take up all available space using `size: MainAxisSize.max`.
+
+```dart
+Fx.row(
+  justify: MainAxisAlignment.spaceBetween,
+  size: MainAxisSize.max, // <--- Required for space distribution
+  children: [ 
+    Fx.text("Left"),
+    Fx.text("Right"),
+  ],
+)
+```
+
+#### Philosophy: Why the change?
+Fluxy prioritizes **Layout Stability**. Defaulting to `min` prevents "infinite size" crashes when flexible containers are nested inside scrollable viewports. It forces you to be intentional about expansion, resulting in more robust and predictable UIs.
+
+---
+
 ## Fx.grid (The Layout Workhorse)
 
 The Grid API handles all the aspect ratio and column math for you.

@@ -1,0 +1,75 @@
+---
+title: Connectivity
+description: Real-time network monitoring and offline-first task queuing.
+---
+
+# Connectivity
+
+The `fluxy_connectivity` module (accessible via the unified platform layer) allows your application to respond instantly to network changes and provides advanced utilities for queuing tasks until the device is online.
+
+## Installation
+
+Add the connectivity module to your project:
+
+```bash
+fluxy module add connectivity
+```
+
+## Basic Monitoring
+
+Access the real-time connectivity status via the unified platform API. These signals update automatically when the hardware state changes (WiFi, Cellular, or Offline).
+
+```dart
+// Reactive UI
+Fx(() {
+  final isOnline = Fx.platform.connectivity.isOnline.value;
+  return Icon(
+    isOnline ? Icons.wifi : Icons.wifi_off,
+    color: isOnline ? Colors.green : Colors.red,
+  );
+});
+
+// Explicit Check
+if (Fx.platform.connectivity.connectionType.value == ConnectionType.wifi) {
+  // Heavy download allowed
+}
+```
+
+## Advanced: Task Queuing (`whenOnline`)
+
+One of Fluxy's most powerful features is the ability to wrap logic that should only execute when a stable connection is present. If the user is offline, the task is safely queued.
+
+```dart
+Future<void> syncData() async {
+  await Fx.platform.connectivity.whenOnline('data_sync_key', () async {
+    // This code only runs when the device is online.
+    // If offline, it waits and auto-triggers on reconnection.
+    await api.postData(myData);
+    Fx.toast.success("Data Synchronized");
+  });
+}
+```
+
+## Listener Patterns
+
+You can listen to connectivity changes in your controllers to trigger background syncs or show warnings.
+
+```dart
+class MyController extends FluxController {
+  @override
+  void onInit() {
+    Fx.platform.connectivity.isOnline.listen((online) {
+      if (online) {
+        Fx.toast.info("Back online. Replaying sync queue...");
+      } else {
+        Fx.toast.warning("Offline mode active.");
+      }
+    });
+  }
+}
+```
+
+## Best Practices
+1. **Never manual check**: Avoid writing `if (await checkConnection())`. Use the reactive `Fx.platform.connectivity.isOnline` signal instead.
+2. **Use Keys for Queues**: Always provide a unique key to `whenOnline` to prevent duplicate tasks from piling up during intermittent connectivity.
+3. **UX Feedback**: Always show a visual indicator (like a small status chip) when the system enters "Isolated" (offline) mode.

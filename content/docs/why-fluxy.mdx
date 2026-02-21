@@ -5,39 +5,35 @@ description: A comparison with other state management libraries and the philosop
 
 # Why Fluxy?
 
-Fluxy is not just another state management library. It is a **"Full-Stack" Flutter Platform** that unifies state, networking, dependency injection, and UI styling into a single, cohesive engine. 
+Fluxy is not just another state management library. It is a **"Managed Platform Architecture"** for Flutter that unifies state, networking, dependency injection, and industrial-grade platform modules into a single, cohesive engine. 
 
-While other libraries solve *one* problem (e.g., Riverpod for state, Dio for networking, GetIt for DI), Fluxy solves *the entire development lifecycle*.
-
+While other libraries solve *one* problem (e.g., Riverpod for state, Dio for networking, GetIt for DI), Fluxy solves *the entire development lifecycle* by providing a **Unified Platform Layer**.
 
 ## At a Glance Comparison
 
-| Feature | Fluxy | Riverpod / Provider | Bloc / Cubit | GetX |
+| Feature | Fluxy (v0.2.5+) | Riverpod / Provider | Bloc / Cubit | GetX |
 |---------|-------|---------------------|--------------|------|
-| **Core Philosophy** | **Full-Stack Platform** | State Management | Arch. Pattern | Micro-Framework |
+| **Core Philosophy** | **Managed Platform** | State Management | Arch. Pattern | Micro-Framework |
 | **State Paradigm** | **Atomic Signals** | Providers | Streams / Events | Reactive Vars (`RX`) |
 | **Boilerplate** | **Zero** | Medium | High | Low |
 | **Dependency Injection**| **Built-in `FxScope`** | Via Provider Scope | Via `RepositoryProvider` | Global Service Locator |
 | **Networking** | **Built-in `Fx.http`** | Requires Dio/Http | Requires Dio/Http | Built-in Connect |
 | **UI Styling** | **Atomic DSL** | Standard Widgets | Standard Widgets | Optional Utils |
-| **Dev Experience**| **Glassmorphic** | DevTools Ext | DevTools Ext | Console Logs |
-| **Type Safety** | **Scope-Aware** | Compile-time | Strong Typing | Loose (Runtime) |
+| **Platform Modules** | **Unified (`Fx.platform`)** | Manual Integration | Manual Integration | Fragmented |
+| **Stability Kernel** | **Built-in (Auto-Repair)** | None | None | None |
 
-## The "Fragmentation" Problem
+## The "Platform Era" Vision
 
-In a standard Flutter app, you often need to stitch together multiple packages to get a production-ready architecture:
+In **v0.2.5**, Fluxy moves beyond being a framework and becomes a **Platform**.
 
-1.  **State**: `flutter_bloc` or `riverpod`
-2.  **Networking**: `dio` or `http`
-3.  **DI**: `get_it` and `injectable`
-4.  **Routing**: `go_router` or `auto_route`
-5.  **Styling**: `google_fonts`, `flutter_animate`, etc.
-6.  **Hooks**: `flutter_hooks` (optional)
+### 1. Unified Platform API (`Fx.platform`)
+All core heavy-lifting (Authentication, Permissions, Storage, Camera, Notifications) is now centralized under the `Fx.platform` namespace. This ensures that as underlying plugins evolve, your application code remains stable and unified.
 
-**This leads to:**
--   **Inconsistent APIs**: `context.read` vs `ref.read` vs `Get.find`.
--   **Version Conflicts**: Keep 10+ packages in sync.
--   **Glue Code**: Writing wrappers to make Dio work with Bloc.
+### 2. Managed Runtime Architecture
+With `Fluxy.autoRegister()`, the framework handles the wiring of all installed platform modules effortlessly. No more manual `Fluxy.register()` calls for every plugin.
+
+### 3. Stability Kernel™
+Fluxy is the first Flutter framework to include a **Stability Kernel** that proactively detects, intercepts, and auto-repairs common crashes like "Infinite Constraint" violations or "Async Dispose Races."
 
 ## The Fluxy Solution
 
@@ -53,7 +49,7 @@ final users = fluxAsync(() => Fx.http.get('/users'));
 // State directly feeds UI
 Fx(() => users.on(
   data: (list) => UserList(list),
-  loading: () => Fx.loader(),
+  loading: () => Fx.loader.shimmer(),
   error: (e) => ErrorView(e),
 ))
 ```
@@ -61,8 +57,8 @@ Fx(() => users.on(
 ### 2. Architectural Authority
 Fluxy enforces a clean, scalable architecture with **Controllers** and **Repositories**.
 
--   **FluxController**: Lifecycle-aware logic (`onInit`, `onReady`, `onClose`).
--   **Blueprints**: Standardized file structures generated via CLI.
+-   **FluxController**: Lifecycle-aware logic (`onInit`, `onReady`, `onDispose`).
+-   **Modules**: Standardized platform features added via `fluxy module add <name>`.
 
 ### 3. Atomic Styling DSL
 Stop wrestling with nested `Container` and `Decoration` objects. Fluxy's atomic DSL allows you to style standard Flutter widgets with chainable modifiers.
@@ -86,7 +82,7 @@ Fx.text("Hello")
   .p(16)
   .bg(Colors.blue)
   .rounded(8)
-  .shadow.md
+  .shadow.md()
 ```
 
 ## Migration Cheat Sheet
@@ -109,7 +105,7 @@ Coming from another framework? Here is how familiar concepts map to Fluxy.
 | `.obs` | `.obs` / `flux()` | Reactive variable |
 | `Obx(() => ...)` | `Fx(() => ...)` | Reactive widget |
 | `Get.put()` | `Fluxy.put()` | Dependency Injection |
-| `Get.to()` | `Fx.to()` | Navigation |
+| `Get.to()` | `Fx.to()` / `Fluxy.to()` | Navigation |
 | `GetView` | `FxView` | Controller binding |
 
 ### From Bloc
@@ -124,7 +120,7 @@ Coming from another framework? Here is how familiar concepts map to Fluxy.
 ## Conclusion
 
 Choose **Fluxy** if you want:
--   A batteries-included framework (State, UI, Net, DI).
--   To write 50% less boilerplate.
--   Best-in-class DevTools.
--   A consistent, unified API for your entire app.
+-   A **Managed Platform** (State, UI, Net, DI, Modules).
+-   To write 70% less glue code.
+-   Proactive **Stability Guards** to prevent production crashes.
+-   A consistent, unified API for your entire enterprise application.

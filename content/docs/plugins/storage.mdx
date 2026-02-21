@@ -1,0 +1,69 @@
+---
+title: Persistent Storage
+description: High-performance, reactive key-value storage for application state.
+---
+
+# Persistent Storage
+
+The `fluxy_storage` module provides a unified, reactive key-value storage abstraction (supporting both **Standard** and **Secure** modes). It replaces standard "Shared Preferences" with an industrial-grade, signal-aware storage engine.
+
+## Installation
+
+Add the storage module to your project:
+
+```bash
+fluxy module add storage
+```
+
+## Basic Operations
+
+Fluxy Storage supports all standard primitives (String, Int, Double, Bool) and Complex Maps via the unified platform API.
+
+```dart
+// Saving data
+Fx.platform.storage.set('user_name', 'Alex Stevens');
+Fx.platform.storage.setInt('app_launches', 42);
+
+// Retrieving data
+final name = Fx.platform.storage.getString('user_name', fallback: 'Guest');
+```
+
+## Advanced: Reactive Storage
+
+The true power of Fluxy Storage lies in its reactivity. You can treat the entire storage disk as a reactive source.
+
+```dart
+// This widget updates automatically whenever 'balance' changes on disk
+// even if changed from a different screen or background service!
+Fx(() {
+  final bal = Fx.platform.storage.getDouble('user_balance', fallback: 0.0);
+  return Fx.text("\$${bal.toStringAsFixed(2)}").bold();
+});
+```
+
+## List & Key Management
+
+You can perform operations on the entire storage set reactively:
+
+```dart
+// Get a reactive count of all stored items
+Fx(() => Fx.text("Items in Cache: ${Fx.platform.storage.keyCount.value}"));
+
+// Clear everything
+void resetApp() {
+  Fx.platform.storage.clearAll();
+}
+```
+
+## Encryption (Unified Abstraction)
+Sensitive data (like auth tokens) is automatically stored in the device's Secure Enclave using AES-256 encryption. Fluxy provides a unified API for both encrypted and non-encrypted data.
+
+```dart
+// Use the 'secure' flag for sensitive items
+Fx.platform.storage.set('api_token', 'xxx_yyy_zzz', secure: true);
+```
+
+## Best Practices
+1. **Fallback Values**: Always provide a `fallback` value in your getters to avoid null pointer exceptions during the first app launch.
+2. **Key Constants**: Store your storage keys in a clean class (e.g., `AppKeys.userName`) to avoid typos.
+3. **Don't Overuse Secure**: Encryption adds a small overhead. Only use `secure: true` for truly sensitive data like tokens or PII (Personally Identifiable Information).

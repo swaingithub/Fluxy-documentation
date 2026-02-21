@@ -5,11 +5,11 @@ description: Install Fluxy and create your first project in minutes.
 
 # Quick Start
 
-Get started with Fluxy in just a few commands.
+Get started with Fluxy in the **Platform Era (v0.2.5)** in just a few commands.
 
 ## Installation
 
-Install the Fluxy CLI globally using Dart. This tool will manage your projects and generate code for you.
+Install the Fluxy CLI globally using Dart. This tool will manage your projects, modules, and generate code for you.
 
 ```bash
 dart pub global activate fluxy
@@ -17,32 +17,25 @@ dart pub global activate fluxy
 
 ## Creating a Project
 
-Initialize a new Fluxy project structure. This command sets up the necessary folders for modules, routes, and themes.
+Initialize a new Fluxy project structure. This command sets up the official `core/features` architecture.
 
 ```bash
 fluxy init my_awesome_app
 ```
 
-## Running Your App
+## Adding Modules
 
-Run your application using the optimized Fluxy dev runner for a better developer experience.
-
-```bash
-fluxy run
-```
-
-## Quick Feature Generation
-
-Instead of writing everything from scratch, use **Fluxy Blueprints** to generate complete, working features:
+Fluxy is now modular. Add the features you need using the `module` command:
 
 ```bash
-# Generate a complete login feature
-fluxy g auth login
+# Add storage and authentication
+fluxy module add storage
+fluxy module add auth
 ```
 
 ## Your First App
 
-A professional Fluxy application requires initialization. Here is a minimal `main.dart` setup:
+A professional Fluxy application requires initialization and module registration. Here is a minimal `main.dart` setup:
 
 ```dart
 import 'package:flutter/material.dart';
@@ -50,8 +43,10 @@ import 'package:fluxy/fluxy.dart';
 
 void main() async {
   // 1. Setup core engine
-  WidgetsFlutterBinding.ensureInitialized();
   await Fluxy.init();
+  
+  // 2. Auto-register all installed modules
+  Fluxy.autoRegister();
   
   runApp(
     FluxyApp(
@@ -59,7 +54,7 @@ void main() async {
       initialRoute: FxRoute(
         path: "/",
         builder: (context, args) => Fx.center(
-          child: Fx.text("Hello World").font.xxl.bold.blue600,
+          child: Fx.text("Hello World").font.xxl().font.bold().color(Fx.primary),
         ),
       ),
     ),
@@ -67,13 +62,11 @@ void main() async {
 }
 ```
 
-
-
 ## Next Steps
 
 Once your project is set up, explore the core concepts:
 
-- [Reactivity](/docs/reactivity): Learn about Signals and computed values.
-- [Atomic Styling DSL](/docs/ui-dsl): Use the `Fx` namespace to build UI.
-- [Premium Widgets](/docs/widgets): Explore pre-styled components.
-- [Routing](/docs/routing): Set up type-safe navigation.
+- [Reactivity](/docs/fundamentals/signals): Learn about Flux signals and automatic updates.
+- [Atomic Styling DSL](/docs/style/atomic-dsl): Use the `Fx` namespace to build flat UI trees.
+- [Ecosystem](/docs/plugins/notifications): Explore the power of Platform Modules.
+- [Routing](/docs/ecosystem/routing): Set up type-safe navigation with automated controller registration.

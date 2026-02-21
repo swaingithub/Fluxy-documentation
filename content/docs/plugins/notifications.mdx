@@ -1,0 +1,85 @@
+---
+title: Notifications
+description: Enterprise-grade notification system for Fluxy apps with scheduled alerts and smart permissions.
+---
+
+# Notifications
+
+Fluxy provides an industrial-grade notification system (compatible with `fluxy_notifications v20.0+`) that handles channels, permissions, and scheduling with zero-config.
+
+## Installation
+
+Add the notifications module to your project:
+
+```bash
+fluxy module add notifications
+```
+
+## Basic Usage
+
+Trigger a standard notification immediately via the unified platform API:
+
+```dart
+Fx.platform.notifications.show(
+  title: "New Update",
+  body: "Fluxy v0.2.5 is now available.",
+);
+```
+
+## Scheduled Notifications
+
+Schedule notifications for a future time. Fluxy handles `Exact Alarms` permissions and robust fallback logic automatically on Android 12+.
+
+```dart
+Fx.platform.notifications.schedule(
+  id: 1,
+  title: "Daily Standup",
+  body: "Don't forget the team meeting!",
+  scheduledDate: DateTime.now().add(Duration(hours: 2)),
+  payload: {"target": "meeting_screen"},
+);
+```
+
+### Timezone Awareness
+Notifications are now timezone-aware by default, ensuring they trigger at the correct local time even if the user travels.
+
+## Advanced Features
+
+### Groups & Channels
+Organize notifications into categories for better user control.
+
+```dart
+Fx.platform.notifications.createChannel(
+  id: "marketing",
+  name: "Marketing Updates",
+  importance: Importance.max,
+);
+```
+
+### Automatic Permissions
+Fluxy automatically handles notification permissions for Android 13+ and iOS. It checks and requests permissions only when needed.
+
+```dart
+if (await Fx.platform.notifications.hasPermission()) {
+  // Proceed with notifications
+} else {
+  await Fx.platform.notifications.requestPermission();
+}
+```
+
+## Configuration
+
+In the "Platform Era", use `Fluxy.autoRegister()` to initialize all modules effortlessly.
+
+```dart
+void main() async {
+  await Fluxy.init();
+  Fluxy.autoRegister(); // Automatically boots notifications module
+  
+  runApp(MyApp());
+}
+```
+
+## Platform Safety
+The framework now automatically injects necessary Android `BroadcastReceivers` for notifications to persist across reboots, providing true enterprise-level reliability.
+

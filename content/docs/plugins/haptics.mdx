@@ -1,0 +1,53 @@
+---
+title: Haptic Feedback
+description: Premium sensory UX with centralized haptic vibration control.
+---
+
+# Haptic Feedback
+
+Fluxy's Haptic Engine provides a high-level, semantic API for digital touch confirmation. It abstracts away raw platform vibration calls into professional-grade sensory signals.
+
+## Usage
+
+The haptic engine is available via the static `Fx.haptic` helper (or `FxHaptic` directly). 
+
+```dart
+void onButtonTap() {
+  Fx.haptic.light(); // Light confirmation tap
+}
+```
+
+## Semantic Levels
+
+### 1. Selection & Light Interactions
+Use for standard button clicks, toggle changes, or scroll ticks.
+```dart
+Fx.haptic.light();
+```
+
+### 2. Physical Impact
+Use for drag-and-drop actions, component snaps, or satisfying UI physics.
+```dart
+Fx.haptic.medium();
+Fx.haptic.heavy();
+```
+
+### 3. State Notifications
+Use to provide physical weight to successful operations or critical errors.
+```dart
+Fx.haptic.success(); // A satisfying "double pulse"
+Fx.haptic.error();   // A recognizable "alarm" vibration
+```
+
+## Global Control
+
+You can disable haptics globally (e.g., when the device is in low-power mode or based on user settings).
+
+```dart
+Fx.haptic.enabled = false; // Silences all haptic calls instantly
+```
+
+## Best Practices
+1. **Never Overuse**: Haptics should be subtle. Only trigger them on explicit user actions, not on every background data change.
+2. **Success/Error Pairing**: Always use `Fx.haptic.success()` alongside success toasts and `Fx.haptic.error()` alongside error alerts for a truly premium, accessible experience.
+3. **Accessibility**: Haptics are a vital part of accessibility for users with visual impairments—use them to reinforce critical UI state changes.

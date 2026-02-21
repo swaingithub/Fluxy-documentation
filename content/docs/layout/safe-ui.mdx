@@ -25,6 +25,10 @@ Fluxy's **Safe Expansion** algorithm checks the surrounding layout context. If i
 
 Using `.hFull()` or `.wFull()` in an unconstrained parent (like `ListView`) usually throws an error. Fluxy ignores these modifiers when they would cause infinite recursion, logging a warning instead.
 
+### 4. Conservative Default Sizing
+
+To prevent accidental "Infinite Size" crashes in horizontal scrollable Rows or vertical scrollable Columns, Fluxy defaults both `Fx.row` and `Fx.col` to `MainAxisSize.min`. This ensures containers only take as much space as they truly need, protecting the layout from unexpected expansions.
+
 ## Strict vs. Relaxed Mode
 
 By default, Fluxy runs in **Relaxed Mode**, meaning it auto-repairs errors so your user never sees a crash. You can enable **Strict Mode** during development to throw exceptions and catch bugs early.

@@ -1,0 +1,83 @@
+---
+title: Authentication
+description: Enterprise identity management and session control with FluxAuth.
+---
+
+# Authentication
+
+Fluxy's **Official Authentication Module** (`fluxy_auth`) provides a secure and reactive way to manage user identity, session tokens, and access control under the unified platform layer.
+
+## Installation
+
+Add the authentication module to your project:
+
+```bash
+fluxy module add auth
+```
+
+## Initialization
+
+In the "Platform Era", use `Fluxy.autoRegister()` to initialize the authentication module along with other platform services.
+
+```dart
+void main() async {
+  await Fluxy.init();
+  Fluxy.autoRegister(); // Automatically boots auth and session tracking
+  
+  runApp(MyApp());
+}
+```
+
+## Core Functionality
+
+### 1. User Login
+The `login` method handles credential verification and automatically populates the reactive `user` signal via the unified platform API.
+
+```dart
+final success = await Fx.platform.auth.login("user@email.com", "password123");
+
+if (success) {
+  print("Welcome, ${Fx.platform.auth.user.value?['name']}");
+}
+```
+
+### 2. Reactive Auth State (Session Tracking)
+Everything in `fluxy_auth` is reactive. You can rebuild your UI automatically using the `isAuthenticated` signal.
+
+```dart
+Fx(() {
+  if (Fx.platform.auth.isAuthenticated.value) {
+    return DashboardView();
+  }
+  return LoginView();
+});
+```
+
+## Security & Session Management
+
+### Secure Persistence
+By default, session tokens are securely encrypted and persisted using the standard Fluxy Platform Storage abstraction. You don't need to manually check for a "logged in" state in `onInit`.
+
+### Session Termination
+Terminate a session instantly across all framework layers:
+
+```dart
+void logout() {
+  Fx.platform.auth.logout();
+  Fluxy.offAll('/login');
+}
+```
+
+## In-Depth: User Data
+The `Fx.platform.auth.user` signal is a `Map<String, dynamic>?` that contains the identity payload returned by your backend. It remains synchronized across the entire application.
+
+```dart
+// Accessing profile data anywhere
+final avatar = Fx.platform.auth.user.value?['avatar_url'];
+final role = Fx.platform.auth.user.value?['role'];
+```
+
+## Best Practices
+1. **Always use reactive builders**: Wrap your auth-dependent UI in `Fx()` to ensure instant updates.
+2. **Combine with Biometrics**: For high-security apps, use `Fx.platform.auth` alongside `Fx.platform.biometric` to gate sensitive actions.
+3. **Use Interceptors**: Fluxy's networking layer automatically picks up your `auth` token for authenticated requests.

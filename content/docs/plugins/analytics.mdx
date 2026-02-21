@@ -1,0 +1,82 @@
+---
+title: Analytics & Tracking
+description: Unified event tracking and user identification for Fluxy apps.
+---
+
+# Analytics & Tracking
+
+The `fluxy_analytics` module (accessible via the unified platform layer) provides a standardized event API for tracking user behavior, screen visits, and business conversions.
+
+## Installation
+
+Add the analytics module to your project:
+
+```bash
+fluxy module add analytics
+```
+
+## Basic Event Tracking
+
+Log standard events via the unified platform API:
+
+```dart
+Fx.platform.analytics.logEvent('button_clicked', parameters: {
+  'button_id': 'login_submit',
+  'view': 'auth_screen',
+});
+```
+
+## Screen Tracking
+
+Fluxy can automatically or manually track screen transitions.
+
+```dart
+// In a Controller
+@override
+void onInit() {
+  Fx.platform.analytics.logScreen('DashboardView');
+}
+```
+
+## User Identification
+
+Identify users to link their session data across multiple devices.
+
+```dart
+void onLoginSuccess(User user) {
+  Fx.platform.analytics.identify(user.id, traits: {
+    'email': user.email,
+    'plan': 'premium',
+  });
+}
+
+void onLogout() {
+  Fx.platform.analytics.reset(); // Clears user traits
+}
+```
+
+## Conversions & Business Goals
+
+Track specific high-value activities using semantic conversion methods.
+
+```dart
+void onPurchaseComplete() {
+  Fx.platform.analytics.logConversion('premium_upgrade', value: 29.99, currency: 'USD');
+}
+```
+
+## Reactive Metrics
+
+The module exposes reactive signals for analytics health and basic metrics, useful for technical dashboards.
+
+```dart
+Fx(() {
+  final count = Fx.platform.analytics.eventCount.value;
+  return Fx.text("Events Logged: $count");
+});
+```
+
+## Best Practices
+1. **Semantic Naming**: Use `snake_case` for all event names and parameters for consistency across different analytics backends.
+2. **Identify Early**: Call `identify()` as soon as the user's ID is known (from `Fx.auth`) to tie anonymized sessions to a real user.
+3. **GDPR Compliance**: Always check for user consent (using `Fx.storage` to save preferences) before initializing the analytics tracking on the first launch.

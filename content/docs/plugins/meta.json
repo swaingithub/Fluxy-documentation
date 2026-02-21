@@ -1,0 +1,14 @@
+{
+  "title": "Fluxy Plugins",
+  "pages": [
+    "auth",
+    "storage",
+    "notifications",
+    "camera",
+    "biometrics",
+    "permissions",
+    "connectivity",
+    "analytics",
+    "haptics"
+  ]
+}

@@ -1,0 +1,82 @@
+---
+title: v0.2.5 Migration Guide
+description: Breaking changes and the transition to the Managed Platform Era in Fluxy v0.2.5.
+---
+
+# Fluxy v0.2.5 - The Platform Era
+
+Fluxy v0.2.5 represents a major shift from a "Framework" to a **"Managed Platform"**. This version consolidates fragmented plugins into a unified platform layer, introduces auto-registration, and strengthens production stability.
+
+## Key Changes
+
+### 1. Unified Platform API (`Fx.platform`)
+Previously, plugins were accessed directly via the `Fx` namespace (e.g., `Fx.camera`, `Fx.notifications`). In v0.2.5, all native capabilities are consolidated under the `Fx.platform` namespace for better organization and long-term stability.
+
+**Old Syntax:**
+```dart
+await Fx.camera.fullView(context);
+Fx.notifications.show(title: "Hi");
+```
+
+**New Syntax (0.2.5+):**
+```dart
+await Fx.platform.camera.fullView(context);
+Fx.platform.notifications.show(title: "Hi");
+```
+
+> **Note:** Direct access via `Fx.camera` or `Fx.storage` is still available as a getter alias for convenience, but we recommend using `Fx.platform` for clarity in large-scale projects.
+
+### 2. Auto-Registration (`Fluxy.autoRegister`)
+Manual plugin registration is now a thing of the past. The framework uses a generated registry to wire up your platform modules automatically.
+
+**Old Syntax:**
+```dart
+void main() async {
+  await Fluxy.init(
+    plugins: [
+      FluxyAuthPlugin(),
+      FluxyCameraPlugin(),
+    ],
+  );
+}
+```
+
+**New Syntax (0.2.5+):**
+```dart
+void main() async {
+  await Fluxy.init();
+  Fluxy.autoRegister(); // Automatically boots all installed modules
+}
+```
+
+### 3. Hybrid Image Engine (`FxImage`)
+The image engine has been completely re-engineered to support `file://` and `memory://` sources natively.
+
+**New Primitives:**
+- `Fx.img(src)`: Universal shorthand for network, asset, and local files.
+- `Fx.memoryImage(bytes)`: Direct rendering from memory.
+
+### 4. CLI Paradigm Shift
+The CLI has pivoted from `fluxy plugin` to `fluxy module` to reflect the platform-first philosophy.
+
+```bash
+# Old
+fluxy plugin add auth
+
+# New
+fluxy module add auth
+```
+
+## Breaking Changes & Deprecations
+
+| Old | New | Type |
+|-----|-----|------|
+| `FluxyRoot` | `FluxyApp` or `Fx` | Recommended |
+| `fluxy plugin` | `fluxy module` | CLI Deprecation |
+| Manual Plugin List | `Fluxy.autoRegister()` | Architectural Shift |
+
+## UI DSL Tweaks
+The `.shadow.md` and similar style proxies have been slightly refined for better accumulation performance. Ensure you are using the method-call syntax `.shadow.md()` if you encounter lint warnings.
+
+## Next Steps
+After upgrading, run `fluxy doctor` to ensure your native Android/iOS dependencies are correctly synced with the new platform modules.

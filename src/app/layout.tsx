@@ -13,7 +13,11 @@ export const metadata: Metadata = {
   title: 'Fluxy - Reactive UI & State Management for Flutter',
   description: 'A modern, lightweight, and powerful reactive framework for Flutter that simplifies state management and UI development.',
   icons: {
-    icon: '/icon.svg',
+    icon: [
+      { url: '/icon.svg?v=2', type: 'image/svg+xml' },
+    ],
+    shortcut: '/icon.svg?v=2',
+    apple: '/icon.svg?v=2',
   },
 };
 

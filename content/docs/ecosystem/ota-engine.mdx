@@ -5,68 +5,82 @@ description: Server-Driven UI and Over-The-Air updates.
 
 # OTA Engine & Server-Driven UI
 
-<Callout type="warn" title="Experimental Feature">
-  The OTA Engine and Server-Driven UI components are currently in **Alpha**. The JSON schema and rendering pipeline are not yet stable and may change significantly in future releases.
-</Callout>
+The Fluxy OTA (Over-The-Air) Engine enables you to modify your application's UI, layouts, and even basic logic in real-time without requiring a new store submission.
 
-Fluxy includes a powerful engine for rendering UI dynamically from JSON and applying updates over-the-air.
+## Architecture
 
-## Server-Driven UI (SDUI)
+The engine works by fetching a **JSON Manifest** from your remote server, parsing it through the `FluxyRenderer`, and swapping components dynamically using the **Atom/Molecule Swap** pattern.
 
-The `FxRemoteView` and `FluxyRenderer` allow you to define full application screens or individual components in JSON and render them dynamically.
+## 1. Server-Driven UI (SDUI)
 
-### Supported Widget Types
-The renderer supports a wide range of atomic and layout widgets:
-- **Layouts**: `row`, `column`, `box` (flexible container), `hero`.
-- **Content**: `text`, `button`, `image`.
+SDUI allows you to send a UI definition over the wire. This is perfect for home-screen promotions, emergency banners, or A/B testing variations.
 
-### Dynamic Data & Interpolation
-Fluxy supports real-time data binding via interpolation. You can pass a `dataContext` to the renderer, and use the `{key}` syntax in your JSON.
-
-```json
-{
-  "type": "text",
-  "data": "Hello, {user.name}!",
-  "style": { "fontSize": 18 }
-}
-```
-
-### Action Handlers
-You can trigger local app events directly from your remote JSON using the `action` or `onTap` property:
-- `navigate:/route`: Navigate to a specific path.
-- `back`: Go back to the previous screen.
-- `print:message`: Log a message to the console.
-
-```json
-{
-  "type": "button",
-  "label": "View Profile",
-  "action": "navigate:/profile"
-}
-```
-
-## CLI & Package Sync
-
-In v0.1.4, the `fluxy` CLI and the `fluxy` Flutter package are synchronized. Ensure your CLI is up to date to support the latest OTA features.
-
-```bash
-dart pub global activate fluxy # Sync to v0.1.4
-```
-
-## Over-The-Air Updates
-
-Fluxy enables Over-The-Air (OTA) updates for your application's UI and logic. This is achieved via `FluxyRemote` which can fetch and apply remote JSON manifests.
-
-### FxRemoteView
-
-Render dynamic UI segments from your backend.
+### Rendering a Remote View
+Use the `FxRemoteView` widget to create a placeholder that hydrates from the server.
 
 ```dart
 FxRemoteView(
-  url: "https://cdn.fluxy.dev/manifests/header_v2.json",
-  loading: Fx.text("Syncing..."),
+  url: "https://api.myapp.com/v1/layout/seasonal-banner",
+  loading: Fx.loader.shimmer(height: 100),
+  error: (err) => Fx.text("Offline Content"),
 )
 ```
 
-This allows you to update your app's layout, styles, and even basic logic without waiting for App Store or Google Play approval. It's the ultimate solution for A/B testing, emergency fixes, and seasonal UI changes.
+### Manifest Schema Example
+```json
+{
+  "type": "box",
+  "style": { "padding": 24, "bg": "slate.900", "radius": 20 },
+  "children": [
+    {
+      "type": "text",
+      "data": "Flash Sale!",
+      "style": { "fontSize": 20, "bold": true, "color": "white" }
+    },
+    {
+      "type": "button",
+      "label": "Claim Now",
+      "action": "navigate:/offers/flash-sale"
+    }
+  ]
+}
+```
+
+## 2. Dynamic Actions
+The OTA engine can trigger local application navigation and event logic through the `action` parser.
+
+- `navigate:/path`: Pushes a local route.
+- `toast:message`: Triggers an `Fx.toast`.
+- `event:name`: Log a custom event to `Fx.analytics`.
+
+## 3. Atomic Updates
+You can update the entire application state by calling the main `Fx.platform.ota.update()` method during the splash or background sync.
+
+```dart
+Future<void> checkForUpdates() async {
+  await Fx.platform.ota.update("https://cdn.myapp.com/latest_v2.json");
+  // The app will now use the new manifest for all RemoteViews
+}
+```
+
+## 4. Remote Plugin Kill-switch
+
+In **v0.2.5**, the OTA engine provides critical production safety. You can remotely disable specific platform modules via the manifest `disabled_plugins` array to instantly neutralize production crashes without waiting for a store update.
+
+```json
+{
+  "version": "1.2.0",
+  "disabled_plugins": ["fluxy_biometric"],
+  "ui": { ... }
+}
+```
+
+This will prevent the `fluxy_biometric` module from booting up on the next app launch.
+
+## Best Practices
+1. **Fallback UI**: Always provide a local "fallback" child to `FxRemoteView` so your app remains functional even in "Isolated" (offline) networking modes.
+2. **Version Control**: Include a `min_version` field in your JSON manifests to ensure new UI features don't crash older app versions.
+3. **Safety First**: Use the `disabled_plugins` feature sparingly as an emergency "Big Red Button" for unexpected production regressions in native modules.
+4. **Cache Strategy**: Fluxy's OTA engine uses `Fx.storage` internally to cache manifests. Updates only trigger when the remote `etag` or `version` hash changes.
+
 

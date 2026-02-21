@@ -5,24 +5,37 @@ description: A chainable, reactive image widget with filters and loaders.
 
 # FxImage
 
-`FxImage` is a versatile image primitive that supports both network and asset sources, chainable visual filters like blur and grayscale, and declarative loading/error states.
+`FxImage` is a versatile image primitive powered by the **Hybrid Image Engine**. It supports network, asset, local file, and memory sources, along with chainable visual filters like blur and grayscale.
 
-## Usage
+## The Hybrid Engine
+
+In v0.2.5, `FxImage` can handle `file://` and `memory://` sources natively. This allows you to capture a photo via `Fx.platform.camera` and view it instantly with zero extra code.
+
+### 1. Unified Primitive (`Fx.img`)
+
+The fastest way to display any image source is using the `Fx.img()` shorthand.
 
 ```dart
-FxImage(
-  "https://example.com/image.png",
-  style: FxStyle(
-    width: 200,
-    height: 200,
-    borderRadius: Fx.radius.xl,
-    fit: BoxFit.cover,
-  ),
-  onTap: () => print("Clicked"),
-)
+// Network
+Fx.img("https://example.com/photo.png").size(100).rounded(20);
+
+// File (Local Storage)
+Fx.img("file:///path/to/my/photo.jpg").size(100);
+
+// Memory (Base64 or Bytes)
+Fx.img("memory://raw_bytes_here").size(100);
 ```
 
-## Advanced Filters
+### 2. Direct Memory Rendering
+
+For pixel-perfect rendering from byte data, use `Fx.memoryImage()`:
+
+```dart
+Uint8List bytes = await getMyBytes();
+Fx.memoryImage(bytes).size(300);
+```
+
+## Styling & Filters
 
 Chain filters directly on the style object.
 
@@ -30,25 +43,25 @@ Chain filters directly on the style object.
 FxImage(
   "assets/photo.jpg",
   style: FxStyle(
+    width: 250,
+    height: 250,
     imageBlur: 5.0, // Gaussian Blur (sigma 5)
     grayscale: true, // Convert to B&W
+    borderRadius: Fx.radius.lg,
   ),
 )
 ```
 
 ## Loading & Error Fallback
 
-Provide custom widgets for network loading states.
+Provide custom widgets for network loading states or use the built-in shimmers.
 
 ```dart
 FxImage(
   imageUrl,
   style: FxStyle(
-    loading: FxShimmer(
-      width: 200, 
-      height: 200
-    ),
-    error: Icon(Icons.broken_image),
+    loading: Fx.loader.shimmer(width: 200, height: 200),
+    error: Icon(Icons.broken_image, color: Fx.error),
   ),
 )
 ```
@@ -66,3 +79,9 @@ Fx.responsiveImage(
   fit: BoxFit.cover,
 )
 ```
+
+## Best Practices
+1. **Use Shimmers**: Always provide a loading state for network images to prevent layout shifts.
+2. **Compress Files**: When using `file://` sources from the camera, ensure you use the `resolution` parameter in the camera module to avoid loading 20MB images into memory.
+3. **Circle Crop**: Use the `.circle()` modifier for profile photos instead of manual border radius for perfect centering.
+

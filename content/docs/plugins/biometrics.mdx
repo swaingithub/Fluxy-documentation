@@ -1,0 +1,81 @@
+---
+title: Biometric Auth
+description: Secure your application with bank-grade biometric authentication using Face ID and Fingerprint sensors.
+---
+
+# Biometric Authentication
+
+Fluxy Biometrics (compatible with `fluxy_biometric v3.0+`) offers a high-level API to integrate secure authentication into your app. It handles different biometric types across iOS and Android with a unified interface and standardized platform prompts.
+
+## Quick Start
+
+Authenticate the user with a single line of code via the unified platform API:
+
+```dart
+bool authenticated = await Fx.platform.biometric.authenticate(
+  reason: "Please authenticate to access your vault",
+);
+
+if (authenticated) {
+  // Grant access
+}
+```
+
+## Check Availability
+
+Before requesting authentication, check if the device supports biometrics and has them enrolled.
+
+```dart
+if (await Fx.platform.biometric.isAvailable()) {
+  final types = await Fx.platform.biometric.getAvailableTypes();
+  // returns [BiometricType.face, BiometricType.fingerprint]
+}
+```
+
+## Reactive State Monitoring
+
+The Biometric module exposes reactive signals for hardware availability and authentication status, allowing your UI to update instantly.
+
+```dart
+Fx(() {
+  final isAvailable = Fx.platform.biometric.isAvailable.value;
+  final isAuth = Fx.platform.biometric.isAuthenticated.value;
+
+  return _statusChip(
+    label: isAuth ? "Verified" : "Hardware: $isAvailable",
+    color: isAuth ? Colors.green : Colors.grey,
+  );
+});
+```
+
+## Security Options
+
+### Strong vs. Weak
+Enforce strong biometrics (Face ID/Fingerprint) for sensitive actions or allow weak ones (Passcode fallback) for convenience.
+
+```dart
+await Fx.platform.biometric.challenge(
+  reason: "Access Secure Vault",
+  strongAuthOnly: true, // Requires hardware biometrics
+);
+```
+
+### Standardized Prompts
+In v3.0+, Fluxy standardizes the authentication dialogs across both platforms, ensuring a consistent and premium user experience regardless of the device.
+
+### Error Pipeline Integration
+Biometric failures (like cancellations or hardware errors) are now integrated into the **Fluxy Error Pipeline**. You can handle them globally:
+
+```dart
+Fluxy.onError((error, stack) {
+  if (error is BiometricException) {
+    Fx.toast.error("Security alert: ${error.message}");
+  }
+});
+```
+
+## Best Practices
+1. **Fallback Logic**: Always have a password-based fallback if biometrics fail or are not available.
+2. **Contextual Challenges**: Don't authenticate on every app launch unless strictly necessary (e.g., banking apps). Use it to gate specific high-value actions.
+3. **Hardware Readiness**: Use the `Fx.platform.biometric.isAvailable` signal to hide or show biometric settings in your profile view.
+

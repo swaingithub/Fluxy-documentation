@@ -30,6 +30,19 @@ Fx.button("Danger").danger
 Fx.button("Outline").outline
 Fx.button("Ghost").ghost
 Fx.button("Text").text
+Fx.button("Custom").none // Clean-slate for unstyled interaction
+```
+
+### The `.none` Variant (Interaction-Only)
+
+The `.none` variant is the "Clean-Slate" primitive. It strips away all hardcoded theme colors (like the default white text contrast), allowing you to build custom interactive components using strictly DSL modifiers.
+
+```dart
+Fx.button("Black Text")
+  .none
+  .bg(Colors.slate50)
+  .textColor(Colors.black)
+  .rounded
 ```
 
 ## Sizes
@@ -70,6 +83,18 @@ Fluxy buttons support fluent modifiers for rapid customization.
 | `size` | `FxButtonSize` | `md` | Size density token. |
 | `isLoading` | `bool` | `false` | Whether to show a spinner. |
 | `style` | `FxStyle?` | `null` | Custom atomic style override. |
+
+### Variants
+
+- **primary**: Standard brand action (White text contrast).
+- **secondary**: Muted action.
+- **danger**: Destructive action (Red).
+- **success**: Positive action (Green).
+- **warning**: Cautionary action (Orange).
+- **outline**: Transparent background with border.
+- **ghost**: No background or border until hover.
+- **text**: Pure text action with primary tint.
+- **none**: Completely unstyled. Honors all manual `.bg()` and `.textColor()` modifiers without theme overrides.
 
 ### Buttonizers (Extension API)
 

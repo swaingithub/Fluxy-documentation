@@ -1,9 +1,8 @@
----
-title: OTA Engine (Alpha)
-description: Server-Driven UI and Over-The-Air updates.
----
+# OTA Engine & Server-Driven UI [EXPERIMENTAL]
 
-# OTA Engine & Server-Driven UI
+<Callout type="warn" title="Experimental Feature">
+  The Fluxy OTA Engine is currently in **Alpha/Testing**. API stability is not guaranteed, and remote manifest schemas are subject to change. Use in production with caution.
+</Callout>
 
 The Fluxy OTA (Over-The-Air) Engine enables you to modify your application's UI, layouts, and even basic logic in real-time without requiring a new store submission.
 
@@ -65,7 +64,7 @@ Future<void> checkForUpdates() async {
 
 ## 4. Remote Plugin Kill-switch
 
-In **v0.2.5**, the OTA engine provides critical production safety. You can remotely disable specific platform modules via the manifest `disabled_plugins` array to instantly neutralize production crashes without waiting for a store update.
+The OTA engine provides critical production safety. You can remotely disable specific platform modules via the manifest `disabled_plugins` array to instantly neutralize production crashes without waiting for a store update.
 
 ```json
 {

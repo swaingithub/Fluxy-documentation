@@ -5,26 +5,48 @@ description: A comparison with other state management libraries and the philosop
 
 # Why Fluxy?
 
-Fluxy is not just another state management library. It is a **"Managed Platform Architecture"** for Flutter that unifies state, networking, dependency injection, and industrial-grade platform modules into a single, cohesive engine. 
+Fluxy is not just another state management library. It is a **"Managed Application Platform"** for Flutter that unifies state, networking, dependency injection, and industrial-grade platform modules into a single, cohesive engine with **modular architecture** (v1.0.0).
 
-While other libraries solve *one* problem (e.g., Riverpod for state, Dio for networking, GetIt for DI), Fluxy solves *the entire development lifecycle* by providing a **Unified Platform Layer**.
+While other libraries solve *one* problem (e.g., Riverpod for state, Dio for networking, GetIt for DI), Fluxy solves *the entire development lifecycle* by providing a **Unified Platform Layer** with **modular packages**.
+
+## 🚀 What's New in v1.0.0
+
+### Modular Architecture
+- **Smaller Core Package**: 172KB vs 15MB+ monolithic
+- **12 Modular Packages**: Add only features you need
+- **Independent Versioning**: Each module evolves separately
+- **Migration Support**: Seamless upgrade from v0.2.6
+
+### Professional Logging System (v0.2.6)
+- **Semantic Tags**: `[KERNEL]`, `[SYS]`, `[DATA]`, `[IO]`
+- **Standardized Levels**: `[INIT]`, `[READY]`, `[AUDIT]`, `[REPAIR]`, `[FATAL]`, `[PANIC]`
+- **ASCII Framing**: Clean diagnostic summaries
+- **Experimental Guardrails**: Clear warnings for OTA, SDUI, Cloud CLI
+
+### Platform Era (v0.2.5)
+- **Managed Runtime Architecture**: `FluxyPluginEngine`
+- **Unified Platform API**: `Fx.platform` for centralized access
+- **Auto-Registration**: `Fluxy.autoRegister()` for zero-config setup
 
 ## At a Glance Comparison
 
-| Feature | Fluxy (v0.2.5+) | Riverpod / Provider | Bloc / Cubit | GetX |
-|---------|-------|---------------------|--------------|------|
+| Feature | Fluxy (v1.0.0) | Riverpod / Provider | Bloc / Cubit | GetX |
+|---------|----------------|---------------------|--------------|------|
 | **Core Philosophy** | **Managed Platform** | State Management | Arch. Pattern | Micro-Framework |
+| **Architecture** | **Modular Packages** | Single Package | Single Package | Single Package |
 | **State Paradigm** | **Atomic Signals** | Providers | Streams / Events | Reactive Vars (`RX`) |
 | **Boilerplate** | **Zero** | Medium | High | Low |
+| **Package Size** | **172KB Core** | Full Package | Full Package | Full Package |
 | **Dependency Injection**| **Built-in `FxScope`** | Via Provider Scope | Via `RepositoryProvider` | Global Service Locator |
 | **Networking** | **Built-in `Fx.http`** | Requires Dio/Http | Requires Dio/Http | Built-in Connect |
 | **UI Styling** | **Atomic DSL** | Standard Widgets | Standard Widgets | Optional Utils |
-| **Platform Modules** | **Unified (`Fx.platform`)** | Manual Integration | Manual Integration | Fragmented |
+| **Platform Modules** | **12 Modular Packages** | Manual Integration | Manual Integration | Fragmented |
 | **Stability Kernel** | **Built-in (Auto-Repair)** | None | None | None |
+| **Logging System** | **Professional Tags** | Basic | Basic | Basic |
 
 ## The "Platform Era" Vision
 
-In **v0.2.5**, Fluxy moves beyond being a framework and becomes a **Platform**.
+Fluxy moves beyond being a framework and becomes a **Platform**.
 
 ### 1. Unified Platform API (`Fx.platform`)
 All core heavy-lifting (Authentication, Permissions, Storage, Camera, Notifications) is now centralized under the `Fx.platform` namespace. This ensures that as underlying plugins evolve, your application code remains stable and unified.
@@ -34,6 +56,22 @@ With `Fluxy.autoRegister()`, the framework handles the wiring of all installed p
 
 ### 3. Stability Kernel™
 Fluxy is the first Flutter framework to include a **Stability Kernel** that proactively detects, intercepts, and auto-repairs common crashes like "Infinite Constraint" violations or "Async Dispose Races."
+
+### 4. Professional Logging System (v0.2.6)
+Fluxy v0.2.6 introduced an industrial-grade logging system that replaces emoji-based logs with semantic bracketed tags:
+
+```dart
+// Professional Log Tags
+[KERNEL] [SYS] [DATA] [IO]    // System components
+[INIT] [READY] [AUDIT] [REPAIR] [FATAL] [PANIC]  // Log levels
+[EXPERIMENTAL]               // Experimental features
+```
+
+**Key Features:**
+- **Semantic Tags**: Clear categorization of log messages
+- **Standardized Levels**: Consistent severity indicators
+- **ASCII Framing**: Clean diagnostic summaries without visual clutter
+- **Experimental Guardrails**: Clear warnings for advanced features
 
 ## The Fluxy Solution
 

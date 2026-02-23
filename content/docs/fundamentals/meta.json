@@ -3,6 +3,7 @@
   "pages": [
     "---Core & Reactivity---",
     "architecture",
+    "in-depth-analysis",
     "fluxy-core",
     "core-concepts",
     "state-management",

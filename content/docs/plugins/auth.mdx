@@ -77,6 +77,25 @@ final avatar = Fx.platform.auth.user.value?['avatar_url'];
 final role = Fx.platform.auth.user.value?['role'];
 ```
 
+## Why Use FluxAuth? (Production Benefits)
+
+Using the managed `fluxy_auth` module provides several industrial-grade advantages over manual implementation:
+
+1.  **Global Reactive Synchronicity**: A single call to `logout()` instantly updates every widget and service across the entire platform.
+2.  **Zero-Config Interceptors**: The networking layer (`Fx.http`) automatically communicates with the auth module to inject security tokens into headers.
+3.  **Encrypted Session Management**: Tokens are safely stored in the managed "Security Sandbox," protected from common persistence leaks.
+4.  **Perspective-Based Routing**: Use `Fx.cond` to define your app's top-level structure based on the auth state, ensuring users never see inconsistent UI states.
+
+### Comparison Table
+
+| Feature | Custom Auth Logic | Fluxy Auth Plugin |
+| :--- | :--- | :--- |
+| **State Sync** | Manual (Events/Callbacks) | **Automatic (Reactive Signals)** |
+| **Networking** | Manual Token Injection | **Auto-Injection (Interceptors)** |
+| **Storage** | Raw key-value pairs | **Encrypted Managed Session** |
+| **Lifecycle** | Manual Init in main.dart | **Managed by Kernel on boot** |
+| **Scaling** | Complex Prop Drilling | **Global DSL Access (Fx.auth)** |
+
 ## Best Practices
 1. **Always use reactive builders**: Wrap your auth-dependent UI in `Fx()` to ensure instant updates.
 2. **Combine with Biometrics**: For high-security apps, use `Fx.platform.auth` alongside `Fx.platform.biometric` to gate sensitive actions.

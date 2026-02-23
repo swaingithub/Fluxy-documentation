@@ -5,7 +5,7 @@ description: Learn how to set up Fluxy in your Flutter project.
 
 # Installation
 
-Fluxy is composed of two main parts: the **CLI** for orchestration and the **Framework** for building. In **v0.2.5 (The Platform Era)**, Fluxy transitions to a module-based platform architecture.
+Fluxy is composed of two main parts: the **CLI** for orchestration and the **Framework** for building. With the **Platform Era**, Fluxy transitions to a module-based platform architecture.
 
 ## 1. Install Fluxy CLI
 
@@ -35,8 +35,42 @@ Alternatively, add it manually to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  fluxy: ^0.2.5
+  fluxy: ^1.0.0
 ```
+
+### Modular Packages (v1.0.0)
+
+With v1.0.0, Fluxy introduces a modular architecture. Add only the packages you need:
+
+```yaml
+dependencies:
+  # Core Framework
+  fluxy: ^1.0.0
+  
+  # Add modules as needed
+  fluxy_forms: ^1.0.0        # Forms and validation
+  fluxy_camera: ^1.0.0       # Camera functionality  
+  fluxy_auth: ^1.0.0         # Authentication and biometrics
+  fluxy_notifications: ^1.0.0 # Push notifications
+  fluxy_storage: ^1.0.0      # Data persistence
+  fluxy_test: ^1.0.0         # Testing utilities
+  fluxy_analytics: ^1.0.0    # Analytics and tracking
+  fluxy_biometric: ^1.0.0    # Biometric authentication
+  fluxy_connectivity: ^1.0.0 # Network connectivity
+  fluxy_permissions: ^1.0.0  # Device permissions
+  fluxy_platform: ^1.0.0     # Platform integration
+  fluxy_ota: ^1.0.0          # Over-the-air updates
+```
+
+### Migration from v0.2.6
+
+If you're upgrading from v0.2.6, you'll need to:
+
+1. Update your `pubspec.yaml` to use modular packages
+2. Add the specific packages you need
+3. Update import statements if using modular features
+
+**[Read Migration Guide](https://github.com/swaingithub/fluxy/blob/main/MIGRATION_GUIDE.md)**
 
 ## Basic Setup
 

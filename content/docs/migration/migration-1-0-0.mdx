@@ -1,0 +1,197 @@
+---
+title: Migrating to v1.0.0
+description: Complete guide for upgrading from v0.2.6 to v1.0.0 modular architecture.
+---
+
+# Migrating to v1.0.0
+
+Fluxy v1.0.0 introduces a **modular architecture** that splits the monolithic package into focused modules. This guide will help you migrate from v0.2.6 to v1.0.0.
+
+## 🚨 Breaking Changes
+
+### 1. Modular Architecture
+The single `fluxy` package has been split into:
+- **Core Package** (172KB): Essential UI framework, DSL, and reactive system
+- **12 Modular Packages**: Separate packages for specific features
+
+### 2. Dependencies
+Several features have moved to separate packages. You'll need to add explicit dependencies for features you use.
+
+## 📋 Migration Steps
+
+### Step 1: Update Core Package
+Update your `pubspec.yaml`:
+
+```yaml
+dependencies:
+  fluxy: ^1.0.0  # Core package only
+```
+
+### Step 2: Add Modular Packages
+Add the specific packages you need:
+
+```yaml
+dependencies:
+  # Core Framework
+  fluxy: ^1.0.0
+  
+  # Add modules based on your usage
+  fluxy_forms: ^1.0.0        # If using forms/validation
+  fluxy_camera: ^1.0.0       # If using camera functionality
+  fluxy_auth: ^1.0.0         # If using authentication/biometrics
+  fluxy_notifications: ^1.0.0 # If using push notifications
+  fluxy_storage: ^1.0.0      # If using data persistence
+  fluxy_test: ^1.0.0         # If using testing utilities
+  fluxy_analytics: ^1.0.0    # If using analytics
+  fluxy_biometric: ^1.0.0    # If using biometric authentication
+  fluxy_connectivity: ^1.0.0 # If using network connectivity
+  fluxy_permissions: ^1.0.0  # If using device permissions
+  fluxy_platform: ^1.0.0     # If using platform integration
+  fluxy_ota: ^1.0.0          # If using OTA updates
+```
+
+### Step 3: Update Import Statements
+If you were importing from sub-packages, update your imports:
+
+```dart
+// Before (v0.2.6)
+import 'package:fluxy/src/forms/fluxy_forms.dart';
+
+// After (v1.0.0)
+import 'package:fluxy_forms/fluxy_forms.dart';
+```
+
+### Step 4: Run Flutter Pub Get
+```bash
+flutter pub get
+```
+
+## 🔄 Feature Mapping
+
+### Forms & Validation
+```dart
+// v0.2.6 (included in core)
+import 'package:fluxy/fluxy.dart';
+
+// v1.0.0 (separate package)
+import 'package:fluxy_forms/fluxy_forms.dart';
+```
+
+### Camera Functionality
+```dart
+// v0.2.6 (included in core)
+import 'package:fluxy/fluxy.dart';
+
+// v1.0.0 (separate package)
+import 'package:fluxy_camera/fluxy_camera.dart';
+```
+
+### Authentication & Biometrics
+```dart
+// v0.2.6 (included in core)
+import 'package:fluxy/fluxy.dart';
+
+// v1.0.0 (separate packages)
+import 'package:fluxy_auth/fluxy_auth.dart';
+import 'package:fluxy_biometric/fluxy_biometric.dart';
+```
+
+### Notifications
+```dart
+// v0.2.6 (included in core)
+import 'package:fluxy/fluxy.dart';
+
+// v1.0.0 (separate package)
+import 'package:fluxy_notifications/fluxy_notifications.dart';
+```
+
+### Storage
+```dart
+// v0.2.6 (included in core)
+import 'package:fluxy/fluxy.dart';
+
+// v1.0.0 (separate package)
+import 'package:fluxy_storage/fluxy_storage.dart';
+```
+
+## ✅ Compatibility Layer
+
+Fluxy v1.0.0 includes a **compatibility layer** to make migration easier. Deprecated classes are still available but will show warnings:
+
+```dart
+// These still work but show deprecation warnings
+@deprecated
+class OldFluxyForms {
+  // Implementation
+}
+```
+
+## 🎯 Benefits of Migration
+
+### 1. Smaller Core Package
+- **Before**: 15MB+ monolithic package
+- **After**: 172KB core + only modules you need
+
+### 2. Faster Installation
+- Only download features you actually use
+- Independent versioning for each module
+
+### 3. Better Maintainability
+- Clear separation of concerns
+- Focused development for each module
+
+### 4. Flexible Dependencies
+- Add/remove features without affecting core
+- Choose specific versions for each module
+
+## 🧪 Testing Your Migration
+
+### 1. Check Dependencies
+Run `flutter pub deps` to verify all dependencies are resolved correctly.
+
+### 2. Test Core Functionality
+Ensure basic Fluxy features still work:
+```dart
+import 'package:fluxy/fluxy.dart';
+
+void main() async {
+  await Fluxy.init();
+  // Test basic functionality
+}
+```
+
+### 3. Test Modular Features
+Test each module you've added:
+```dart
+import 'package:fluxy_forms/fluxy_forms.dart';
+import 'package:fluxy_camera/fluxy_camera.dart';
+
+// Test forms, camera, etc.
+```
+
+## 🆘 Common Issues
+
+### Issue: Import Errors
+**Problem**: `Target of URI doesn't exist` errors
+**Solution**: Add the missing modular package to `pubspec.yaml`
+
+### Issue: Missing Features
+**Problem**: Feature that worked in v0.2.6 doesn't work
+**Solution**: Check if the feature moved to a separate package
+
+### Issue: Version Conflicts
+**Problem**: Dependency version conflicts
+**Solution**: Use `flutter pub deps` to identify and resolve conflicts
+
+## 📞 Need Help?
+
+If you encounter issues during migration:
+
+1. **Check the Changelog**: [Complete changelog](https://github.com/swaingithub/fluxy/blob/main/CHANGELOG.md)
+2. **Review Examples**: Look at updated example projects
+3. **Ask Community**: [GitHub Discussions](https://github.com/swaingithub/fluxy/discussions)
+4. **Report Issues**: [GitHub Issues](https://github.com/swaingithub/fluxy/issues)
+
+## 🎉 You're Done!
+
+Once you've completed these steps, your app should be running on Fluxy v1.0.0 with the modular architecture. Enjoy the smaller package size and improved maintainability!

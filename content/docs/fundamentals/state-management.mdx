@@ -13,11 +13,11 @@ Fluxy uses its own branded reactive state management system:
 
 | Concept | Fluxy Unit | Description |
 |---------|------------|-------------|
-| Core State | `flux<T>` | Reactive signal for primitive and complex data |
-| Derived State | `fluxComputed<T>` | Computed values that automatically update |
-| Side Effects | `fluxEffect` | Reactive side effects and async operations |
-| Async State | `fluxAsync<T>` | Built-in async state handling |
-| Collections | `fluxList`, `fluxMap` | Reactive collections |
+| Core State | `Flux<T>` | Reactive signal for primitive and complex data |
+| Derived State | `FluxComputed<T>` | Computed values that automatically update |
+| Side Effects | `FluxEffect` | Reactive side effects and async operations |
+| Async State | `AsyncFlux<T>` | Built-in async state handling |
+| Collections | `FluxList`, `FluxMap` | Reactive collections |
 | Persistence | `flux<T>(..., persist: true)` | Built-in state persistence |
 
 ## Basic Usage (v1.0.0)
@@ -35,7 +35,7 @@ final isDouble = fluxComputed(() => count.value * 2);
 Fx(() => Fx.text("Count is: ${count.value}"))
 ```
 
-**Note**: The `flux` function creates reactive signals that automatically update UI when values change. This is the core of Fluxy's reactivity system.
+**Note**: The `flux` function creates `Flux<T>` objects that automatically update UI when values change. This is the core of Fluxy's reactivity system.
 
 ## Advanced Features
 
@@ -65,13 +65,13 @@ Fx(() => Fx.text("Name: ${userName.value}"))
 
 **Benefit**: If `userFlux.age` changes, the `userName` widget will not rebuild. 100% atomic.
 
-### 3. `fluxAsync` (Server State)
+### 3. `asyncFlux` (Server State)
 
 Simplify API calls and async operations with built-in loading/error states:
 
 ```dart
 // Automatic async state management
-final users = fluxAsync(() => Fx.http.get('/api/users'));
+final users = asyncFlux(() => Fx.http.get('/api/users'));
 
 // UI automatically handles loading/error/data states
 Fx(() => users.on(
@@ -83,10 +83,15 @@ Fx(() => users.on(
 
 ### 4. `fluxLocal` (Component State)
 
-Scoped state that automatically disposes with the widget:
+Scoped state that automatically disposes with the widget using `FluxyLocalMixin`:
 
 ```dart
-class MyWidget extends StatelessWidget {
+class MyWidget extends StatefulWidget {
+  @override
+  State<MyWidget> createState() => _MyWidgetState();
+}
+
+class _MyWidgetState extends State<MyWidget> with FluxyLocalMixin {
   @override
   Widget build(BuildContext context) {
     // Local state - automatically disposed when widget is removed

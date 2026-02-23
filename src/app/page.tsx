@@ -43,7 +43,7 @@ export default function LandingPage() {
               Fluxy
             </span>
             <div className="hidden sm:flex px-2 py-0.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-[10px] font-bold tracking-widest text-indigo-400 ml-2">
-              v0.2.4
+              v1.0.0
             </div>
           </div>
           
@@ -81,7 +81,7 @@ export default function LandingPage() {
           >
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-md text-xs font-medium text-indigo-300 mb-8 hover:bg-white/10 transition-colors cursor-default">
               <Sparkles size={12} className="text-indigo-400" />
-              <span className="text-white/80">Fluxy v0.2.4 is now stable</span>
+              <span className="text-white/80">Fluxy v1.0.0 is now stable</span>
             </div>
 
             <h1 className="text-6xl md:text-8xl font-bold tracking-tighter leading-[1] mb-8 bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-white/40 drop-shadow-2xl">
@@ -280,7 +280,7 @@ export default function LandingPage() {
           </div>
           
           <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-white/30 font-medium">
-             <span>© 2024 Swaingithub. MIT License.</span>
+             <span>© 2026 Swaingithub. MIT License.</span>
              <span className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" /> All Systems Operational</span>
           </div>
         </div>

@@ -51,7 +51,7 @@ import 'package:fluxy_auth/fluxy_auth.dart';
 import 'package:fluxy_storage/fluxy_storage.dart';
 
 void main() async {
-  // 1. Setup core engine (172KB)
+  // 1. Setup core engine
   await Fluxy.init();
   
   // 2. Auto-register all installed modules
@@ -122,7 +122,7 @@ Your `pubspec.yaml` will look like this:
 
 ```yaml
 dependencies:
-  # Core Framework (172KB)
+  # Core Framework
   fluxy: ^1.0.0
   
   # Modular Packages (add as needed)
@@ -137,7 +137,7 @@ dependencies:
 
 ## Benefits of v1.0.0
 
-- **Smaller Core**: 172KB vs 15MB+ monolithic
+- **Smaller Core**: Focused & lightweight foundation
 - **Flexible Dependencies**: Add only features you use
 - **Independent Versioning**: Each module evolves separately
 - **Better Performance**: Faster installation and smaller apps

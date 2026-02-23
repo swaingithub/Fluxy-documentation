@@ -7,7 +7,7 @@ description: Breaking changes and the transition to the Managed Platform Era in 
 
 Fluxy v0.2.5 represents a major shift from a "Framework" to a **"Managed Platform"**. This version consolidates fragmented plugins into a unified platform layer, introduces auto-registration, and strengthens production stability.
 
-## Key Changes
+## 🚨 Breaking Changes
 
 ### 1. Unified Platform API (`Fx.platform`)
 Previously, plugins were accessed directly via the `Fx` namespace (e.g., `Fx.camera`, `Fx.notifications`). In v0.2.5, all native capabilities are consolidated under the `Fx.platform` namespace for better organization and long-term stability.
@@ -16,12 +16,16 @@ Previously, plugins were accessed directly via the `Fx` namespace (e.g., `Fx.cam
 ```dart
 await Fx.camera.fullView(context);
 Fx.notifications.show(title: "Hi");
+await Fx.biometric.authenticate();
+await Fx.storage.set('key', 'value');
 ```
 
 **New Syntax (0.2.5+):**
 ```dart
 await Fx.platform.camera.fullView(context);
 Fx.platform.notifications.show(title: "Hi");
+await Fx.platform.biometric.authenticate();
+await Fx.platform.storage.set('key', 'value');
 ```
 
 > **Note:** Direct access via `Fx.camera` or `Fx.storage` is still available as a getter alias for convenience, but we recommend using `Fx.platform` for clarity in large-scale projects.
@@ -36,6 +40,7 @@ void main() async {
     plugins: [
       FluxyAuthPlugin(),
       FluxyCameraPlugin(),
+      FluxyNotificationsPlugin(),
     ],
   );
 }
@@ -49,34 +54,259 @@ void main() async {
 }
 ```
 
-### 3. Hybrid Image Engine (`FxImage`)
+### 3. Managed Runtime Architecture
+The framework now manages the complete lifecycle of platform modules:
+
+```dart
+// Automatic lifecycle management
+class FluxyPluginEngine {
+  // Auto-discovery of installed modules
+  // Automatic permission handling
+  // Automatic resource cleanup
+  // Unified error reporting
+}
+```
+
+## 📋 Migration Steps
+
+### Step 1: Update Core Package
+Update your `pubspec.yaml`:
+
+```yaml
+dependencies:
+  fluxy: ^0.2.5
+```
+
+### Step 2: Update Initialization
+Change your main function:
+
+```dart
+// Before (v0.2.4)
+void main() async {
+  await Fluxy.init(
+    plugins: [
+      FluxyAuthPlugin(),
+      FluxyCameraPlugin(),
+      FluxyNotificationsPlugin(),
+    ],
+  );
+  runApp(MyApp());
+}
+
+// After (v0.2.5)
+void main() async {
+  await Fluxy.init();
+  Fluxy.autoRegister(); // Auto-register all modules
+  runApp(MyApp());
+}
+```
+
+### Step 3: Update Platform Access
+Update platform API calls:
+
+```dart
+// Before (v0.2.4)
+await Fx.camera.capture();
+Fx.notifications.show(title: "Hello");
+await Fx.biometric.authenticate();
+await Fx.storage.set('key', 'value');
+
+// After (v0.2.5)
+await Fx.platform.camera.capture();
+Fx.platform.notifications.show(title: "Hello");
+await Fx.platform.biometric.authenticate();
+await Fx.platform.storage.set('key', 'value');
+```
+
+### Step 4: Update CLI Commands
+Update your development workflow:
+
+```bash
+# Old CLI commands
+fluxy plugin add auth
+fluxy plugin list
+fluxy plugin remove camera
+
+# New CLI commands
+fluxy module add auth
+fluxy module list
+fluxy module remove camera
+```
+
+### Step 5: Run Flutter Pub Get
+```bash
+flutter pub get
+```
+
+## 🚀 New Features
+
+### 1. Hybrid Image Engine (`FxImage`)
 The image engine has been completely re-engineered to support `file://` and `memory://` sources natively.
 
 **New Primitives:**
 - `Fx.img(src)`: Universal shorthand for network, asset, and local files.
 - `Fx.memoryImage(bytes)`: Direct rendering from memory.
 
-### 4. CLI Paradigm Shift
-The CLI has pivoted from `fluxy plugin` to `fluxy module` to reflect the platform-first philosophy.
-
-```bash
-# Old
-fluxy plugin add auth
-
-# New
-fluxy module add auth
+```dart
+// New image capabilities
+Fx.img('https://example.com/image.jpg')     // Network
+Fx.img('assets/images/logo.png')            // Asset
+Fx.img('file:///path/to/local.jpg')         // Local file
+Fx.memoryImage(uint8List)                   // Memory bytes
 ```
 
-## Breaking Changes & Deprecations
+### 2. Platform Module Compatibility
+Enhanced compatibility with latest platform versions:
 
-| Old | New | Type |
-|-----|-----|------|
-| `FluxyRoot` | `FluxyApp` or `Fx` | Recommended |
-| `fluxy plugin` | `fluxy module` | CLI Deprecation |
-| Manual Plugin List | `Fluxy.autoRegister()` | Architectural Shift |
+```dart
+// Android 13+ permission handling
+// iOS 16+ biometric prompts
+// Background receiver injection
+// Exact Alarm fallback logic
+```
 
-## UI DSL Tweaks
-The `.shadow.md` and similar style proxies have been slightly refined for better accumulation performance. Ensure you are using the method-call syntax `.shadow.md()` if you encounter lint warnings.
+### 3. Unified Error Reporting
+All platform modules now use the same error reporting system:
 
-## Next Steps
-After upgrading, run `fluxy doctor` to ensure your native Android/iOS dependencies are correctly synced with the new platform modules.
+```dart
+// Consistent error handling across all modules
+try {
+  await Fx.platform.camera.capture();
+} on FluxyPlatformException catch (e) {
+  // Unified error format
+  print('Platform error: ${e.message}');
+}
+```
+
+## 🔄 Feature Mapping
+
+### Camera Module
+```dart
+// Before (v0.2.4)
+import 'package:fluxy/fluxy.dart';
+await Fx.camera.capture();
+
+// After (v0.2.5)
+import 'package:fluxy/fluxy.dart';
+await Fx.platform.camera.capture();
+// Or use alias (still works)
+await Fx.camera.capture();
+```
+
+### Notifications Module
+```dart
+// Before (v0.2.4)
+Fx.notifications.show(title: "Hello");
+
+// After (v0.2.5)
+Fx.platform.notifications.show(title: "Hello");
+// Or use alias (still works)
+Fx.notifications.show(title: "Hello");
+```
+
+### Storage Module
+```dart
+// Before (v0.2.4)
+await Fx.storage.set('key', 'value');
+
+// After (v0.2.5)
+await Fx.platform.storage.set('key', 'value');
+// Or use alias (still works)
+await Fx.storage.set('key', 'value');
+```
+
+## 🧪 Testing Your Migration
+
+### 1. Check Platform Access
+Verify platform modules work:
+
+```dart
+void testPlatformModules() async {
+  // Test camera
+  await Fx.platform.camera.initialize();
+  
+  // Test notifications
+  await Fx.platform.notifications.requestPermission();
+  
+  // Test storage
+  await Fx.platform.storage.set('test', 'value');
+  final value = await Fx.platform.storage.get('test');
+  assert(value == 'value');
+}
+```
+
+### 2. Test Auto-Registration
+Verify modules are auto-registered:
+
+```dart
+void testAutoRegistration() {
+  // Should not throw if modules are properly registered
+  Fluxy.autoRegister();
+  
+  // Test that modules are available
+  assert(Fx.platform.camera != null);
+  assert(Fx.platform.notifications != null);
+}
+```
+
+### 3. Test CLI Commands
+Verify new CLI commands work:
+
+```bash
+fluxy module list
+fluxy doctor
+```
+
+## 🆘 Common Issues
+
+### Issue: Platform Modules Not Found
+**Problem**: `Fx.platform.camera` returns null
+**Solution**: Ensure you're calling `Fluxy.autoRegister()` after `Fluxy.init()`
+
+### Issue: CLI Commands Not Found
+**Problem**: `fluxy module` command not recognized
+**Solution**: Update Fluxy CLI: `dart pub global activate fluxy`
+
+### Issue: Permission Errors
+**Problem**: Platform modules can't access permissions
+**Solution**: Run `fluxy doctor` to sync native dependencies
+
+### Issue: Auto-Registration Fails
+**Problem**: `Fluxy.autoRegister()` throws error
+**Solution**: Check that all platform modules are properly added to dependencies
+
+## 🎯 Benefits of Migration
+
+### 1. Zero-Configuration Setup
+- **Auto-Discovery**: Modules are automatically discovered and registered
+- **No Manual Wiring**: No need to manually list plugins
+- **Unified API**: Consistent access pattern across all modules
+
+### 2. Better Organization
+- **Namespace Clarity**: `Fx.platform` clearly separates platform features
+- **Module Independence**: Each module can evolve independently
+- **Consistent Patterns**: Same API design across all modules
+
+### 3. Enhanced Stability
+- **Lifecycle Management**: Automatic resource cleanup
+- **Error Handling**: Unified error reporting
+- **Permission Management**: Automatic permission handling
+
+### 4. Developer Experience
+- **Faster Setup**: No manual plugin registration
+- **Better CLI**: More intuitive module commands
+- **Improved Debugging**: Clear module organization
+
+## 📞 Need Help?
+
+If you encounter issues during migration:
+
+1. **Check the Changelog**: [Complete changelog](https://github.com/swaingithub/fluxy/blob/main/CHANGELOG.md)
+2. **Run Doctor**: `fluxy doctor` to diagnose issues
+3. **Review Examples**: Look at updated example projects
+4. **Ask Community**: [GitHub Discussions](https://github.com/swaingithub/fluxy/discussions)
+5. **Report Issues**: [GitHub Issues](https://github.com/swaingithub/fluxy/issues)
+
+## 🎉 You're Done!
+
+Once you've completed these steps, your app should be running on Fluxy v0.2.5 with the Managed Platform architecture. Enjoy the zero-configuration setup and unified platform API!

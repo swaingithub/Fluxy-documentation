@@ -1,0 +1,198 @@
+---
+title: Migrating to v0.2.6
+description: Complete guide for upgrading from v0.2.5 to v0.2.6 - Industrial Log Professionalization & Experimental Guardrails.
+---
+
+# Migrating to v0.2.6
+
+Fluxy v0.2.6 introduces **Industrial Log Professionalization** and **Experimental Guardrails**. This guide will help you migrate from v0.2.5 to v0.2.6.
+
+## 🚨 Breaking Changes
+
+### 1. Professional Logging System
+The emoji-based logging system has been replaced with semantic bracketed tags for better readability and professional debugging.
+
+### 2. Experimental Feature Guardrails
+OTA, SDUI, and Cloud CLI features are now clearly marked as experimental with warnings.
+
+## 📋 Migration Steps
+
+### Step 1: Update Core Package
+Update your `pubspec.yaml`:
+
+```yaml
+dependencies:
+  fluxy: ^0.2.6
+```
+
+### Step 2: Update Log Monitoring
+If you were monitoring specific emoji-based logs, update your log parsing:
+
+```dart
+// Before (v0.2.5)
+// 🛡️ [KERNEL] Stability Kernel initialized
+// 📦 [SYS] Package system ready
+// 📸 [CAMERA] Camera module loaded
+
+// After (v0.2.6)
+// [KERNEL] [INIT] Stability Kernel initialized
+// [SYS] [READY] Package system ready
+// [CAMERA] [READY] Camera module loaded
+```
+
+### Step 3: Update Experimental Feature Usage
+If you're using experimental features, be aware of new warnings:
+
+```dart
+// Experimental features now show warnings
+// [EXPERIMENTAL] OTA updates are in beta - use with caution
+// [EXPERIMENTAL] SDUI renderer is experimental - API may change
+// [EXPERIMENTAL] Cloud CLI is experimental - not production ready
+```
+
+### Step 4: Run Flutter Pub Get
+```bash
+flutter pub get
+```
+
+## 🔄 Log System Changes
+
+### Before (v0.2.5)
+```dart
+// Emoji-based logs
+🛡️ [KERNEL] Auto-repair applied to layout violation
+📦 [SYS] Plugin registry initialized
+📸 [CAMERA] Camera capture completed
+🔐 [AUTH] Authentication successful
+📡 [NETWORK] HTTP request completed
+```
+
+### After (v0.2.6)
+```dart
+// Semantic bracketed tags
+[KERNEL] [REPAIR] Auto-repair applied to layout violation
+[SYS] [INIT] Plugin registry initialized
+[CAMERA] [READY] Camera capture completed
+[AUTH] [AUDIT] Authentication successful
+[NETWORK] [DATA] HTTP request completed
+```
+
+## 🏷️ New Log Tag System
+
+### System Components
+- `[KERNEL]` - Core stability kernel operations
+- `[SYS]` - System-level operations
+- `[DATA]` - Data operations and persistence
+- `[IO]` - Input/output operations
+
+### Log Levels
+- `[INIT]` - Initialization and startup
+- `[READY]` - Component ready state
+- `[AUDIT]` - Important operations and state changes
+- `[REPAIR]` - Auto-repair operations
+- `[FATAL]` - Critical errors
+- `[PANIC]` - System-level emergencies
+
+### Experimental Features
+- `[EXPERIMENTAL]` - Experimental feature usage warnings
+
+## ⚠️ Experimental Guardrails
+
+### OTA (Over-the-Air) Updates
+```dart
+// New warning when using OTA
+[EXPERIMENTAL] OTA updates are in beta - use with caution
+[EXPERIMENTAL] FluxyRemote sync lifecycle may change
+[EXPERIMENTAL] Remote manifest parsing is experimental
+```
+
+### SDUI (Server-Driven UI)
+```dart
+// New warning when using SDUI
+[EXPERIMENTAL] SDUI renderer is experimental - API may change
+[EXPERIMENTAL] JSON schema parsing is experimental
+[EXPERIMENTAL] Dynamic styling is experimental
+```
+
+### Cloud CLI
+```dart
+// New warning when using Cloud CLI
+[EXPERIMENTAL] Cloud CLI is experimental - not production ready
+[EXPERIMENTAL] CI/CD scaffolding is experimental
+[EXPERIMENTAL] GitHub Actions generation is experimental
+```
+
+## 🧪 Testing Your Migration
+
+### 1. Check Log Output
+Run your app and verify logs appear with new format:
+
+```dart
+// Look for logs like this:
+[KERNEL] [INIT] Fluxy initialized
+[SYS] [READY] Plugin engine ready
+[DATA] [AUDIT] State hydrated
+```
+
+### 2. Test Experimental Features
+If using experimental features, verify warnings appear:
+
+```dart
+// Check for experimental warnings
+[EXPERIMENTAL] Feature is experimental - use with caution
+```
+
+### 3. Verify Log Monitoring
+Update any log monitoring systems to parse new format:
+
+```dart
+// Update regex patterns
+// Old: /\[(🛡️|📦|📸|🔐|📡)\]/
+// New: /\[(KERNEL|SYS|DATA|IO)\]/
+```
+
+## 🆘 Common Issues
+
+### Issue: Missing Emoji Logs
+**Problem**: Logs don't show emojis anymore
+**Solution**: This is intentional - update log monitoring to use semantic tags
+
+### Issue: Experimental Warnings
+**Problem**: Seeing new experimental warnings
+**Solution**: These are intentional warnings - no action needed unless you want to avoid experimental features
+
+### Issue: Log Parsing Failures
+**Problem**: Log monitoring tools can't parse new format
+**Solution**: Update parsing regex to match new bracketed tag format
+
+## 🎯 Benefits of Migration
+
+### 1. Professional Logging
+- **Better Readability**: Clear semantic tags instead of emojis
+- **Standardized Levels**: Consistent severity indicators
+- **ASCII Compatibility**: Works better with log analysis tools
+- **Searchable**: Easier to filter and search logs
+
+### 2. Experimental Guardrails
+- **Clear Warnings**: Know when you're using experimental features
+- **API Stability**: Understand which features may change
+- **Production Safety**: Avoid experimental features in production
+- **Better Documentation**: Clear experimental status
+
+### 3. Improved Debugging
+- **Categorization**: Clear component categorization
+- **Severity Levels**: Standardized log levels
+- **Diagnostic Clarity**: Better error tracking and debugging
+
+## 📞 Need Help?
+
+If you encounter issues during migration:
+
+1. **Check the Changelog**: [Complete changelog](https://github.com/swaingithub/fluxy/blob/main/CHANGELOG.md)
+2. **Review Examples**: Look at updated example projects
+3. **Ask Community**: [GitHub Discussions](https://github.com/swaingithub/fluxy/discussions)
+4. **Report Issues**: [GitHub Issues](https://github.com/swaingithub/fluxy/issues)
+
+## 🎉 You're Done!
+
+Once you've completed these steps, your app should be running on Fluxy v0.2.6 with the professional logging system and experimental guardrails. Enjoy the improved debugging experience!

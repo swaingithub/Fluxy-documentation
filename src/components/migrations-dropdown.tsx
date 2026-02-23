@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const migrations = [
+  { version: 'v1.0.0', href: '/docs/migration/migration-0-1-8', description: 'Fluxy State System - Enterprise Reactive Architecture' },
   { version: 'v0.2.4', href: '/docs/migration/migration-0-2-4', description: 'Layout Stability, Slivers & Alerts' },
   { version: 'v0.2.3', href: '/docs/migration/migration-0-2-3', description: 'Premium UI DevTools Overhaul' },
   { version: 'v0.2.2', href: '/docs/migration/migration-0-2-2', description: 'Stability & Context Refinements' },

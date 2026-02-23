@@ -1,15 +1,15 @@
 ---
 title: Reactivity
-description: Signals, Computed values, and Effects. The core of Fluxy.
+description: Fluxy State System - Flux, FluxComputed, and FluxEffect. The core of Fluxy.
 ---
 
 # Reactivity
 
-Fluxy's reactivity is built on three main primitives: **Signals**, **Computed**, and **Effects**.
+Fluxy's reactivity is built on three main primitives: **Flux**, **FluxComputed**, and **FluxEffect**.
 
-## Signals (`flux`)
+## Flux (`flux`)
 
-`flux` creates a **mutable signal**. Signals are containers for values that can change over time.
+`flux` creates a **mutable signal**. Flux units are containers for values that can change over time.
 
 ```dart
 final count = flux(0);
@@ -23,23 +23,23 @@ print(count.value);
 
 When you read a signal inside a reactive context (like an `effect` or a `Fx` widget builder), that context automatically subscribes to the signal.
 
-## Computed
+## FluxComputed
 
-`computed` creates a **derived signal** that depends on other signals.
+`fluxComputed` creates a **derived signal** that depends on other flux units.
 
 ```dart
 final count = flux(0);
-final doubleCount = computed(() => count.value * 2);
+final doubleCount = fluxComputed(() => count.value * 2);
 ```
 
 `doubleCount` will automatically update whenever `count` updates. It is lazily evaluated and cached. It will only recompute when its value is accessed or when its dependencies change.
 
-## Effects
+## FluxEffect
 
-`effect` runs a function immediately and re-runs it whenever any of its dependencies change.
+`fluxEffect` runs a function immediately and re-runs it whenever any of its dependencies change.
 
 ```dart
-effect(() {
+fluxEffect(() {
   print("Count is now: ${count.value}");
 });
 ```

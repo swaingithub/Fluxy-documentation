@@ -5,7 +5,7 @@ description: Install Fluxy and create your first project in minutes.
 
 # Quick Start
 
-Get started with Fluxy in the **Platform Era** in just a few commands.
+Get started with Fluxy **v1.0.0** modular architecture in just a few commands.
 
 ## Installation
 
@@ -23,26 +23,35 @@ Initialize a new Fluxy project structure. This command sets up the official `cor
 fluxy init my_awesome_app
 ```
 
-## Adding Modules
+## Adding Modules (v1.0.0)
 
-Fluxy is now modular. Add the features you need using the `module` command:
+Fluxy v1.0.0 is modular. Add only the features you need using the `module` command:
 
 ```bash
-# Add storage and authentication
-fluxy module add storage
-fluxy module add auth
+# Core framework is always included
+# Add specific modules as needed
+fluxy module add auth          # Authentication & biometrics
+fluxy module add camera        # Camera functionality
+fluxy module add notifications # Push notifications
+fluxy module add storage       # Data persistence
+fluxy module add forms         # Forms and validation
+fluxy module add analytics     # Analytics and tracking
 ```
 
-## Your First App
+## Your First App (v1.0.0)
 
-A professional Fluxy application requires initialization and module registration. Here is a minimal `main.dart` setup:
+A professional Fluxy application with modular architecture requires initialization. Here is a minimal `main.dart` setup:
 
 ```dart
 import 'package:flutter/material.dart';
 import 'package:fluxy/fluxy.dart';
 
+// Import specific modules if needed
+import 'package:fluxy_auth/fluxy_auth.dart';
+import 'package:fluxy_storage/fluxy_storage.dart';
+
 void main() async {
-  // 1. Setup core engine
+  // 1. Setup core engine (172KB)
   await Fluxy.init();
   
   // 2. Auto-register all installed modules
@@ -50,17 +59,88 @@ void main() async {
   
   runApp(
     FluxyApp(
-      title: "Hello Fluxy",
+      title: "Hello Fluxy v1.0.0",
       initialRoute: FxRoute(
         path: "/",
         builder: (context, args) => Fx.center(
-          child: Fx.text("Hello World").font.xxl().font.bold().color(Fx.primary),
+          child: Fx.col([
+            Fx.text("Hello Fluxy v1.0.0!")
+              .font.xxl()
+              .font.bold()
+              .color(Fx.primary)
+              .center(),
+            Fx.text("Modular Architecture")
+              .font.lg()
+              .color(FxTokens.colors.muted)
+              .center(),
+            Fx.button("Get Started")
+              .primary
+              .onTap(() => print("Button clicked!"))
+              .center()
+              .mt(4),
+          ]).gap(2),
         ),
       ),
     ),
   );
 }
 ```
+
+## Using Modular Features
+
+With v1.0.0, you can use modular features like this:
+
+```dart
+// Using authentication module
+Future<void> login() async {
+  final auth = Fx.platform.auth;
+  final result = await auth.signIn(email: 'user@example.com', password: 'password');
+  if (result.success) {
+    print('Logged in successfully!');
+  }
+}
+
+// Using storage module
+Future<void> saveData() async {
+  final storage = Fx.platform.storage;
+  await storage.set('user_preference', 'dark_mode');
+  final preference = await storage.get('user_preference');
+  print('Preference: $preference');
+}
+
+// Using camera module
+Future<void> takePhoto() async {
+  final camera = Fx.platform.camera;
+  final image = await camera.capture();
+  print('Photo captured: ${image.path}');
+}
+```
+
+## Package Structure (v1.0.0)
+
+Your `pubspec.yaml` will look like this:
+
+```yaml
+dependencies:
+  # Core Framework (172KB)
+  fluxy: ^1.0.0
+  
+  # Modular Packages (add as needed)
+  fluxy_auth: ^1.0.0         # Authentication & biometrics
+  fluxy_camera: ^1.0.0       # Camera functionality
+  fluxy_notifications: ^1.0.0 # Push notifications
+  fluxy_storage: ^1.0.0      # Data persistence
+  fluxy_forms: ^1.0.0        # Forms and validation
+  fluxy_analytics: ^1.0.0    # Analytics and tracking
+  # ... and 6 more modules
+```
+
+## Benefits of v1.0.0
+
+- **Smaller Core**: 172KB vs 15MB+ monolithic
+- **Flexible Dependencies**: Add only features you use
+- **Independent Versioning**: Each module evolves separately
+- **Better Performance**: Faster installation and smaller apps
 
 ## Next Steps
 

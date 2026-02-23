@@ -5,37 +5,53 @@ description: The Fluxy State System - Ultra-scale reactive state management.
 
 # State Management
 
-Fluxy v0.1.8 introduces the **Fluxy State System** - a comprehensive reactive state management engine that provides enterprise-grade features while maintaining 100% backward compatibility.
+Fluxy v1.0.0 provides the **Fluxy State System** - a comprehensive reactive state management engine that provides enterprise-grade features with modular architecture support.
 
-## The New Fluxy State Units
+## The Fluxy State Units
 
-Fluxy now uses its own branded, conflict-free keywords instead of generic "Signals":
+Fluxy uses its own branded reactive state management system:
 
-| Concept | New Permanent Unit | Legacy Alias (Still Works) |
-|---------|-------------------|---------------------------|
-| Core State | `Flux<T>` | `Signal<T>` |
-| Derived State | `FluxComputed<T>` | `Computed<T>` |
-| Side Effects | `FluxEffect` | `Effect` |
-| Async State | `AsyncFlux<T>` | `AsyncSignal<T>` |
-| Persistence | `PersistentFlux<T>` | `PersistentSignal<T>` |
-| Collections | `FluxList`, `FluxMap` | `SignalList`, `SignalMap` |
+| Concept | Fluxy Unit | Description |
+|---------|------------|-------------|
+| Core State | `flux<T>` | Reactive signal for primitive and complex data |
+| Derived State | `fluxComputed<T>` | Computed values that automatically update |
+| Side Effects | `fluxEffect` | Reactive side effects and async operations |
+| Async State | `fluxAsync<T>` | Built-in async state handling |
+| Collections | `fluxList`, `fluxMap` | Reactive collections |
+| Persistence | `flux<T>(..., persist: true)` | Built-in state persistence |
 
-### Basic Usage
+## Basic Usage (v1.0.0)
 
 ```dart
-// Create a flux
+import 'package:fluxy/fluxy.dart';
+
+// Create a reactive signal
 final count = flux(0); 
 
-// Create a computed flux
+// Create a computed signal
 final isDouble = fluxComputed(() => count.value * 2);
 
-// Use it in UI (Still the same ultra-clean Fx)
+// Use it in UI (atomic reactivity)
 Fx(() => Fx.text("Count is: ${count.value}"))
 ```
 
-## The "Holy Trinity" of Advanced Features
+**Note**: The `flux` function creates reactive signals that automatically update UI when values change. This is the core of Fluxy's reactivity system.
 
-### 1. `fluxSelector` (Targeted Rebuilds)
+## Advanced Features
+
+### 1. Built-in Persistence
+
+Fluxy v1.0.0 includes built-in state persistence with encryption:
+
+```dart
+// Persistent state (automatically saved/loaded)
+final session = flux<User?>(null, key: 'auth_session', persist: true);
+
+// Usage in UI
+Fx(() => Fx.text("Welcome, ${session.value?.name ?? 'Guest'}"))
+```
+
+### 2. `fluxSelector` (Targeted Rebuilds)
 
 Solves the "Riverpod Rebuild" problem by allowing you to listen to tiny parts of large objects.
 
@@ -48,6 +64,136 @@ Fx(() => Fx.text("Name: ${userName.value}"))
 ```
 
 **Benefit**: If `userFlux.age` changes, the `userName` widget will not rebuild. 100% atomic.
+
+### 3. `fluxAsync` (Server State)
+
+Simplify API calls and async operations with built-in loading/error states:
+
+```dart
+// Automatic async state management
+final users = fluxAsync(() => Fx.http.get('/api/users'));
+
+// UI automatically handles loading/error/data states
+Fx(() => users.on(
+  data: (list) => UserList(users: list),
+  loading: () => Fx.loader.shimmer(),
+  error: (e) => ErrorView(e),
+))
+```
+
+### 4. `fluxLocal` (Component State)
+
+Scoped state that automatically disposes with the widget:
+
+```dart
+class MyWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // Local state - automatically disposed when widget is removed
+    final localCount = fluxLocal(0);
+    
+    return Fx.button("Count: ${localCount.value}")
+      .onTap(() => localCount.value++);
+  }
+}
+```
+
+### 5. `fluxEffect` (Side Effects)
+
+Handle side effects when state changes:
+
+```dart
+final count = flux(0);
+
+fluxEffect(() {
+  print('Count changed: ${count.value}');
+  // Perform side effects here
+}, [count]);
+```
+
+## Modular Architecture Integration
+
+With v1.0.0, state management works seamlessly with modular packages:
+
+```dart
+import 'package:fluxy/fluxy.dart';
+import 'package:fluxy_auth/fluxy_auth.dart';
+import 'package:fluxy_storage/fluxy_storage.dart';
+
+class AppController extends FluxController {
+  // Core state management
+  final isLoading = flux(false);
+  final error = flux<String?>(null);
+  
+  // Modular state integration
+  final authState = fluxSelector(Fx.platform.auth.state, (s) => s);
+  final userPrefs = flux<Map<String, dynamic>>({});
+  
+  @override
+  void onInit() {
+    super.onInit();
+    _loadUserData();
+  }
+  
+  Future<void> _loadUserData() async {
+    isLoading.value = true;
+    try {
+      // Use modular storage
+      final prefs = await Fx.platform.storage.getAll();
+      userPrefs.value = prefs;
+    } catch (e) {
+      error.value = e.toString();
+    } finally {
+      isLoading.value = false;
+    }
+  }
+}
+```
+
+## Professional Logging (v0.2.6+)
+
+Fluxy includes professional logging for state operations:
+
+```dart
+// Logs will show:
+// [DATA] [AUDIT] Flux created: count
+// [DATA] [AUDIT] Flux updated: count = 5
+// [DATA] [REPAIR] Auto-repair applied to circular dependency
+
+final count = flux(0);
+count.value = 5; // [DATA] [AUDIT] Flux updated: count = 5
+```
+
+## Performance Features
+
+### 1. Batch Updates
+Fluxy automatically batches multiple state updates:
+
+```dart
+// These updates are batched into a single rebuild
+count.value = 1;
+name.value = "John";
+isLoading.value = false;
+```
+
+### 2. Dependency Tracking
+Only rebuild widgets that actually use the changed state:
+
+```dart
+// Only rebuilds when count changes
+Fx(() => Fx.text("Count: $count"))
+
+// Only rebuilds when name changes  
+Fx(() => Fx.text("Name: $name"))
+```
+
+### 3. Memory Management
+Automatic cleanup and weak references prevent memory leaks:
+
+```dart
+// Automatically disposed when no longer referenced
+final tempState = flux(temporaryData);
+```
 
 ### 2. `fluxWorker` (Zero-Jank Computations)
 

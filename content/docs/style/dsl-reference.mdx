@@ -1,0 +1,415 @@
+---
+title: DSL Reference
+description: Complete reference for Fluxy's domain-specific language and fluent API.
+---
+
+# DSL Reference
+
+Fluxy's Domain-Specific Language (DSL) provides a fluent, chainable API for building UIs with minimal code. Every widget and modifier is designed to work together seamlessly.
+
+## 🔧 Core DSL Functions
+
+### Fx - The Universal Builder
+`Fx` is the entry point for creating widgets and applying modifiers:
+
+```dart
+import 'package:fluxy/fluxy.dart';
+
+// Create widgets
+Fx.text("Hello")
+Fx.box()
+Fx.button("Click me")
+Fx.image("https://example.com/image.jpg")
+
+// Apply modifiers
+Fx.text("Hello").font.bold().color(Colors.blue)
+Fx.box().bg(Colors.white).rounded(8)
+```
+
+### Fx() - Reactive Builder
+Create reactive widgets that automatically rebuild when state changes:
+
+```dart
+final count = flux(0);
+
+Fx(() => Fx.text("Count: ${count.value}"))
+```
+
+## 🎨 Widget Factory Functions
+
+### Text Widgets
+```dart
+Fx.text("Hello World")
+  .font.size(18)
+  .font.bold()
+  .color(Colors.blue)
+  .center()
+```
+
+### Container Widgets
+```dart
+Fx.box()
+  .w(100)
+  .h(100)
+  .bg(Colors.blue)
+  .rounded(8)
+```
+
+### Button Widgets
+```dart
+Fx.button("Click me")
+  .primary
+  .onTap(() => print("Clicked"))
+```
+
+### Image Widgets
+```dart
+Fx.image("https://example.com/image.jpg")
+  .w(200)
+  .h(200)
+  .rounded(8)
+```
+
+### Input Widgets
+```dart
+Fx.input.email()
+  .placeholder("Enter email")
+  .onChanged((value) => print(value))
+```
+
+## 🔧 Layout DSL
+
+### Row Layout
+```dart
+Fx.row([
+  Fx.text("Item 1"),
+  Fx.text("Item 2"),
+  Fx.text("Item 3"),
+])
+  .gap(16)
+  .mainAxisAlignment.center()
+```
+
+### Column Layout
+```dart
+Fx.col([
+  Fx.text("Title"),
+  Fx.text("Description"),
+  Fx.button("Action"),
+])
+  .gap(8)
+  .crossAxisAlignment.start()
+```
+
+### Stack Layout
+```dart
+Fx.stack([
+  Fx.image("background.jpg"),
+  Fx.text("Overlay Text").center().color(Colors.white),
+])
+```
+
+### Grid Layout
+```dart
+Fx.grid.count(2, [
+  Fx.box().bg(Colors.red).h(100),
+  Fx.box().bg(Colors.blue).h(100),
+  Fx.box().bg(Colors.green).h(100),
+  Fx.box().bg(Colors.yellow).h(100),
+])
+  .gap(16)
+```
+
+## 🎯 Modifier Categories
+
+### Layout Modifiers
+```dart
+Fx.box()
+  .w(100)              // Width
+  .h(100)              // Height
+  .size(100, 100)      // Width and height
+  .expanded()          // Take available space
+  .shrink()            // Shrink to fit content
+  .aspectRatio(16/9)   // Aspect ratio
+  .constrained(maxWidth: 200) // Constraints
+```
+
+### Spacing Modifiers
+```dart
+Fx.box()
+  .p(16)               // Padding all
+  .px(16)              // Padding horizontal
+  .py(16)              // Padding vertical
+  .pt(16)              // Padding top
+  .pb(16)              // Padding bottom
+  .pl(16)              // Padding left
+  .pr(16)              // Padding right
+  
+  .m(16)               // Margin all
+  .mx(16)              // Margin horizontal
+  .my(16)              // Margin vertical
+  .mt(16)              // Margin top
+  .mb(16)              // Margin bottom
+  .ml(16)              // Margin left
+  .mr(16)              // Margin right
+```
+
+### Visual Modifiers
+```dart
+Fx.box()
+  .bg(Colors.blue)     // Background color
+  .color(Colors.white) // Text color
+  .opacity(0.8)        // Opacity
+  .border(2, Colors.black) // Border
+  .borderTop(2, Colors.red)  // Border top
+  .borderBottom(2, Colors.blue) // Border bottom
+  .borderLeft(2, Colors.green) // Border left
+  .borderRight(2, Colors.yellow) // Border right
+  .rounded(8)          // Border radius
+  .roundedTop(8)       // Top border radius
+  .roundedBottom(8)    // Bottom border radius
+  .shadow.md()         // Shadow
+  .gradient.linear([Colors.blue, Colors.purple]) // Gradient
+```
+
+### Typography Modifiers
+```dart
+Fx.text("Hello")
+  .font.size(18)       // Font size
+  .font.bold()         // Font weight
+  .font.semiBold()     // Semi-bold
+  .font.normal()       // Normal weight
+  .font.light()        // Light weight
+  .font.italic()       // Font style
+  .font.family('Roboto') // Font family
+  .letterSpacing(1.2)  // Letter spacing
+  .lineHeight(1.5)     // Line height
+  .textDecoration(TextDecoration.underline) // Text decoration
+  .textTransform(TextTransform.uppercase) // Text transform
+```
+
+### Alignment Modifiers
+```dart
+Fx.box()
+  .center()            // Center content
+  .left()              // Align left
+  .right()             // Align right
+  .top()               // Align top
+  .bottom()            // Align bottom
+  .justify()          // Justify content
+  .start()             // Align start
+  .end()               // Align end
+```
+
+### Interaction Modifiers
+```dart
+Fx.box()
+  .onTap(() => print("Tapped")) // Tap handler
+  .onDoubleTap(() => print("Double tapped")) // Double tap
+  .onLongPress(() => print("Long pressed")) // Long press
+  .onHover((isHovered) => print("Hovered: $isHovered")) // Hover handler
+  .pointer()            // Make clickable
+  .cursor(Cursor.pointer) // Cursor style
+  .pressScale()         // Scale on press
+```
+
+## 🎯 Advanced DSL Patterns
+
+### Conditional Modifiers
+```dart
+final isActive = flux(true);
+
+Fx.box()
+  .bg(isActive.value ? Colors.blue : Colors.grey)
+  .color(isActive.value ? Colors.white : Colors.black)
+```
+
+### Responsive Modifiers
+```dart
+Fx.box()
+  .w(100)              // Mobile (default)
+  .md.w(200)           // Tablet
+  .lg.w(300)           // Desktop
+  .xl.w(400)           // Large desktop
+```
+
+### Animated Modifiers
+```dart
+Fx.box()
+  .bg(Colors.blue)
+  .transition(Duration(milliseconds: 300))
+  .onTap(() => color.value = Colors.red)
+```
+
+### Custom Modifiers
+```dart
+extension CustomModifiers on Widget {
+  Widget card() => this
+    .bg(Colors.white)
+    .rounded(12)
+    .shadow.lg()
+    .padding.all(16);
+    
+  Widget primaryButton() => this
+    .bg(FxTokens.colors.primary)
+    .color(Colors.white)
+    .rounded(8)
+    .padding.horizontal(16)
+    .padding.vertical(8);
+}
+
+// Usage
+Fx.text("Click Me").primaryButton()
+```
+
+## 🔧 Fluent API Patterns
+
+### Method Chaining
+All modifiers return a widget, allowing infinite chaining:
+
+```dart
+Fx.text("Hello")
+  .font.size(18)
+  .font.bold()
+  .color(Colors.blue)
+  .center()
+  .padding.all(16)
+  .bg(Colors.white)
+  .rounded(8)
+  .shadow.md()
+  .onTap(() => print("Clicked"))
+```
+
+### Property Access
+Some modifiers provide property access for better readability:
+
+```dart
+// Property access
+Fx.text.font.size(18)
+Fx.text.font.bold()
+Fx.text.color(Colors.blue)
+
+// Method calls
+Fx.text.font.size(18).font.bold().color(Colors.blue)
+```
+
+### Proxy Objects
+Some modifiers use proxy objects for better organization:
+
+```dart
+// Font proxy
+Fx.text.font.size(18).bold().italic()
+
+// Shadow proxy
+Fx.box.shadow.md().color(Colors.black)
+
+// Animation proxy
+Fx.box.animation.fadeIn().slideUp()
+```
+
+## 🎯 Widget Composition
+
+### Nesting Widgets
+```dart
+Fx.col([
+  Fx.text("Title").font.size(24).font.bold(),
+  Fx.text("Description").color(Colors.grey),
+  Fx.row([
+    Fx.button("Cancel").outline,
+    Fx.button("Submit").primary,
+  ]).gap(8).justify.end(),
+]).gap(16).padding.all(16)
+```
+
+### Reusable Components
+```dart
+Widget customCard({
+  required Widget child,
+  Color? bgColor,
+  double? borderRadius,
+}) {
+  return Fx.box()
+    .bg(bgColor ?? Colors.white)
+    .rounded(borderRadius ?? 12)
+    .shadow.md()
+    .padding.all(16)
+    .child(child);
+}
+
+// Usage
+customCard(
+  child: Fx.text("Card Content"),
+  bgColor: Colors.blue.shade50,
+)
+```
+
+### Conditional Rendering
+```dart
+final isLoading = flux(false);
+final error = flux<String?>(null);
+
+Fx(() {
+  if (isLoading.value) {
+    return Fx.loader.shimmer();
+  }
+  
+  if (error.value != null) {
+    return Fx.text("Error: ${error.value}").color(Colors.red);
+  }
+  
+  return Fx.text("Content loaded successfully");
+})
+```
+
+## 🔧 Error Handling
+
+### Safe Chaining
+```dart
+Fx.text("Hello")
+  .font.size(18)
+  .font.bold()
+  .color(Colors.blue)
+  .safe() // Prevents exceptions in modifier chain
+```
+
+### Validation
+```dart
+Fx.input.email()
+  .validator(Validators.email)
+  .onChanged((value) {
+    if (value.isValid) {
+      print("Valid email");
+    }
+  })
+```
+
+## 🎯 Performance Tips
+
+### Minimize Rebuilds
+```dart
+// Good: Separate reactive parts
+final title = flux("Title");
+final count = flux(0);
+
+Fx.col([
+  Fx(() => Fx.text(title.value)), // Only rebuilds when title changes
+  Fx(() => Fx.text("Count: ${count.value}")), // Only rebuilds when count changes
+])
+
+// Avoid: Rebuilding entire widget
+Fx(() => Fx.col([
+  Fx.text("${title.value} - ${count.value}"), // Rebuilds when either changes
+]))
+```
+
+### Use Const Where Possible
+```dart
+// Good
+const style = FxStyle().bg(Colors.white).rounded(8);
+Fx.box().style(style);
+
+// Avoid
+Fx.box().bg(Colors.white).rounded(8) // Creates new style objects
+```
+
+This DSL reference provides everything you need to build complex UIs with Fluxy's fluent API!

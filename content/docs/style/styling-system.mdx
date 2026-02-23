@@ -1,0 +1,377 @@
+---
+title: Styling System
+description: Complete guide to Fluxy's atomic styling DSL and theme system.
+---
+
+# Styling System
+
+Fluxy provides a comprehensive styling system that combines atomic styling DSL with a powerful theme system. Build beautiful UIs with minimal code using chainable modifiers.
+
+## 🎨 Core Concepts
+
+### Atomic Styling DSL
+Every widget in Fluxy supports 100+ chainable modifiers for layout, styling, and motion:
+
+```dart
+Fx.text("Hello World")
+  .font.size(18)
+  .font.bold()
+  .color(Colors.blue)
+  .center()
+  .padding.all(16)
+  .bg(Colors.white)
+  .rounded(8)
+  .shadow.md()
+```
+
+### FxStyle Objects
+Style modifiers can be extracted into reusable objects:
+
+```dart
+final cardStyle = FxStyle()
+  .bg(Colors.white)
+  .rounded(12)
+  .shadow.lg()
+  .padding.all(20);
+
+Fx.box().style(cardStyle).child(
+  Fx.text("Card Content")
+);
+```
+
+## 🎯 Design Tokens
+
+Fluxy includes a comprehensive design token system:
+
+```dart
+import 'package:fluxy/fluxy.dart';
+
+// Colors
+FxTokens.colors.primary
+FxTokens.colors.secondary
+FxTokens.colors.success
+FxTokens.colors.error
+FxTokens.colors.warning
+
+// Spacing
+FxTokens.spacing.xs    // 4px
+FxTokens.spacing.sm    // 8px
+FxTokens.spacing.md    // 16px
+FxTokens.spacing.lg    // 24px
+FxTokens.spacing.xl    // 32px
+
+// Typography
+FxTokens.font.size.xs   // 12px
+FxTokens.font.size.sm   // 14px
+FxTokens.font.size.md   // 16px
+FxTokens.font.size.lg   // 18px
+FxTokens.font.size.xl   // 24px
+
+// Border Radius
+FxTokens.radius.sm     // 4px
+FxTokens.radius.md     // 8px
+FxTokens.radius.lg     // 12px
+FxTokens.radius.xl     // 16px
+
+// Shadows
+FxTokens.shadow.sm
+FxTokens.shadow.md
+FxTokens.shadow.lg
+FxTokens.shadow.xl
+```
+
+## 🎨 Theme System
+
+### Using Themes
+Fluxy provides built-in theme support:
+
+```dart
+import 'package:fluxy/fluxy.dart';
+
+// Access current theme
+final theme = FxTheme.current;
+final isDark = FxTheme.isDark;
+
+// Theme colors
+Fx.text("Primary").color(FxTheme.primaryColor)
+Fx.box().bg(FxTheme.backgroundColor)
+```
+
+### Theme Customization
+Create custom themes for your app:
+
+```dart
+class AppTheme {
+  static final light = FxThemeData(
+    colors: FxColorScheme(
+      primary: Colors.blue,
+      secondary: Colors.purple,
+      surface: Colors.white,
+      background: Colors.grey[50]!,
+    ),
+  );
+  
+  static final dark = FxThemeData(
+    colors: FxColorScheme(
+      primary: Colors.blue.shade300,
+      secondary: Colors.purple.shade300,
+      surface: Colors.grey[800]!,
+      background: Colors.black,
+    ),
+  );
+}
+
+// Apply theme
+FluxyApp(
+  theme: AppTheme.light,
+  darkTheme: AppTheme.dark,
+  themeMode: ThemeMode.system,
+)
+```
+
+## 🔧 Modifier Categories
+
+### Layout Modifiers
+```dart
+Fx.box()
+  .w(100)              // Width
+  .h(100)              // Height
+  .size(100, 100)      // Width and height
+  .expanded()          // Take available space
+  .shrink()            // Shrink to fit content
+  .aspectRatio(16/9)   // Aspect ratio
+```
+
+### Spacing Modifiers
+```dart
+Fx.box()
+  .p(16)               // Padding all
+  .px(16)              // Padding horizontal
+  .py(16)              // Padding vertical
+  .pt(16)              // Padding top
+  .pb(16)              // Padding bottom
+  .pl(16)              // Padding left
+  .pr(16)              // Padding right
+  
+  .m(16)               // Margin all
+  .mx(16)              // Margin horizontal
+  .my(16)              // Margin vertical
+  .mt(16)              // Margin top
+  .mb(16)              // Margin bottom
+  .ml(16)              // Margin left
+  .mr(16)              // Margin right
+```
+
+### Visual Modifiers
+```dart
+Fx.box()
+  .bg(Colors.blue)     // Background color
+  .color(Colors.white) // Text color
+  .opacity(0.8)        // Opacity
+  .border(2, Colors.black) // Border
+  .rounded(8)          // Border radius
+  .shadow.md()         // Shadow
+```
+
+### Typography Modifiers
+```dart
+Fx.text("Hello")
+  .font.size(18)       // Font size
+  .font.bold()         // Font weight
+  .font.italic()       // Font style
+  .font.family('Roboto') // Font family
+  .letterSpacing(1.2)  // Letter spacing
+  .lineHeight(1.5)     // Line height
+  .textDecoration(TextDecoration.underline) // Text decoration
+```
+
+### Alignment Modifiers
+```dart
+Fx.box()
+  .center()            // Center content
+  .left()              // Align left
+  .right()             // Align right
+  .top()               // Align top
+  .bottom()            // Align bottom
+  .justify()          // Justify content
+```
+
+### Interaction Modifiers
+```dart
+Fx.box()
+  .onTap(() => print("Tapped")) // Tap handler
+  .onHover((isHovered) => print("Hovered: $isHovered")) // Hover handler
+  .pointer()            // Make clickable
+  .cursor(Cursor.pointer) // Cursor style
+```
+
+## 🎯 Responsive Design
+
+### Breakpoint System
+Fluxy includes a responsive breakpoint system:
+
+```dart
+Fx.box()
+  .w(100)              // Mobile (default)
+  .md.w(200)           // Tablet
+  .lg.w(300)           // Desktop
+  .xl.w(400)           // Large desktop
+```
+
+### Responsive Values
+Use responsive values that change based on screen size:
+
+```dart
+final gap = Fx.responsiveValue(context,
+  xs: 8,    // Mobile
+  sm: 12,   // Small tablet
+  md: 16,   // Tablet
+  lg: 24,   // Desktop
+  xl: 32,   // Large desktop
+);
+```
+
+### Responsive Layout
+Create layouts that adapt to different screen sizes:
+
+```dart
+Fx.layout(
+  mobile: Fx.col([...]),      // Mobile: column
+  tablet: Fx.row([...]),       // Tablet: row
+  desktop: Fx.grid([...]),    // Desktop: grid
+)
+```
+
+## 🎨 Advanced Styling
+
+### Conditional Styling
+Apply styles based on conditions:
+
+```dart
+final isActive = flux(true);
+
+Fx.box()
+  .bg(isActive.value ? Colors.blue : Colors.grey)
+  .color(isActive.value ? Colors.white : Colors.black)
+```
+
+### Animated Transitions
+Add smooth transitions to style changes:
+
+```dart
+Fx.box()
+  .bg(Colors.blue)
+  .transition(Duration(milliseconds: 300))
+  .onTap(() => color.value = Colors.red)
+```
+
+### Custom Modifiers
+Create your own reusable modifiers:
+
+```dart
+extension CustomModifiers on Widget {
+  Widget card() => this
+    .bg(Colors.white)
+    .rounded(12)
+    .shadow.lg()
+    .padding.all(16);
+    
+  Widget primaryButton() => this
+    .bg(FxTokens.colors.primary)
+    .color(Colors.white)
+    .rounded(8)
+    .padding.horizontal(16)
+    .padding.vertical(8);
+}
+
+// Usage
+Fx.text("Click Me").primaryButton()
+```
+
+## 🔧 Style Inheritance
+
+### Style Composition
+Combine multiple styles:
+
+```dart
+final baseStyle = FxStyle()
+  .padding.all(16)
+  .rounded(8);
+
+final cardStyle = baseStyle
+  .bg(Colors.white)
+  .shadow.md();
+
+final errorCardStyle = cardStyle
+  .bg(Colors.red.shade50)
+  .border(2, Colors.red);
+```
+
+### Style Overrides
+Override specific properties:
+
+```dart
+Fx.box()
+  .style(baseStyle)
+  .bg(Colors.blue)  // Override background
+  .border(2)        // Add border
+```
+
+## 🎯 Best Practices
+
+### 1. Use Design Tokens
+```dart
+// Good
+Fx.box().padding.all(FxTokens.spacing.md)
+
+// Avoid hardcoded values
+Fx.box().padding.all(16)
+```
+
+### 2. Create Reusable Styles
+```dart
+// Good
+final cardStyle = FxStyle().bg(Colors.white).rounded(12).shadow.md();
+Fx.box().style(cardStyle);
+
+// Avoid repeating modifiers
+Fx.box().bg(Colors.white).rounded(12).shadow.md();
+```
+
+### 3. Use Responsive Modifiers
+```dart
+// Good
+Fx.box().w(100).md.w(200).lg.w(300);
+
+// Consider responsive layout for complex changes
+Fx.layout(mobile: mobileWidget, tablet: tabletWidget)
+```
+
+### 4. Chain Modifiers Logically
+```dart
+// Good: Layout → Visual → Typography → Interaction
+Fx.box()
+  .w(100).h(100)           // Layout
+  .bg(Colors.blue).rounded(8) // Visual
+  .font.size(16).center()    // Typography
+  .onTap(() => print("tap")) // Interaction
+```
+
+## 🎨 Theme Integration
+
+### Dark Mode Support
+```dart
+Fx.box()
+  .bg(FxTheme.isDark ? Colors.grey[800] : Colors.white)
+  .color(FxTheme.isDark ? Colors.white : Colors.black)
+```
+
+### Dynamic Theme Switching
+```dart
+final themeMode = flux(ThemeMode.system);
+
+Fx.box()
+  .bg(themeMode.value == ThemeMode.dark ? Colors.black : Colors.white)
+```
+
+This styling system provides everything you need to build beautiful, responsive, and maintainable UIs with Fluxy!

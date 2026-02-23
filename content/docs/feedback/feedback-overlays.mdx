@@ -1,0 +1,505 @@
+---
+title: Feedback & Overlays
+description: Complete guide to Fluxy's feedback system including dialogs, toasts, loaders, and overlays.
+---
+
+# Feedback & Overlays
+
+Fluxy provides a comprehensive feedback system with dialogs, toasts, loaders, and overlays that work without requiring BuildContext. Provide users with clear feedback for every action.
+
+## 🗨️ Dialogs
+
+### Alert Dialog
+Simple alert dialog with title, content, and actions:
+
+```dart
+Fx.dialog.alert(
+  title: "Success",
+  content: "Your changes have been saved successfully.",
+  confirmText: "OK",
+  onConfirm: () => print("Confirmed"),
+)
+```
+
+### Confirm Dialog
+Dialog for confirming destructive actions:
+
+```dart
+Fx.dialog.confirm(
+  title: "Delete Item",
+  content: "Are you sure you want to delete this item? This action cannot be undone.",
+  confirmText: "Delete",
+  cancelText: "Cancel",
+  onConfirm: () => _deleteItem(),
+  onCancel: () => print("Cancelled"),
+)
+```
+
+### Custom Dialog
+Create custom dialogs with any content:
+
+```dart
+Fx.dialog(
+  title: "Custom Dialog",
+  content: Fx.col([
+    Fx.text("This is a custom dialog"),
+    Fx.input.text(
+      placeholder: "Enter something",
+      onChanged: (value) => print("Input: $value"),
+    ),
+  ]).gap(3),
+  actions: [
+    Fx.button("Cancel").outline.onTap(() => Fx.back()),
+    Fx.button("Save").primary.onTap(() => Fx.back()),
+  ],
+)
+```
+
+### Input Dialog
+Dialog that captures user input:
+
+```dart
+Fx.dialog.input(
+  title: "Enter Name",
+  placeholder: "Please enter your name",
+  initialValue: "John Doe",
+  confirmText: "Save",
+  onConfirm: (value) {
+    print("Name: $value");
+  },
+)
+```
+
+## 🍞 Toasts
+
+### Basic Toast
+Simple toast message:
+
+```dart
+Fx.toast("Operation completed successfully");
+```
+
+### Toast Variants
+Different toast styles for different message types:
+
+```dart
+Fx.toast.success("Data saved successfully");
+Fx.toast.error("Failed to save data");
+Fx.toast.warning("Please check your input");
+Fx.toast.info("New update available");
+```
+
+### Custom Toast
+Toast with custom styling and duration:
+
+```dart
+Fx.toast(
+  "Custom message",
+  duration: Duration(seconds: 5),
+  backgroundColor: Colors.purple,
+  textColor: Colors.white,
+  position: ToastPosition.top,
+)
+```
+
+### Toast with Action
+Toast that includes an action button:
+
+```dart
+Fx.toast.action(
+  "New message received",
+  action: "View",
+  onAction: () => Fx.to('/messages'),
+)
+```
+
+## ⏳ Loaders
+
+### Shimmer Loader
+Loading shimmer effect for content placeholders:
+
+```dart
+Fx.loader.shimmer(
+  child: Fx.col([
+    Fx.box().h(20).w(100).rounded(4),
+    Fx.box().h(16).w(150).rounded(4).mt(2),
+    Fx.box().h(16).w(120).rounded(4).mt(2),
+  ]).gap(2),
+)
+```
+
+### Spinner Loader
+Circular spinner for loading states:
+
+```dart
+Fx.loader.spinner()
+```
+
+### Progress Loader
+Linear progress indicator:
+
+```dart
+final progress = flux(0.0);
+
+Fx.loader.progress(progress.value)
+```
+
+### Custom Loader
+Create custom loading animations:
+
+```dart
+Fx.loader.custom(
+  child: Fx.col([
+    Fx.text("Loading...").center(),
+    Fx.loader.spinner(),
+    Fx.text("Please wait").center().mt(2),
+  ]).gap(2),
+)
+```
+
+## 🎯 Overlays
+
+### Loading Overlay
+Full-screen loading overlay:
+
+```dart
+Fx.overlay.loading(
+  isLoading: true,
+  child: Fx.text("Loading..."),
+)
+```
+
+### Custom Overlay
+Create custom overlays with any content:
+
+```dart
+Fx.overlay(
+  isVisible: showOverlay,
+  child: Fx.box()
+    .bg(Colors.black.withOpacity(0.5))
+    .child(
+      Fx.col([
+        Fx.text("Overlay Content").color(Colors.white),
+        Fx.button("Close").onTap(() => showOverlay.value = false),
+      ]).center().gap(2),
+    ),
+)
+```
+
+### Modal Overlay
+Modal-style overlay with backdrop:
+
+```dart
+Fx.overlay.modal(
+  isVisible: showModal,
+  child: Fx.box()
+    .bg(Colors.white)
+    .rounded(12)
+    .padding.all(24)
+    .child(
+      Fx.col([
+        Fx.text("Modal Content").font.size(18).font.bold(),
+        Fx.text("This is a modal overlay"),
+        Fx.button("Close").onTap(() => showModal.value = false),
+      ]).gap(3),
+    ),
+)
+```
+
+## 🔧 Global Feedback API
+
+### Toast API
+Global toast methods that work anywhere:
+
+```dart
+// In any widget or service
+Fx.toast("Hello World");
+Fx.toast.success("Success!");
+Fx.toast.error("Error!");
+Fx.toast.warning("Warning!");
+Fx.toast.info("Info!");
+```
+
+### Dialog API
+Global dialog methods:
+
+```dart
+// Show alert
+Fx.dialog.alert(
+  title: "Alert",
+  content: "This is an alert",
+  confirmText: "OK",
+);
+
+// Show confirm
+Fx.dialog.confirm(
+  title: "Confirm",
+  content: "Are you sure?",
+  onConfirm: () => print("Confirmed"),
+);
+
+// Show input
+Fx.dialog.input(
+  title: "Input",
+  placeholder: "Enter value",
+  onConfirm: (value) => print("Input: $value"),
+);
+```
+
+### Loader API
+Global loader methods:
+
+```dart
+// Show loading overlay
+Fx.loader.show();
+Fx.loader.hide();
+
+// Show loading with message
+Fx.loader.show("Loading data...");
+
+// Check loading state
+final isLoading = Fx.loader.isLoading;
+```
+
+## 🎯 Advanced Usage
+
+### Feedback with State
+Combine feedback with reactive state:
+
+```dart
+final isLoading = flux(false);
+final error = flux<String?>(null);
+
+Future<void> fetchData() async {
+  isLoading.value = true;
+  error.value = null;
+  
+  try {
+    final data = await Fx.http.get('/api/data');
+    Fx.toast.success("Data loaded successfully");
+  } catch (e) {
+    error.value = e.toString();
+    Fx.toast.error("Failed to load data");
+  } finally {
+    isLoading.value = false;
+  }
+}
+
+// Usage in UI
+Fx.col([
+  if (isLoading.value)
+    Fx.loader.shimmer()
+  else
+    Fx.text("Data content"),
+    
+  if (error.value != null)
+    Fx.text(error.value!).color(Colors.red),
+    
+  Fx.button("Refresh")
+    .primary
+    .onTap(() => fetchData()),
+]).gap(2)
+```
+
+### Form Feedback
+Provide feedback during form operations:
+
+```dart
+Future<void> submitForm() async {
+  if (!formKey.currentState!.validate()) {
+    Fx.toast.error("Please fix form errors");
+    return;
+  }
+  
+  Fx.loader.show("Submitting form...");
+  
+  try {
+    await Fx.http.post('/api/submit', body: formData);
+    Fx.loader.hide();
+    Fx.toast.success("Form submitted successfully");
+    formKey.currentState!.reset();
+  } catch (e) {
+    Fx.loader.hide();
+    Fx.toast.error("Failed to submit form");
+  }
+}
+```
+
+### Async Operations
+Provide feedback for async operations:
+
+```dart
+Future<void> uploadFile(File file) async {
+  Fx.dialog.confirm(
+    title: "Upload File",
+    content: "Are you sure you want to upload ${file.name}?",
+    onConfirm: () async {
+      Fx.loader.show("Uploading file...");
+      
+      try {
+        await Fx.http.upload('/api/upload', file);
+        Fx.loader.hide();
+        Fx.toast.success("File uploaded successfully");
+      } catch (e) {
+        Fx.loader.hide();
+        Fx.toast.error("Upload failed: $e");
+      }
+    },
+  );
+}
+```
+
+### Network Operations
+Provide feedback for network requests:
+
+```dart
+final networkState = flux(NetworkState.idle);
+
+Future<void> fetchData() async {
+  networkState.value = NetworkState.loading;
+  
+  try {
+    final response = await Fx.http.get('/api/data');
+    networkState.value = NetworkState.success;
+    Fx.toast.success("Data loaded");
+  } catch (e) {
+    networkState.value = NetworkState.error;
+    Fx.toast.error("Network error: $e");
+  }
+}
+
+// Usage
+Fx(() {
+  return networkState.value.when(
+    loading: () => Fx.loader.shimmer(),
+    success: () => Fx.text("Data loaded successfully"),
+    error: () => Fx.text("Error loading data").color(Colors.red),
+    idle: () => Fx.button("Load Data").onTap(() => fetchData()),
+  );
+})
+```
+
+## 🎯 Custom Feedback Components
+
+### Custom Toast
+```dart
+class CustomToast extends StatelessWidget {
+  final String message;
+  final Color backgroundColor;
+  final Color textColor;
+  
+  const CustomToast({
+    required this.message,
+    this.backgroundColor = Colors.blue,
+    this.textColor = Colors.white,
+  });
+  
+  @override
+  Widget build(BuildContext context) {
+    return Fx.box()
+      .bg(backgroundColor)
+      .rounded(8)
+      .padding.horizontal(16)
+      .padding.vertical(12)
+      .child(
+        Fx.text(message)
+          .color(textColor)
+          .font.size(14),
+      );
+  }
+}
+
+// Usage
+Fx.toast.custom(
+  CustomToast(
+    message: "Custom toast message",
+    backgroundColor: Colors.purple,
+    textColor: Colors.white,
+  ),
+)
+```
+
+### Custom Loader
+```dart
+class CustomLoader extends StatelessWidget {
+  final String message;
+  final Color color;
+  
+  const CustomLoader({
+    this.message = "Loading...",
+    this.color = Colors.blue,
+  });
+  
+  @override
+  Widget build(BuildContext context) {
+    return Fx.col([
+      Fx.loader.spinner(color: color),
+      Fx.text(message).color(color).mt(2),
+    ]).center();
+  }
+}
+
+// Usage
+Fx.loader.show(CustomLoader(
+  message: "Custom loading message",
+  color: Colors.purple,
+));
+```
+
+## 🎯 Best Practices
+
+### 1. Use Appropriate Feedback Types
+```dart
+// Good: Use toast for quick feedback
+Fx.toast.success("Saved successfully");
+
+// Good: Use dialog for important decisions
+Fx.dialog.confirm(
+  title: "Delete",
+  content: "Are you sure?",
+  onConfirm: () => _delete(),
+);
+
+// Good: Use loader for long operations
+Fx.loader.show("Processing...");
+```
+
+### 2. Provide Clear Messages
+```dart
+// Good: Specific messages
+Fx.toast.success("Profile updated successfully");
+Fx.toast.error("Failed to update profile");
+
+// Avoid: Generic messages
+Fx.toast.success("Operation completed");
+Fx.toast.error("Operation failed");
+```
+
+### 3. Handle Loading States
+```dart
+// Good: Show loading during async operations
+Future<void> saveData() async {
+  Fx.loader.show("Saving...");
+  try {
+    await _save();
+    Fx.loader.hide();
+    Fx.toast.success("Data saved");
+  } catch (e) {
+    Fx.loader.hide();
+    Fx.toast.error("Save failed");
+  }
+}
+```
+
+### 4. Use Context-Free Feedback
+```dart
+// Good: Works anywhere
+Fx.toast("Hello World");
+Fx.dialog.alert(title: "Alert", content: "Message");
+
+// Avoid: Requires BuildContext
+showDialog(context, ...);
+ScaffoldMessenger.of(context).showSnackBar(...);
+```
+
+This feedback system provides everything you need to provide clear, context-free feedback to users in your Fluxy applications!

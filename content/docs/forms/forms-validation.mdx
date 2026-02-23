@@ -1,0 +1,622 @@
+---
+title: Forms & Validation
+description: Complete guide to Fluxy's form system with built-in validation and form management.
+---
+
+# Forms & Validation
+
+Fluxy provides a comprehensive form system with built-in validation, reactive form state, and intuitive form widgets. Build complex forms with minimal code.
+
+## 📝 Form Basics
+
+### Fx.form() - Form Container
+The main form container that handles validation and submission:
+
+```dart
+final formKey = fluxy.FormKey();
+final email = flux('');
+final password = flux('');
+
+Fx.form(
+  key: formKey,
+  child: Fx.col([
+    Fx.input.email(
+      signal: email,
+      placeholder: "Enter your email",
+      validator: Validators.email,
+    ),
+    Fx.input.password(
+      signal: password,
+      placeholder: "Enter your password",
+      validator: Validators.password,
+    ),
+    Fx.button("Submit")
+      .primary
+      .onTap(() => _submitForm()),
+  ]).gap(3),
+)
+```
+
+### Form Validation
+Fluxy includes built-in validators and custom validation support:
+
+```dart
+// Built-in validators
+Validators.email
+Validators.password
+Validators.required
+Validators.minLength(6)
+Validators.maxLength(50)
+Validators.number
+Validators.phone
+Validators.url
+
+// Custom validator
+Validators.custom((value) {
+  if (value!.startsWith('admin')) {
+    return 'Username cannot start with "admin"';
+  }
+  return null;
+})
+```
+
+## 🎯 Input Types
+
+### Text Input
+```dart
+Fx.input.text(
+  signal: name,
+  placeholder: "Enter your name",
+  validator: Validators.required,
+)
+```
+
+### Email Input
+```dart
+Fx.input.email(
+  signal: email,
+  placeholder: "Enter your email",
+  validator: Validators.email,
+)
+```
+
+### Password Input
+```dart
+Fx.input.password(
+  signal: password,
+  placeholder: "Enter your password",
+  validator: Validators.password,
+  obscureText: true,
+)
+```
+
+### Number Input
+```dart
+Fx.input.number(
+  signal: age,
+  placeholder: "Enter your age",
+  validator: Validators.number,
+)
+```
+
+### Phone Input
+```dart
+Fx.input.phone(
+  signal: phone,
+  placeholder: "Enter your phone number",
+  validator: Validators.phone,
+)
+```
+
+### Text Area
+```dart
+Fx.input.textArea(
+  signal: description,
+  placeholder: "Enter description",
+  maxLines: 5,
+  validator: Validators.required,
+)
+```
+
+## 🔧 Advanced Form Features
+
+### Reactive Form State
+Forms automatically update when input values change:
+
+```dart
+final isFormValid = fluxComputed(() => 
+  email.value.isNotEmpty && 
+  password.value.length >= 6
+);
+
+Fx.button("Submit")
+  .primary
+  .enabled(isFormValid.value)
+  .onTap(() => _submitForm())
+```
+
+### Field Validation
+Real-time validation with error messages:
+
+```dart
+Fx.input.email(
+  signal: email,
+  placeholder: "Enter your email",
+  validator: Validators.email,
+  showError: true, // Show error messages
+  onChanged: (value) {
+    print('Email changed: $value');
+  },
+)
+```
+
+### Custom Input Fields
+Create custom input fields with validation:
+
+```dart
+class CustomInput extends StatelessWidget {
+  final Flux<String> signal;
+  final String? Function(String?)? validator;
+  
+  const CustomInput({
+    required this.signal,
+    this.validator,
+  });
+  
+  @override
+  Widget build(BuildContext context) {
+    return Fx.box()
+      .border(1, signal.value.isNotEmpty ? Colors.blue : Colors.grey)
+      .rounded(8)
+      .padding.horizontal(12)
+      .padding.vertical(8)
+      .child(
+        Fx.input.text(
+          signal: signal,
+          validator: validator,
+          border: InputBorder.none,
+        ),
+      );
+  }
+}
+```
+
+## 📋 Form Submission
+
+### Manual Submission
+```dart
+void _submitForm() {
+  if (formKey.currentState!.validate()) {
+    // Form is valid, submit data
+    final formData = {
+      'email': email.value,
+      'password': password.value,
+    };
+    
+    print('Form submitted: $formData');
+    
+    // Clear form
+    formKey.currentState!.reset();
+    email.value = '';
+    password.value = '';
+  } else {
+    // Form has validation errors
+    print('Form has errors');
+  }
+}
+```
+
+### Async Form Submission
+```dart
+final isSubmitting = flux(false);
+final submitError = flux<String?>(null);
+
+Future<void> _submitForm() async {
+  if (!formKey.currentState!.validate()) return;
+  
+  isSubmitting.value = true;
+  submitError.value = null;
+  
+  try {
+    final response = await Fx.http.post('/api/login', body: {
+      'email': email.value,
+      'password': password.value,
+    });
+    
+    if (response.statusCode == 200) {
+      print('Login successful');
+      formKey.currentState!.reset();
+    } else {
+      submitError.value = 'Login failed';
+    }
+  } catch (e) {
+    submitError.value = e.toString();
+  } finally {
+    isSubmitting.value = false;
+  }
+}
+
+// Usage in UI
+Fx.button("Submit")
+  .primary
+  .loading(isSubmitting.value)
+  .disabled(isSubmitting.value)
+  .onTap(() => _submitForm())
+  
+if (submitError.value != null)
+  Fx.text(submitError.value!).color(Colors.red)
+```
+
+## 🎯 Form Layout Patterns
+
+### Login Form
+```dart
+final email = flux('');
+final password = flux('');
+final rememberMe = flux(false);
+
+Fx.box()
+  .bg(Colors.white)
+  .rounded(12)
+  .shadow.md()
+  .padding.all(24)
+  .child(
+    Fx.col([
+      Fx.text("Login").font.size(24).font.bold().center(),
+      Fx.input.email(
+        signal: email,
+        placeholder: "Email address",
+        validator: Validators.email,
+      ),
+      Fx.input.password(
+        signal: password,
+        placeholder: "Password",
+        validator: Validators.password,
+      ),
+      Fx.row([
+        Fx.checkbox(rememberMe),
+        Fx.text("Remember me"),
+      ]).gap(8),
+      Fx.button("Login")
+        .primary
+        .w(double.infinity)
+        .onTap(() => _login()),
+    ]).gap(3),
+  )
+```
+
+### Registration Form
+```dart
+final name = flux('');
+final email = flux('');
+final password = flux('');
+final confirmPassword = flux('');
+final terms = flux(false);
+
+Fx.form(
+  key: formKey,
+  child: Fx.col([
+    Fx.input.text(
+      signal: name,
+      placeholder: "Full name",
+      validator: Validators.required,
+    ),
+    Fx.input.email(
+      signal: email,
+      placeholder: "Email address",
+      validator: Validators.email,
+    ),
+    Fx.input.password(
+      signal: password,
+      placeholder: "Password",
+      validator: Validators.password,
+    ),
+    Fx.input.password(
+      signal: confirmPassword,
+      placeholder: "Confirm password",
+      validator: (value) {
+        if (value != password.value) {
+          return 'Passwords do not match';
+        }
+        return Validators.password(value);
+      },
+    ),
+    Fx.row([
+      Fx.checkbox(terms),
+      Fx.text("I agree to the terms and conditions"),
+    ]).gap(8),
+    Fx.button("Register")
+      .primary
+      .w(double.infinity)
+      .onTap(() => _register()),
+  ]).gap(3),
+)
+```
+
+### Multi-Step Form
+```dart
+final currentStep = flux(0);
+final totalSteps = 3;
+
+final step1Data = flux({'name': '', 'email': ''});
+final step2Data = flux({'phone': '', 'address': ''});
+final step3Data = flux({'payment': ''});
+
+Widget _buildStepContent() {
+  switch (currentStep.value) {
+    case 0:
+      return _buildStep1();
+    case 1:
+      return _buildStep2();
+    case 2:
+      return _buildStep3();
+    default:
+      return Fx.text("Unknown step");
+  }
+}
+
+Fx.col([
+  // Progress indicator
+  Fx.row([
+    ...List.generate(totalSteps, (index) => 
+      Fx.box()
+        .w(40)
+        .h(4)
+        .bg(index <= currentStep.value ? Colors.blue : Colors.grey)
+        .rounded(2)
+    ),
+  ]).gap(4),
+  
+  // Step content
+  _buildStepContent().expanded(),
+  
+  // Navigation buttons
+  Fx.row([
+    if (currentStep.value > 0)
+      Fx.button("Previous").outline.onTap(() => currentStep.value--),
+    
+    Fx.box().expanded(),
+    
+    if (currentStep.value < totalSteps - 1)
+      Fx.button("Next").primary.onTap(() => currentStep.value++),
+    else
+      Fx.button("Submit").primary.onTap(() => _submit()),
+  ]).gap(8),
+]).gap(4)
+```
+
+## 🔧 Custom Validators
+
+### Creating Custom Validators
+```dart
+class CustomValidators {
+  static String? strongPassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Password is required';
+    }
+    
+    if (value.length < 8) {
+      return 'Password must be at least 8 characters';
+    }
+    
+    if (!value.contains(RegExp(r'[A-Z]'))) {
+      return 'Password must contain at least one uppercase letter';
+    }
+    
+    if (!value.contains(RegExp(r'[a-z]'))) {
+      return 'Password must contain at least one lowercase letter';
+    }
+    
+    if (!value.contains(RegExp(r'[0-9]'))) {
+      return 'Password must contain at least one number';
+    }
+    
+    return null;
+  }
+  
+  static String? username(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Username is required';
+    }
+    
+    if (value.length < 3) {
+      return 'Username must be at least 3 characters';
+    }
+    
+    if (!RegExp(r'^[a-zA-Z0-9_]+$').hasMatch(value)) {
+      return 'Username can only contain letters, numbers, and underscores';
+    }
+    
+    if (value.startsWith('_') || value.endsWith('_')) {
+      return 'Username cannot start or end with underscore';
+    }
+    
+    return null;
+  }
+}
+
+// Usage
+Fx.input.password(
+  signal: password,
+  placeholder: "Enter password",
+  validator: CustomValidators.strongPassword,
+)
+```
+
+### Async Validators
+```dart
+Future<String?> checkEmailAvailability(String email) async {
+  try {
+    final response = await Fx.http.get('/api/check-email?email=$email');
+    if (response.statusCode == 200) {
+      final data = response.data;
+      if (data['available'] == false) {
+        return 'Email is already taken';
+      }
+    }
+    return null;
+  } catch (e) {
+    return 'Error checking email availability';
+  }
+}
+
+// Usage with async validation
+final emailAvailability = flux<String?>(null);
+
+Fx.input.email(
+  signal: email,
+  placeholder: "Enter your email",
+  validator: (value) async {
+    final basicValidation = Validators.email(value);
+    if (basicValidation != null) return basicValidation;
+    
+    final availabilityCheck = await checkEmailAvailability(value!);
+    return availabilityCheck;
+  },
+)
+```
+
+## 🎯 Form State Management
+
+### Form Controller
+Create a reusable form controller:
+
+```dart
+class LoginFormController extends FluxController {
+  final email = flux('');
+  final password = flux('');
+  final isLoading = flux(false);
+  final error = flux<String?>(null);
+  
+  final formKey = fluxy.FormKey();
+  
+  Future<void> login() async {
+    if (!formKey.currentState!.validate()) return;
+    
+    isLoading.value = true;
+    error.value = null;
+    
+    try {
+      final response = await Fx.http.post('/api/login', body: {
+        'email': email.value,
+        'password': password.value,
+      });
+      
+      if (response.statusCode == 200) {
+        // Navigate to home
+        Fx.to('/home');
+      } else {
+        error.value = 'Invalid credentials';
+      }
+    } catch (e) {
+      error.value = e.toString();
+    } finally {
+      isLoading.value = false;
+    }
+  }
+  
+  void reset() {
+    formKey.currentState?.reset();
+    email.value = '';
+    password.value = '';
+    error.value = null;
+  }
+}
+```
+
+### Using Form Controller
+```dart
+class LoginScreen extends StatelessWidget {
+  final controller = Get.put(LoginController());
+  
+  @override
+  Widget build(BuildContext context) {
+    return Fx.col([
+      Fx.text("Login").font.size(24).font.bold().center(),
+      
+      Fx.form(
+        key: controller.formKey,
+        child: Fx.col([
+          Fx.input.email(
+            signal: controller.email,
+            placeholder: "Email address",
+            validator: Validators.email,
+          ),
+          Fx.input.password(
+            signal: controller.password,
+            placeholder: "Password",
+            validator: Validators.password,
+          ),
+        ]).gap(3),
+      ),
+      
+      if (controller.error.value != null)
+        Fx.text(controller.error.value!).color(Colors.red),
+      
+      Fx.button("Login")
+        .primary
+        .w(double.infinity)
+        .loading(controller.isLoading.value)
+        .onTap(() => controller.login()),
+    ]).gap(4);
+  }
+}
+```
+
+## 🎯 Best Practices
+
+### 1. Use Reactive Form State
+```dart
+// Good: Reactive validation
+final isValid = fluxComputed(() => 
+  email.value.isNotEmpty && password.value.length >= 6
+);
+
+Fx.button("Submit").enabled(isValid.value)
+
+// Avoid: Manual validation checks
+Fx.button("Submit").onTap(() {
+  if (email.value.isNotEmpty && password.value.length >= 6) {
+    // Submit
+  }
+})
+```
+
+### 2. Provide Clear Error Messages
+```dart
+// Good: Specific error messages
+Validators.custom((value) {
+  if (value!.length < 8) {
+    return 'Password must be at least 8 characters long';
+  }
+  return null;
+})
+
+// Avoid: Generic error messages
+Validators.custom((value) {
+  if (value!.length < 8) {
+    return 'Invalid password';
+  }
+  return null;
+})
+```
+
+### 3. Use Form Keys for Validation
+```dart
+// Good: Use form key for validation
+final formKey = fluxy.FormKey();
+
+Fx.form(
+  key: formKey,
+  child: [...],
+)
+
+// Avoid: Manual validation
+Fx.button("Submit").onTap(() {
+  if (email.value.isNotEmpty && password.value.length >= 6) {
+    // Submit
+  }
+})
+```
+
+This form system provides everything you need to build complex, validated forms with Fluxy!

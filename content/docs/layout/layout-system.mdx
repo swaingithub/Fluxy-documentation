@@ -1,0 +1,404 @@
+---
+title: Layout System
+description: Complete guide to Fluxy's layout system with responsive design and layout primitives.
+---
+
+# Layout System
+
+Fluxy provides a comprehensive layout system that makes building responsive, complex layouts simple and intuitive. From basic containers to advanced responsive grids, everything is designed to work together seamlessly.
+
+## 🏗️ Core Layout Primitives
+
+### Fx.box() - Universal Container
+The most versatile layout primitive - a blank canvas for any layout:
+
+```dart
+Fx.box()
+  .w(200)
+  .h(100)
+  .bg(Colors.blue)
+  .child(Fx.text("Content"))
+```
+
+### Fx.row() - Horizontal Layout
+Arrange children horizontally:
+
+```dart
+Fx.row([
+  Fx.box().bg(Colors.red).w(50).h(50),
+  Fx.box().bg(Colors.green).w(50).h(50),
+  Fx.box().bg(Colors.blue).w(50).h(50),
+])
+  .gap(16)
+  .mainAxisAlignment.center()
+```
+
+### Fx.col() - Vertical Layout
+Arrange children vertically:
+
+```dart
+Fx.col([
+  Fx.box().bg(Colors.red).w(100).h(50),
+  Fx.box().bg(Colors.green).w(100).h(50),
+  Fx.box().bg(Colors.blue).w(100).h(50),
+])
+  .gap(8)
+  .crossAxisAlignment.center()
+```
+
+### Fx.stack() - Layered Layout
+Stack widgets on top of each other:
+
+```dart
+Fx.stack([
+  Fx.image("https://example.com/background.jpg")
+    .w(200).h(200),
+  Fx.text("Overlay Text")
+    .center()
+    .color(Colors.white)
+    .font.size(24)
+    .font.bold(),
+])
+```
+
+## 🎯 Grid System
+
+### Fx.grid.count() - Fixed Column Grid
+Create a grid with a specific number of columns:
+
+```dart
+Fx.grid.count(2, [
+  Fx.box().bg(Colors.red).h(100),
+  Fx.box().bg(Colors.blue).h(100),
+  Fx.box().bg(Colors.green).h(100),
+  Fx.box().bg(Colors.yellow).h(100),
+  Fx.box().bg(Colors.purple).h(100),
+  Fx.box().bg(Colors.orange).h(100),
+])
+  .gap(16)
+```
+
+### Fx.grid.extent() - Fixed Size Grid
+Create a grid with fixed tile size:
+
+```dart
+Fx.grid.extent(100, [
+  Fx.box().bg(Colors.red).h(100),
+  Fx.box().bg(Colors.blue).h(80),
+  Fx.box().bg(Colors.green).h(120),
+  Fx.box().bg(Colors.yellow).h(100),
+])
+  .gap(12)
+```
+
+### Fx.grid.auto() - Adaptive Grid
+Create a grid that automatically adjusts columns based on available width:
+
+```dart
+Fx.grid.auto(
+  minChildWidth: 100,
+  children: [
+    Fx.box().bg(Colors.red).h(80),
+    Fx.box().bg(Colors.blue).h(100),
+    Fx.box().bg(Colors.green).h(60),
+    Fx.box().bg(Colors.yellow).h(90),
+    Fx.box().bg(Colors.purple).h(110),
+  ],
+  gap: 16,
+)
+```
+
+## 📱 Responsive Layout
+
+### Responsive Modifiers
+Apply different styles based on screen size:
+
+```dart
+Fx.box()
+  .w(100)              // Mobile (default)
+  .md.w(200)           // Tablet
+  .lg.w(300)           // Desktop
+  .xl.w(400)           // Large desktop
+```
+
+### Fx.layout() - Adaptive Layout
+Different layouts for different screen sizes:
+
+```dart
+Fx.layout(
+  mobile: Fx.col([
+    Fx.text("Mobile Layout"),
+    Fx.button("Mobile Button"),
+  ]),
+  tablet: Fx.row([
+    Fx.text("Tablet Layout"),
+    Fx.button("Tablet Button"),
+  ]),
+  desktop: Fx.grid.count(2, [
+    Fx.text("Desktop Layout"),
+    Fx.button("Desktop Button"),
+  ]),
+)
+```
+
+### Responsive Values
+Get values that change based on screen size:
+
+```dart
+final gap = Fx.responsiveValue(context,
+  xs: 8,    // Mobile
+  sm: 12,   // Small tablet
+  md: 16,   // Tablet
+  lg: 24,   // Desktop
+  xl: 32,   // Large desktop
+);
+
+Fx.col([...]).gap(gap)
+```
+
+## 🔧 Layout Modifiers
+
+### Size Modifiers
+```dart
+Fx.box()
+  .w(100)              // Width
+  .h(100)              // Height
+  .size(100, 100)      // Width and height
+  .minW(100)           // Minimum width
+  .minH(100)           // Minimum height
+  .maxW(200)           // Maximum width
+  .maxH(200)           // Maximum height
+  .expanded()          // Take available space
+  .shrink()            // Shrink to fit content
+  .aspectRatio(16/9)   // Aspect ratio
+```
+
+### Alignment Modifiers
+```dart
+Fx.box()
+  .center()            // Center content
+  .left()              // Align left
+  .right()             // Align right
+  .top()               // Align top
+  .bottom()            // Align bottom
+  .start()             // Align start
+  .end()               // Align end
+```
+
+### Flex Modifiers
+```dart
+Fx.row([
+  Fx.box().w(50),
+  Fx.box().expanded(), // Takes remaining space
+  Fx.box().w(50),
+])
+  .mainAxisAlignment.center()  // Horizontal alignment
+  .crossAxisAlignment.center()  // Vertical alignment
+```
+
+## 🎯 Advanced Layout Patterns
+
+### Card Layout
+```dart
+Fx.box()
+  .bg(Colors.white)
+  .rounded(12)
+  .shadow.md()
+  .padding.all(16)
+  .child(
+    Fx.col([
+      Fx.text("Card Title").font.size(18).font.bold(),
+      Fx.text("Card description goes here").color(Colors.grey),
+      Fx.row([
+        Fx.button("Cancel").outline,
+        Fx.button("Submit").primary,
+      ]).gap(8).justify.end(),
+    ]).gap(12)
+  )
+```
+
+### Sidebar Layout
+```dart
+Fx.row([
+  // Sidebar
+  Fx.box()
+    .w(200)
+    .bg(Colors.grey[100])
+    .child(
+      Fx.col([
+        Fx.text("Sidebar").font.size(16).font.bold(),
+        Fx.text("Item 1"),
+        Fx.text("Item 2"),
+        Fx.text("Item 3"),
+      ]).gap(8)
+    ),
+  
+  // Main content
+  Fx.box()
+    .expanded()
+    .bg(Colors.white)
+    .child(
+      Fx.text("Main Content").center()
+    ),
+])
+```
+
+### Header Layout
+```dart
+Fx.col([
+  // Header
+  Fx.box()
+    .h(60)
+    .bg(Colors.blue)
+    .child(
+      Fx.row([
+        Fx.text("App Title").color(Colors.white).font.bold(),
+        Fx.box().expanded(),
+        Fx.button("Menu").outline,
+      ]).center().padding.horizontal(16)
+    ),
+  
+  // Content
+  Fx.box()
+    .expanded()
+    .child(
+      Fx.text("Content").center()
+    ),
+])
+```
+
+### Footer Layout
+```dart
+Fx.col([
+  // Content
+  Fx.box()
+    .expanded()
+    .child(
+      Fx.text("Main Content").center()
+    ),
+  
+  // Footer
+  Fx.box()
+    .h(60)
+    .bg(Colors.grey[200])
+    .child(
+      Fx.row([
+        Fx.text("© 2024 App"),
+        Fx.box().expanded(),
+        Fx.text("Privacy Policy"),
+      ]).center().padding.horizontal(16)
+    ),
+])
+```
+
+## 🎯 Layout Utilities
+
+### Gap and Spacing
+```dart
+Fx.col([
+  Fx.box().bg(Colors.red).h(50),
+  Fx.box().bg(Colors.blue).h(50),
+  Fx.box().bg(Colors.green).h(50),
+]).gap(16) // Gap between items
+
+Fx.row([
+  Fx.box().bg(Colors.red).w(50),
+  Fx.box().bg(Colors.blue).w(50),
+  Fx.box().bg(Colors.green).w(50),
+]).gap(8) // Gap between items
+```
+
+### Divider
+```dart
+Fx.col([
+  Fx.text("Section 1"),
+  Fx.divider(), // Horizontal divider
+  Fx.text("Section 2"),
+])
+```
+
+### Scrollable Layout
+```dart
+Fx.col([
+  Fx.text("Header").font.size(20).font.bold(),
+  Fx.box()
+    .expanded()
+    .child(
+      Fx.col([
+        Fx.text("Item 1"),
+        Fx.text("Item 2"),
+        Fx.text("Item 3"),
+        Fx.text("Item 4"),
+        Fx.text("Item 5"),
+      ]).gap(8)
+    ),
+]).scroll() // Make column scrollable
+```
+
+## 🔧 Responsive Breakpoints
+
+### Default Breakpoints
+Fluxy uses these default breakpoints:
+- **xs**: 0px - 575px (Mobile)
+- **sm**: 576px - 768px (Small Tablet)
+- **md**: 769px - 992px (Tablet)
+- **lg**: 993px - 1200px (Desktop)
+- **xl**: 1201px+ (Large Desktop)
+
+### Custom Breakpoints
+```dart
+// Use responsive modifiers with custom breakpoints
+Fx.box()
+  .w(100)              // < 576px
+  .sm.w(150)           // 576px - 768px
+  .md.w(200)           // 769px - 992px
+  .lg.w(250)           // 993px - 1200px
+  .xl.w(300)           // > 1200px
+```
+
+## 🎯 Performance Tips
+
+### Use Expanded Wisely
+```dart
+// Good: Only one expanded per row/col
+Fx.row([
+  Fx.box().w(100),
+  Fx.box().expanded(), // Takes remaining space
+  Fx.box().w(100),
+])
+
+// Avoid: Multiple expanded in same direction
+Fx.row([
+  Fx.box().expanded(), // This will conflict
+  Fx.box().expanded(), // This will conflict
+])
+```
+
+### Minimize Layout Nesting
+```dart
+// Good: Use appropriate layout primitive
+Fx.grid.count(2, [...])
+
+// Avoid: Excessive nesting
+Fx.col([
+  Fx.row([
+    Fx.col([...]),
+    Fx.col([...]),
+  ]),
+])
+```
+
+### Use ConstrainedBox for Performance
+```dart
+// Good: Constrain large layouts
+Fx.box()
+  .constrained(maxWidth: 1200)
+  .child(
+    Fx.grid.count(3, [...])
+  )
+
+// Avoid: Unconstrained large grids
+Fx.grid.count(6, [...]) // May cause performance issues
+```
+
+This layout system provides everything you need to build responsive, performant layouts with Fluxy!

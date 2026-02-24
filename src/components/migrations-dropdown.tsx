@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const migrations = [
+  { version: 'v1.0.1', href: '/docs/migration/migration-1-0-1', description: 'Enhanced Fluxy State System & Ultra-lean Core' },
   { version: 'v1.0.0', href: '/docs/migration/migration-1-0-0', description: 'Modular Architecture & Multi-Package Ecosystem' },
   { version: 'v0.2.6', href: '/docs/migration/migration-0-2-6', description: 'Industrial Log Professionalization & Semantic Tags' },
   { version: 'v0.2.5', href: '/docs/migration/migration-0-2-5', description: 'The Platform Era & Auto-Registration' },

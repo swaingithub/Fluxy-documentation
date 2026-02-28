@@ -9,6 +9,8 @@
     "state-management",
     "reactive-engine",
     "reactivity",
+    "advanced-control",
+    "i18n",
     "---Patterns---",
     "workflow",
     "dependency-injection",

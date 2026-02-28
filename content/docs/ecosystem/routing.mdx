@@ -123,6 +123,24 @@ Use the `Fluxy` class for a high-level API or `FluxyRouter` for scoped control.
 - `Fluxy.back()`: Pop the current route.
 - **Scoped Navigation**: All methods accept a `scope` parameter to control specific `FxOutlet` navigators.
 
+## Organization: Centralized vs Isolated
+
+Fluxy is flexible about where your routes live. Choose the pattern that fits your team size:
+
+### 1. Centralized (Recommended for small apps)
+Define all routes in a single list (e.g., `lib/core/routes.dart`). This provides a "Master Map" that is easy to search.
+
+### 2. Isolated (Recommended for enterprise apps)
+Each feature manages its own routes in a `feature.route.dart` file. This isolation allows large teams to add new pages without touching a shared configuration file.
+
 ```dart
-Fluxy.to("/settings", scope: "dashboard");
+// Example of Isolated Routing
+final routes = [
+  ...CatalogRoutes.all,
+  ...AuthRoutes.all,
+  ...ProfileRoutes.all,
+];
 ```
+
+> [!IMPORTANT]
+> Regardless of the organization, always use the **dot naming convention** (`catalog.route.dart`) for route files to distinguish them from standard widgets.

@@ -1,0 +1,98 @@
+---
+title: Presence (Collaboration)
+description: Real-time user states, online status, and typing indicators.
+---
+
+# Presence (Collaboration)
+
+The `fluxy_presence` plugin provides real-time user-state tracking. This is essential for collaborative applications where you need to show who is online, who is in the same document/room, and who is currently typing.
+
+## Installation
+
+Add the dependency to your `pubspec.yaml`:
+
+```yaml
+dependencies:
+  fluxy_presence: ^1.0.0
+```
+
+Or use the Fluxy CLI:
+
+```bash
+fluxy module add presence
+```
+
+---
+
+## Key Features
+
+- **Online List**: Reactive signal for all active users in a real-time session.
+- **Typing Indicators**: Track when other users are typing messages or editing data.
+- **Live Lifecycle**: Automatically handles join, leave, and disconnect events.
+- **WebSocket Integration**: Wires directly into `fluxy_websocket` for zero-latency updates.
+
+---
+
+## Usage
+
+### 1. Initialize
+Presence typically requires an active real-time connection.
+
+```dart
+final presence = Fluxy.register(FluxyPresencePlugin());
+```
+
+### 2. Monitor Online Users
+The `users` signal is an `ObservableList` of `FluxyUserPresence` objects.
+
+```dart
+Fx(() {
+  return Fx.row([
+    Fx.text('Who is here?').font.bold(),
+    ...presence.users.value.map((user) => 
+      Fx.avatar(user.avatar).tooltip(user.name)
+    )
+  ]);
+});
+```
+
+### 3. Typing Indicators
+Broadcast your own typing status and listen for others.
+
+```dart
+// Local user typing
+Fx.input(
+  signal: chatMessage,
+  onChanged: (val) => presence.setTyping(val.isNotEmpty),
+);
+
+// Global typing status
+Fx(() {
+  if (presence.typingUsers.value.isNotEmpty) {
+    return Fx.text('Someone is typing...').italic().muted();
+  }
+  return const SizedBox.shrink();
+});
+```
+
+---
+
+## API Reference
+
+### Signals
+| Signal | Type | Description |
+| :--- | :--- | :--- |
+| `users` | `Flux<List<User>>` | Live list of users in the current room. |
+| `typingUsers` | `Flux<Set<String>>` | Set of User IDs that are currently typing. |
+| `isLocalTyping` | `Flux<bool>` | Local reactive state for the current device's typing status. |
+
+### Methods
+- `setTyping(bool typing)`: Broadcasts your typing state across the WebSocket.
+- `isUserTyping(String userId)`: Checks if a specific user is currently active.
+
+---
+
+## Stability Features
+- **Auto-Reset**: Typing indicators automatically "time out" after 3 seconds of inactivity to prevent stale states if a user closes the app mid-sentence.
+- **Batch Updates**: Presence lists are handled as reactive atomic updates to prevent UI flicker.
+- **Type-Safety**: Messages are validated against internal schemas before triggering reactive updates.

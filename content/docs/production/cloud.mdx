@@ -1,0 +1,64 @@
+---
+title: Cloud & CI/CD
+description: Scaffolding GitHub Actions and deployment pipelines with the Fluxy CLI.
+---
+
+# Cloud & CI/CD
+
+Fluxy helps you move from "Local Development" to "Global Production" with one command. The CLI includes automated scaffolding for continuous integration and delivery pipelines.
+
+---
+
+## Setting up GitHub Actions
+
+You can project-configure your GitHub workflows for Android and iOS builds in seconds.
+
+### Android Build Setup
+```bash
+fluxy cloud build android
+```
+**What this does:**
+- Creates `.github/workflows/fluxy_android_build.yml`.
+- Configures JDK 17 and Flutter stable.
+- Sets up an automatic release APK build on every push to `main`.
+- Uploads the resulting APK as a GitHub artifact.
+
+### iOS Build Setup
+```bash
+fluxy cloud build ios
+```
+**What this does:**
+- Creates `.github/workflows/fluxy_ios_build.yml`.
+- Configures the macOS runner for iOS compilation.
+- Prepares a release IPA (non-codesigned by default for internal testing).
+
+---
+
+## Deployment Scaffolding
+
+Generate a deployment pipeline that can be triggered manually via a "Workflow Dispatch" on GitHub.
+
+```bash
+fluxy cloud deploy
+```
+
+**Key Features:**
+- **Track Selection**: Choose between Alpha, Beta, or Production tracks during manual trigger.
+- **Fastlane Ready**: Scaffolds the logic required to connect to Play Store or App Store Connect.
+
+---
+
+## Why use Fluxy Cloud CLI?
+
+1.  **Industrial Standards**: We use the exact environment versions (Java, Ruby, Flutter) tested for Fluxy compatibility.
+2.  **Infrastructure as Code**: Your build process lives in your repository, making it reproducible for the whole team.
+3.  **Audit Logs**: Failed builds are logged according to Fluxy's semantic logging standards for easier debugging.
+
+---
+
+## Best Practices
+
+- **Secrets Management**: Never commit your `.jks` keys or `.p12` certificates. Store them in GitHub Repository Secrets.
+- **Artifact Expiry**: By default, GitHub keeps build artifacts for 90 days. We recommend downloading and testing your releases immediately.
+
+**Workflow Integration:** After running the cloud commands, simply `git push` to your repository, and head to the **Actions** tab on GitHub to see your industrial pipeline in motion.

@@ -1,0 +1,110 @@
+---
+title: Master Feature Catalog
+description: Complete exhaustive encyclopedia of every Fluxy feature, component, and utility.
+---
+
+# Fluxy Master Feature Catalog
+
+This is the Ultimate Index of Fluxy. Every single tool in the framework is listed here with its purpose and where to find detailed documentation.
+
+---
+
+## 1. State & Reactivity (Fluxy Core)
+The fundamental building blocks for your application's logic.
+
+| Feature | Type | Purpose | Documentation |
+| :--- | :--- | :--- | :--- |
+| **`flux(initial)`** | Signal | Define a reactive state unit. | [State Basics](/docs/fundamentals/state-management) |
+| **`persist: true`** | Modifier | Automatically save/load signal state to storage. | [Persistence](/docs/fundamentals/state-management#persistence) |
+| **`computed(() => ...)`** | Signal | Derived state that cached and updates automatically. | [Reactivity](/docs/fundamentals/reactive-engine) |
+| **`FluxEffect(() => ...)`**| Effect | Run side-effects (logging, API calls) when state changes. | [Effects](/docs/fundamentals/core-concepts#effects) |
+| **`batch(() => ...)`** | Utility | Group multiple state updates into one UI frame. | [Performance](/docs/fundamentals/performance) |
+| **`fluxSelector(obj, key)`**| Signal | Observe a specific property of a complex object. | [Selectors](/docs/fundamentals/state-management#selectors) |
+| **`fluxWorker(() => ...)`**| Utility | Run heavy logic in background micro-tasks. | [Workers](/docs/fundamentals/architecture) |
+| **`fluxField(label)`** | Signal | Specialized signal for form inputs with validation. | [Forms](/docs/forms) |
+| **`fluxList([])`** | Collection| Reactive list with specialized update methods. | [Advanced Control](/docs/fundamentals/advanced-control#reactive-lists) |
+| **`fluxHistory(val)`**| Collection| State with built-in Undo/Redo capability. | [Advanced Control](/docs/fundamentals/advanced-control#state-history-undo--redo) |
+| **`.tr` / `.trText()`**| Signal | Reactive internationalization extension. | [i18n Guide](/docs/fundamentals/i18n) |
+
+
+---
+
+## 2. UI & Styling (The Fx DSL)
+The chainable modifiers and premium components for the visual layer of your app.
+
+| Feature | Purpose | Documentation |
+| :--- | :--- | :--- |
+| **`Fx.text("...")`** | Semantic typography with `.bold()`, `.h1()`, `.muted()`. | [Typography](/docs/style#typography) |
+| **`Fx.box()`** | Flexible container with `.bg()`, `.rounded()`, `.shadow()`. | [Containers](/docs/layout) |
+| **`Fx.col() / Fx.row()`**| Layout flexboxes with `.gap()` and `.align()`. | [Flex Layout](/docs/layout#flex) |
+| **`Fx.layout()`** | Multi-device switcher (Mobile/Tablet/Desktop). | [Responsive](/docs/layout#responsive) |
+| **`Fx.reveal()`** | Staggered entrance animations for content. | [Animations](/docs/style#animations) |
+| **`Fx.badge()`** | Standard reactive notification badge. | [Components](/docs/components/feedback) |
+| **`Fx.icon()`** | Simplified icon handler with reactive color/size. | [Icons](/docs/style#icons) |
+| **`Fx.loader()`** | Global industrial loading indicators. | [Feedback](/docs/components/feedback) |
+| **`Fx.toast`** | `success()`, `error()`, `info()` global alerts. | [Feedback](/docs/components/feedback#toast) |
+| **`Fx.field()`** | Self-binding input field (No controllers needed). | [Forms](/docs/forms) |
+
+---
+
+## 3. Industrial Hardening (Stability Suite)
+Professional tools for mission-critical production stability.
+
+| Feature | Key | Purpose | Documentation |
+| :--- | :--- | :--- | :--- |
+| **Kill-Switch** | `Fx.feature()` | Remotely disable broken features. | [Hardening Guide](/docs/production/hardening#1-emergency-kill-switch-feature-toggles) |
+| **Observability** | `FluxyObservability`| Audit signal churn and frame budgets. | [Hardening Guide](/docs/production/hardening#2-x-ray-observability-transparency) |
+| **Graceful Sleep** | `FluxyResource` | Battery-saving hardware management. | [Hardening Guide](/docs/production/hardening#3-graceful-sleep-resource-efficiency) |
+| **Airbag System** | `FluxyErrorBoundary`| Catch crashes and perform self-healing. | [Hardening Guide](/docs/production/hardening#4-stability-airbag-error-boundaries) |
+| **Secure Vault** | `FluxyVault` | Level-2 XOR scrambled encryption. | [Hardening Guide](/docs/production/hardening#5-layered-security-the-vault) |
+| **Snapshots** | DevTools | Capture and restore global state in one click. | [DevTools Guide](/docs/production/devtools#state-snapshots-time-travel) |
+
+---
+
+## 4. Debug & Inspection (Developer Experience)
+Tools to accelerate local development and architectural audits.
+
+| Feature | Type | Purpose | Documentation |
+| :--- | :--- | :--- | :--- |
+| **`Fluxy.debug()`** | Utility | Enable the floating inspector panel. | [DevTools Guide](/docs/production/devtools) |
+| **`FluxyDebug`** | Widget | Wrap specific parts of the app for localized inspection. | [DevTools Guide](/docs/production/devtools#method-b-explicit-widget) |
+| **`FluxyDevTools`** | Engine | The core premium inspection layer. | [DevTools Guide](/docs/production/devtools) |
+
+---
+
+## 4. Modular Ecosystem (Plugins)
+Advanced modules you can add as your app grows.
+
+| Module | Purpose | Documentation |
+| :--- | :--- | :--- |
+| **`fluxy_auth`** | Session, Token Rotation, MFA. | [Auth Docs](/docs/plugins/auth) |
+| **`fluxy_geo`** | Background GPS & Geofencing. | [Geo Docs](/docs/plugins/geo) |
+| **`fluxy_sync`** | Offline-First Data Sync. | [Sync Docs](/docs/plugins/sync) |
+| **`fluxy_websocket`**| Real-time streams. | [WS Docs](/docs/plugins/websocket) |
+| **`fluxy_presence`** | User Online/Offline status. | [Presence](/docs/plugins/presence) |
+| **`fluxy_haptics`** | Sensory tactile feedback. | [Haptics](/docs/plugins/haptics) |
+| **`fluxy_device`** | Hardware & App Meta info. | [Device](/docs/plugins/device) |
+| **`fluxy_logger`** | Semantic audit trails. | [Logger](/docs/plugins/logger) |
+| **`fluxy_biometric`**| FaceID / Fingerprint. | [Biometric](/docs/plugins/biometric) |
+
+---
+
+## 5. Global Registry & DI
+How to manage the lifecycle of your application.
+
+| Utility | Purpose |
+| :--- | :--- |
+| **`Fluxy.init()`** | Bootstraps the framework in main.dart. |
+| **`Fluxy.register(T)`**| Register a Controller/Plugin to the global scope. |
+| **`Fluxy.use<T>()`** | Retrieve a registered module from anywhere. |
+| **`Fluxy.autoRegister()`**| Scans the app for standard Fluxy modules. |
+| **`Fx.platform`** | Unified access to all connected platform plugins. |
+| **`fluxy cloud`** | CLI Engine | Scaffold GitHub Actions for Android/iOS. | [Cloud Guide](/docs/production/cloud) |
+
+
+---
+
+## Other Resources
+- [The Fluxy Cookbook](/docs/cookbook): Common solutions for real problems.
+- [Implementation Patterns](/docs/architecture/patterns): Where to put your code files.
+- [GitHub Discussions](https://github.com/swaingithub/fluxy): Ask the community.

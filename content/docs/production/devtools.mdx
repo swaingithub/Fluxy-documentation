@@ -1,0 +1,148 @@
+---
+title: DevTools & Debugging
+description: Real-time architectural inspection, state time-travel, and snapshots.
+---
+
+# DevTools & Debugging
+
+Fluxy includes a premium, industrial-grade **Architectural Inspector** built directly into the framework. This isn't just a logger; it's a live window into your application's brain.
+
+---
+
+## Activation
+
+You can enable the DevTools in your `main.dart` using one of two methods:
+
+### Method A: Static Helper (Recommended)
+This is the fastest way to wrap your entire application.
+
+```dart
+void main() {
+  runApp(
+    Fluxy.debug( // Simple injection
+      child: FluxyApp(...),
+    ),
+  );
+}
+```
+
+### Method B: Explicit Widget
+Use this if you only want the inspector available on specific pages.
+
+```dart
+return FluxyDebug( // Explicit wrapper
+  child: MyPage(),
+);
+```
+
+---
+
+## State Snapshots (Time-Travel)
+
+The State Snapshot feature is an industrial-grade "Time Machine" for your application. It allows you to freeze the entire state of your application and return to it later.
+
+### Why use Snapshots?
+1. **Bug Reproduction**: Capture the app state right before an error to avoid re-doing complex steps.
+2. **A/B Testing**: Instantly switch between "Dark Mode + Data" and "Light Mode + Empty" to verify UI adaptability.
+3. **Session Persistence**: Save a user's entire workspace state and restore it across devices.
+
+### 1. Requirements for Snapshots
+To ensure a signal is captured by the engine, it must meet these criteria:
+*   **Unique Labels**: Only signals with a `label` parameter are captured. This filters out internal framework noise.
+*   **JSON Compatibility**: Use serializable types (String, num, bool, List, Map) or implement `toJson`.
+*   **Flux Primitives**: Always use `FluxList`, `FluxMap`, or `FluxHistory` for complex data structures.
+
+```dart
+// ✅ Captured (Has label)
+final score = flux(100, label: 'user_score');
+
+// ❌ Ignored (No label)
+final temp = flux(true);
+```
+
+### 2. Usage via DevTools UI
+1. Open the DevTools via the Floating Action Button.
+2. Navigate to the **Snapshots** tab.
+3. Click **[ Capture ]** to save the state.
+4. Tap any item in the list to **Restore** that exact moment.
+
+### 3. Usage via Code (Programmatic)
+You can build custom "Save/Restore" logic directly in your application using the `FluxRegistry` utility.
+
+**Capture Syntax:**
+```dart
+// returns Map<String, dynamic>
+final snapshot = FluxRegistry.captureSnapshot();
+```
+
+**Restore Syntax:**
+```dart
+// Accepts the map previously captured
+FluxRegistry.restoreSnapshot(snapshot);
+```
+
+### 4. Real-World Example: The Checkpoint System
+
+Here is a full implementation of a "Save State" feature for a complex form or game.
+
+```dart
+class GameController {
+  // Requirement 1: Use Labels
+  final score = flux(0, label: 'game_score');
+  final playerName = flux('Guest', label: 'player_name');
+  
+  // Requirement 2: Use Flux Collections for deep data
+  final inventory = fluxList<String>(['Sword'], label: 'player_items');
+}
+
+class GameScreen extends StatelessWidget {
+  final state = GameController();
+  
+  // Local variable to hold the snapshot in memory
+  Map<String, dynamic>? _lastCheckpoint;
+
+  @override
+  Widget build(BuildContext context) {
+    return Fx.col(
+      children: [
+        // 1. Reactive UI
+        Fx(() => Fx.text("Score: ${state.score.value}")),
+        
+        // 2. Control Buttons
+        Fx.row(
+          children: [
+            Fx.primaryButton('Create Checkpoint', onTap: () {
+              // CAPTURE: Freeze everyone (score, name, inventory)
+              _lastCheckpoint = FluxRegistry.captureSnapshot();
+              Fx.toast.success("Checkpoint Created!");
+            }),
+
+            Fx.outlineButton('Load Checkpoint', onTap: () {
+               if (_lastCheckpoint != null) {
+                 // RESTORE: App jumps back in time instantly
+                 FluxRegistry.restoreSnapshot(_lastCheckpoint!);
+                 Fx.toast.info("Restored to Checkpoint");
+               }
+            }),
+          ]
+        ),
+      ]
+    );
+  }
+}
+```
+
+---
+
+## Core Inspector Tabs
+
+| Tab | Purpose |
+| :--- | :--- |
+| **Fluxes** | Search and view the current value of every Signal in the app. You can even toggle booleans directly! |
+| **DI** | See exactly which Plugins, Controllers, and Repositories are registered in the global registry. |
+| **Network** | A live monitor of all `FluxyHttp` requests, responses, and status codes. |
+| **Stability** | Review the "Safety Kernel" logs to see where Fluxy automatically repaired your layout or state. |
+| **Timeline** | A scrolling live feed of every state change happening in your application right now. |
+
+> [!TIP]
+> **Industrial Performance**: The DevTools are designed to be extremely lightweight. When the panel is closed, the overhead is near zero, making it safe to leave active during your entire development cycle.

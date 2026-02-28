@@ -5,7 +5,7 @@ description: Install Fluxy and create your first project in minutes.
 
 # Quick Start
 
-Get started with Fluxy **v1.0.0** modular architecture in just a few commands.
+Get started with Fluxy **v1.1.0** modular architecture in just a few commands.
 
 ## Installation
 
@@ -23,9 +23,9 @@ Initialize a new Fluxy project structure. This command sets up the official `cor
 fluxy init my_awesome_app
 ```
 
-## Adding Modules (v1.0.0)
+## Adding Modules (v1.1.0)
 
-Fluxy v1.0.0 is modular. Add only the features you need using the `module` command:
+Fluxy v1.1.0 is modular. Add only the features you need using the `module` command:
 
 ```bash
 # Core framework is always included
@@ -38,7 +38,19 @@ fluxy module add forms         # Forms and validation
 fluxy module add analytics     # Analytics and tracking
 ```
 
-## Your First App (v1.0.0)
+## Workspace Management
+
+For modular projects, use Melos to manage your packages:
+
+```bash
+# 1. Activate Melos
+dart pub global activate melos
+
+# 2. Bootstrap workspace
+fluxy melos bootstrap
+```
+
+## Your First App (v1.1.0)
 
 A professional Fluxy application with modular architecture requires initialization. Here is a minimal `main.dart` setup:
 
@@ -59,12 +71,12 @@ void main() async {
   
   runApp(
     FluxyApp(
-      title: "Hello Fluxy v1.0.0",
+      title: "Hello Fluxy v1.1.0",
       initialRoute: FxRoute(
         path: "/",
         builder: (context, args) => Fx.center(
           child: Fx.col([
-            Fx.text("Hello Fluxy v1.0.0!")
+            Fx.text("Hello Fluxy v1.1.0!")
               .font.xxl()
               .font.bold()
               .color(Fx.primary)
@@ -88,7 +100,7 @@ void main() async {
 
 ## Using Modular Features
 
-With v1.0.0, you can use modular features like this:
+With v1.1.0, you can use modular features like this:
 
 ```dart
 // Using authentication module
@@ -116,26 +128,26 @@ Future<void> takePhoto() async {
 }
 ```
 
-## Package Structure (v1.0.0)
+## Package Structure (v1.1.0)
 
 Your `pubspec.yaml` will look like this:
 
 ```yaml
 dependencies:
   # Core Framework
-  fluxy: ^1.0.0
+  fluxy: ^1.1.0
   
   # Modular Packages (add as needed)
-  fluxy_auth: ^1.0.0         # Authentication & biometrics
-  fluxy_camera: ^1.0.0       # Camera functionality
-  fluxy_notifications: ^1.0.0 # Push notifications
-  fluxy_storage: ^1.0.0      # Data persistence
-  fluxy_forms: ^1.0.0        # Forms and validation
-  fluxy_analytics: ^1.0.0    # Analytics and tracking
-  # ... and 6 more modules
+  fluxy_auth: ^1.1.0         # Authentication & biometrics
+  fluxy_camera: ^1.1.0       # Camera functionality
+  fluxy_notifications: ^1.1.0 # Push notifications
+  fluxy_storage: ^1.1.0      # Data persistence
+  fluxy_forms: ^1.1.0        # Forms and validation
+  fluxy_analytics: ^1.1.0    # Analytics and tracking
+  # ... and 13 more modules
 ```
 
-## Benefits of v1.0.0
+## Benefits of v1.1.0
 
 - **Smaller Core**: Focused & lightweight foundation
 - **Flexible Dependencies**: Add only features you use

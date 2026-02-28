@@ -9,6 +9,15 @@
     "permissions",
     "connectivity",
     "analytics",
-    "haptics"
+    "haptics",
+    "logger",
+    "device",
+    "ota",
+    "test",
+    "websocket",
+    "sync",
+    "presence",
+    "bridge",
+    "geo"
   ]
 }

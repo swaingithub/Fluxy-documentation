@@ -7,7 +7,7 @@ description: Complete guide for upgrading from v0.2.6 to v1.0.0 modular architec
 
 Fluxy v1.0.0 introduces a **modular architecture** that splits the monolithic package into focused modules. This guide will help you migrate from v0.2.6 to v1.0.0.
 
-## 🚨 Breaking Changes
+## Breaking Changes
 
 ### 1. Modular Architecture
 The single `fluxy` package has been split into:
@@ -17,7 +17,7 @@ The single `fluxy` package has been split into:
 ### 2. Dependencies
 Several features have moved to separate packages. You'll need to add explicit dependencies for features you use.
 
-## 📋 Migration Steps
+## Migration Steps
 
 ### Step 1: Update Core Package
 Update your `pubspec.yaml`:
@@ -66,7 +66,7 @@ import 'package:fluxy_forms/fluxy_forms.dart';
 flutter pub get
 ```
 
-## 🔄 Feature Mapping
+## Feature Mapping
 
 ### Forms & Validation
 ```dart
@@ -114,7 +114,7 @@ import 'package:fluxy/fluxy.dart';
 import 'package:fluxy_storage/fluxy_storage.dart';
 ```
 
-## ✅ Compatibility Layer
+## Compatibility Layer
 
 Fluxy v1.0.0 includes a **compatibility layer** to make migration easier. Deprecated classes are still available but will show warnings:
 
@@ -126,7 +126,7 @@ class OldFluxyForms {
 }
 ```
 
-## 🎯 Benefits of Migration
+## Benefits of Migration
 
 ### 1. Smaller Core Package
 - **Before**: Monolithic package architecture
@@ -144,7 +144,7 @@ class OldFluxyForms {
 - Add/remove features without affecting core
 - Choose specific versions for each module
 
-## 🧪 Testing Your Migration
+## Testing Your Migration
 
 ### 1. Check Dependencies
 Run `flutter pub deps` to verify all dependencies are resolved correctly.
@@ -169,7 +169,7 @@ import 'package:fluxy_camera/fluxy_camera.dart';
 // Test forms, camera, etc.
 ```
 
-## 🆘 Common Issues
+## Common Issues
 
 ### Issue: Import Errors
 **Problem**: `Target of URI doesn't exist` errors
@@ -183,7 +183,7 @@ import 'package:fluxy_camera/fluxy_camera.dart';
 **Problem**: Dependency version conflicts
 **Solution**: Use `flutter pub deps` to identify and resolve conflicts
 
-## 📞 Need Help?
+## Need Help?
 
 If you encounter issues during migration:
 
@@ -192,6 +192,6 @@ If you encounter issues during migration:
 3. **Ask Community**: [GitHub Discussions](https://github.com/swaingithub/fluxy/discussions)
 4. **Report Issues**: [GitHub Issues](https://github.com/swaingithub/fluxy/issues)
 
-## 🎉 You're Done!
+## You're Done!
 
 Once you've completed these steps, your app should be running on Fluxy v1.0.0 with the modular architecture. Enjoy the smaller package size and improved maintainability!

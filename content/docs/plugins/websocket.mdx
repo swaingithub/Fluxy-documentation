@@ -1,0 +1,173 @@
+---
+title: WebSocket (Real-Time)
+description: Managed bi-directional communication with auto-reconnect and signal binding.
+---
+
+# WebSocket (Real-Time)
+
+The `fluxy_websocket` plugin provides an industrial-grade wrapper for real-time communication. It extends the Fluxy lifecycle to handle connection stability, exponential backoff, and direct binding of message data to reactive signals.
+
+## Installation
+
+Add the dependency to your `pubspec.yaml`:
+
+```yaml
+dependencies:
+  fluxy_websocket: ^1.0.0
+```
+
+Or use the Fluxy CLI:
+
+```bash
+fluxy module add websocket
+```
+
+---
+
+## Quick Start
+
+### 1. Initialize & Connect
+Register the plugin and connect to your server.
+
+```dart
+final ws = Fluxy.register(FluxyWebSocketPlugin());
+
+// Connect with auto-reconnect enabled
+await ws.connect('wss://api.example.com/live');
+```
+
+### 2. Bind Signals to Real-Time Data
+This is the most powerful feature. You can bind a specific field in the server's JSON messages directly to a Fluxy signal.
+
+```dart
+// Suppose server sends: {"btc_price": 65000.50}
+final btcPrice = ws.bind<double>('btc_price', 0.0);
+
+// Use it in your UI - it updates automatically when the server pumps data
+Fx.text('\$${btcPrice.value}').font.xl3().green();
+```
+
+---
+
+## Advanced Features
+
+### Manual Message Handling
+Access the last raw message sent by the server.
+
+```dart
+Fx(() {
+  final lastMsg = ws.lastMessage.value;
+  return Fx.text('Raw: $lastMsg').muted();
+});
+```
+
+### Connection State Monitoring
+Monitor the health of your socket connection in real-time.
+
+```dart
+Fx(() {
+  final status = ws.isConnected.value ? 'Online' : 'Offline';
+  final color = ws.isConnected.value ? Colors.green : Colors.red;
+  
+  return Fx.row([
+    Fx.badge(status).bg(color),
+    if (ws.error.value != null) Fx.text(ws.error.value!).red(),
+  ]);
+});
+```
+
+### Sending Messages
+Send structured data to the server (automatically JSON-encoded).
+
+```dart
+ws.send({
+  'action': 'subscribe',
+  'topic': 'ticker',
+  'symbol': 'BTC/USD',
+});
+```
+
+---
+
+## API Reference
+
+### Properties
+| Property | Type | Description |
+| :--- | :--- | :--- |
+| `isConnected` | `Flux<bool>` | Reactive status of the connection. |
+| `lastMessage` | `Flux<dynamic>` | The most recent raw message received. |
+| `error` | `Flux<String?>` | Contains the last error message if disconnected. |
+
+### Methods
+- `connect(url, {autoReconnect: true})`: Opens the socket.
+- `send(data)`: Sends data (String or Map/List).
+- `bind<T>(key, initialValue)`: Creates a signal that syncs with a JSON key.
+- `disconnect()`: Closes the connection and stops reattempts.
+
+---
+
+## Stability Features
+- **Auto-Dispose**: Cleans up all listeners when the app is terminated to prevent memory leaks.
+
+---
+
+## The Master WebSocket Implementation
+
+In a professional application, WebSockets are orchestrating real-time state across multiple features. Here is a complex "Live Trading" implementation demonstrating best practices for socket management.
+
+```dart
+class MarketController extends FluxController {
+  final ws = Fluxy.use<FluxyWebSocketPlugin>();
+  
+  // 1. Reactive state signals
+  final ticker = flux<Map<String, dynamic>>({});
+  final isLive = flux(false);
+
+  @override
+  void onInit() {
+    super.onInit();
+    _startMarketFeed();
+  }
+
+  Future<void> _startMarketFeed() async {
+    // 2. Establish connection
+    await ws.connect('wss://market.fluxy.io/ticker');
+    
+    // 3. Listen to connection health
+    fluxEffect(() {
+      isLive.value = ws.isConnected.value;
+      if (ws.isConnected.value) {
+        Fx.toast.success("Market Connected");
+        // 4. Send subscription packet
+        ws.send({'action': 'sub', 'symbol': 'BTC_USDT'});
+      }
+    });
+
+    // 5. Direct binding for ultra-low latency updates
+    // In a trading app, BTC Price is updated hundreds of times per second.
+    // Fluxy's atomic binder ensures only the price text rebuilds.
+    final btc = ws.bind<double>('price', 0.0);
+    fluxEffect(() {
+        ticker.value = {'symbol': 'BTC', 'price': btc.value};
+    });
+  }
+}
+
+// UI Layer
+class MarketView extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final market = Fluxy.use<MarketController>();
+    
+    return Fx.col([
+      Fx(() => Fx.row([
+         Fx.badge(market.isLive.value ? "LIVE" : "DISCONNECTED"),
+         Fx.text("Bitcoin: \$${market.ticker.value['price']}").font.xl2().bold(),
+      ])),
+    ]);
+  }
+}
+```
+
+By centralizing all hardware knowledge under the `Fx.platform.ws` helper, you ensure that your diagnostics and analytics are consistent and easy to maintain across all target platforms.
+

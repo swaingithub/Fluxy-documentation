@@ -7,7 +7,7 @@ description: Breaking changes and the transition to the Managed Platform Era in 
 
 Fluxy v0.2.5 represents a major shift from a "Framework" to a **"Managed Platform"**. This version consolidates fragmented plugins into a unified platform layer, introduces auto-registration, and strengthens production stability.
 
-## 🚨 Breaking Changes
+## Breaking Changes
 
 ### 1. Unified Platform API (`Fx.platform`)
 Previously, plugins were accessed directly via the `Fx` namespace (e.g., `Fx.camera`, `Fx.notifications`). In v0.2.5, all native capabilities are consolidated under the `Fx.platform` namespace for better organization and long-term stability.
@@ -67,7 +67,7 @@ class FluxyPluginEngine {
 }
 ```
 
-## 📋 Migration Steps
+## Migration Steps
 
 ### Step 1: Update Core Package
 Update your `pubspec.yaml`:
@@ -138,7 +138,7 @@ fluxy module remove camera
 flutter pub get
 ```
 
-## 🚀 New Features
+## New Features
 
 ### 1. Hybrid Image Engine (`FxImage`)
 The image engine has been completely re-engineered to support `file://` and `memory://` sources natively.
@@ -178,7 +178,7 @@ try {
 }
 ```
 
-## 🔄 Feature Mapping
+## Feature Mapping
 
 ### Camera Module
 ```dart
@@ -215,7 +215,7 @@ await Fx.platform.storage.set('key', 'value');
 await Fx.storage.set('key', 'value');
 ```
 
-## 🧪 Testing Your Migration
+## Testing Your Migration
 
 ### 1. Check Platform Access
 Verify platform modules work:
@@ -257,7 +257,7 @@ fluxy module list
 fluxy doctor
 ```
 
-## 🆘 Common Issues
+## Common Issues
 
 ### Issue: Platform Modules Not Found
 **Problem**: `Fx.platform.camera` returns null
@@ -275,7 +275,7 @@ fluxy doctor
 **Problem**: `Fluxy.autoRegister()` throws error
 **Solution**: Check that all platform modules are properly added to dependencies
 
-## 🎯 Benefits of Migration
+## Benefits of Migration
 
 ### 1. Zero-Configuration Setup
 - **Auto-Discovery**: Modules are automatically discovered and registered
@@ -297,7 +297,7 @@ fluxy doctor
 - **Better CLI**: More intuitive module commands
 - **Improved Debugging**: Clear module organization
 
-## 📞 Need Help?
+## Need Help?
 
 If you encounter issues during migration:
 
@@ -307,6 +307,6 @@ If you encounter issues during migration:
 4. **Ask Community**: [GitHub Discussions](https://github.com/swaingithub/fluxy/discussions)
 5. **Report Issues**: [GitHub Issues](https://github.com/swaingithub/fluxy/issues)
 
-## 🎉 You're Done!
+## You're Done!
 
 Once you've completed these steps, your app should be running on Fluxy v0.2.5 with the Managed Platform architecture. Enjoy the zero-configuration setup and unified platform API!

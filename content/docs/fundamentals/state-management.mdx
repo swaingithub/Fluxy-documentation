@@ -537,6 +537,70 @@ Legacy aliases are marked with `@Deprecated` to guide developers toward the new 
 
 ---
 
-Fluxy's state management system now provides enterprise-grade features including background processing, automatic cleanup, offline-first architecture, and global middleware - making it ready for production-scale applications.
+## The Master State Implementation
+
+In a professional application, you don't just use single signals. You build a **Unified Reactive Store**. Here is how you tie everything together in a real-world project.
+
+```dart
+class UserProfileStore extends FluxController {
+  // 1. Core Reactive Data (With Labels for Snapshots)
+  final profile = flux<User>(User.guest(), label: 'user_profile');
+  final theme = flux('dark', label: 'app_theme', persist: true);
+  
+  // 2. Computed Logic (Derived from multiple signals)
+  late final displayName = fluxComputed(() {
+    return profile.value.isGuest ? "Welcome Guest" : "Member: ${profile.value.name}";
+  });
+
+  // 3. Selection (Subscribe only to specific properties)
+  late final avatarUrl = fluxSelector(profile, (p) => p.photoUrl);
+
+  // 4. Async Data Loading
+  late final activityStats = asyncFlux(() => Fx.http.get('/api/stats'));
+
+  // 5. History (Undo / Redo for Settings)
+  final bio = fluxHistory("Write something...", label: 'user_bio');
+
+  @override
+  void onInit() {
+    super.onInit();
+    // 6. Side Effects
+    fluxEffect(() {
+      print("System Alert: Theme changed to ${theme.value}");
+      Fx.toast.info("Applying ${theme.value} mode");
+    });
+  }
+}
+
+// 7. Standardized UI Usage
+class ProfileView extends StatelessWidget {
+  final store = use<UserProfileStore>();
+
+  @override
+  Widget build(BuildContext context) {
+    return Fx.col(
+      gap: 16,
+      children: [
+        // Atomic UI - only this text rebuilds on name change
+        Fx(() => Fx.text(store.displayName.value).font.bold()),
+        
+        // Complex Async State
+        Fx(() => store.activityStats.on(
+          loading: () => Fx.shimmer(child: Fx.box().h(100)),
+          data: (stats) => Fx.text("Recent Activity: $stats"),
+          error: (e) => Fx.text("Stats unavailable").color(Colors.red),
+        )),
+
+        // Persistence in Action
+        Fx.button("Toggle Theme", onTap: () {
+          store.theme.update((t) => t == 'dark' ? 'light' : 'dark');
+        }),
+      ],
+    );
+  }
+}
+```
+
+Fluxy's state management system provides enterprise-grade features including background processing, automatic cleanup, and global middleware - making it ready for production-scale applications.
 
 

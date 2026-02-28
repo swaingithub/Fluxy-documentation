@@ -7,7 +7,7 @@ description: Complete guide to Fluxy's form system with built-in validation and 
 
 Fluxy provides a comprehensive form system with built-in validation, reactive form state, and intuitive form widgets. Build complex forms with minimal code.
 
-## 📝 Form Basics
+## Form Basics
 
 ### Fx.form() - Form Container
 The main form container that handles validation and submission:
@@ -60,7 +60,7 @@ Validators.custom((value) {
 })
 ```
 
-## 🎯 Input Types
+## Input Types
 
 ### Text Input
 ```dart
@@ -118,7 +118,7 @@ Fx.input.textArea(
 )
 ```
 
-## 🔧 Advanced Form Features
+## Advanced Form Features
 
 ### Reactive Form State
 Forms automatically update when input values change:
@@ -181,7 +181,7 @@ class CustomInput extends StatelessWidget {
 }
 ```
 
-## 📋 Form Submission
+## Form Submission
 
 ### Manual Submission
 ```dart
@@ -247,7 +247,7 @@ if (submitError.value != null)
   Fx.text(submitError.value!).color(Colors.red)
 ```
 
-## 🎯 Form Layout Patterns
+## Form Layout Patterns
 
 ### Login Form
 ```dart
@@ -385,7 +385,7 @@ Fx.col([
 ]).gap(4)
 ```
 
-## 🔧 Custom Validators
+## Custom Validators
 
 ### Creating Custom Validators
 ```dart
@@ -476,7 +476,7 @@ Fx.input.email(
 )
 ```
 
-## 🎯 Form State Management
+## Form State Management
 
 ### Form Controller
 Create a reusable form controller:
@@ -563,7 +563,7 @@ class LoginScreen extends StatelessWidget {
 }
 ```
 
-## 🎯 Best Practices
+## Best Practices
 
 ### 1. Use Reactive Form State
 ```dart

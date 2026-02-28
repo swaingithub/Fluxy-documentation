@@ -1,0 +1,98 @@
+---
+title: Advanced Control & Collections
+description: Reactive lists, maps, and state history in Fluxy.
+---
+
+# Advanced Control & Collections
+
+Fluxy provides specialized reactive primitives for complex state requirements like maintaining history or managing large lists and maps efficiently.
+
+---
+
+## Reactive Collections
+
+Standard Flutter lists and maps don't trigger UI updates when their internal contents change. Fluxy provides `FluxList` and `FluxMap` to solve this.
+
+### Reactive Lists
+
+Create a reactive list using `.obs` or `fluxList()`.
+
+```dart
+// Way 1: Extension (Preferred)
+final items = ['A', 'B'].obs;
+
+// Way 2: Constructor
+final tasks = fluxList<String>(['Task 1']);
+
+// Usage in UI
+Fx(() => Fx.col(
+  children: items.map((i) => Fx.text(i)).toList(),
+))
+```
+
+**Note:** `FluxList` implements `ListMixin`, so you can use it exactly like a standard Dart List (`.add()`, `.remove()`, etc.), and Fluxy will handle the reactivity automatically.
+
+### Reactive Maps
+
+```dart
+final settings = {'theme': 'dark'}.obs;
+
+// Update safely
+settings.updateValue('theme', (current) => 'light');
+
+// Usage in UI
+Fx(() => Fx.text("Active Theme: ${settings['theme']}"))
+```
+
+---
+
+## State History (Undo & Redo)
+
+Fluxy includes a built-in "Time Machine" for state. Branded as **FluxHistory**, it allows you to track changes and roll back state effortlessly.
+
+```dart
+// Create state with a 100-step history buffer
+final canvasState = fluxHistory('#FFFFFF');
+
+// UI Controls
+Fx.row([
+  Fx.button('Undo', onTap: canvasState.undo).enabled(canvasState.canUndo),
+  Fx.button('Redo', onTap: canvasState.redo).enabled(canvasState.canRedo),
+])
+
+// Change state normally
+canvasState.value = '#000000'; // canUndo becomes true
+```
+
+### Key properties:
+- `canUndo` / `canRedo`: Reactive flags for UI buttons.
+- `undo()` / `redo()`: Method calls to travel through state history.
+- `clearHistory()`: Resets the history buffer.
+
+---
+
+## Performance Tip: Batch Updates
+
+If you are performing multiple operations on a collection (e.g., adding 100 items), wrap them in a `batchUpdate` to trigger only **ONE** UI rebuild.
+
+```dart
+items.batchUpdate(() {
+  for(int i = 0; i < 100; i++) {
+    items.add('Item $i');
+  }
+});
+```
+
+---
+
+## Reactive Derived Collections
+
+You can use `computed()` to filter or transform collections reactively.
+
+```dart
+final highPriorityTasks = computed(() {
+  return tasks.where((t) => t.isUrgent).toList();
+});
+```
+
+**Next Step:** Learn how to handle [Internationalization](/docs/fundamentals/i18n) or explore [Advanced Components](/docs/components/advanced).

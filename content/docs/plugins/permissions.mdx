@@ -5,64 +5,111 @@ description: Unified, zero-config permission management for modern platforms.
 
 # Permissions
 
-The `fluxy_permissions` module (accessible via the unified platform layer) provides a centralized, reactive engine for managing system permissions (Camera, Location, Notifications, etc.) without writing platform-specific boilerplate.
+The `fluxy_permissions` module provides a centralized, reactive engine for managing system permissions without writing platform-specific boilerplate.
 
-## Installation
+## [GUIDE] Industrial Step-by-Step
 
-Add the permissions module to your project:
-
+### 1. Installation (via CLI)
+Add the permissions module using the Fluxy CLI to maintain architectural integrity.
 ```bash
 fluxy module add permissions
 ```
 
-## Basic Usage
+### 2. Managed Boot Sequence
+Ensure your `main.dart` is configured with the mandatory three-step boot sequence.
+```dart
+import 'package:fluxy/fluxy.dart';
+import 'core/registry/fluxy_registry.dart'; 
 
-Requesting a single permission is a simple async call via the unified platform API:
+void main() async {
+  await Fluxy.init();
+  Fluxy.registerRegistry(() => registerFluxyPlugins()); 
+  Fluxy.autoRegister(); // Boots permission watcher and engine
+  runApp(MyApp());
+}
+```
+
+### 3. Usage (Unified API)
+Access the module through the stable `Fx.platform` gateway.
 
 ```dart
+// Request single permission
 final status = await Fx.platform.permissions.request(FluxyPermission.camera);
 
-if (status == FluxyPermissionStatus.granted) {
-  // Open camera
-}
-```
-
-## Advanced: Batch Requests
-
-On app startup, you may want to request all necessary permissions at once. Fluxy provides a clean map-based response for batch requesting.
-
-```dart
-Future<void> initSystem() async {
-  final results = await Fx.platform.permissions.requestAll([
-    FluxyPermission.notification,
-    FluxyPermission.location,
-    FluxyPermission.biometrics,
-  ]);
-
-  if (results[FluxyPermission.notification] == FluxyPermissionStatus.denied) {
-    Fx.toast.warning("Enable notifications for full functionality.");
-  }
-}
-```
-
-## Reactive Status Updates
-
-Fluxy permissions are also available as signals, allowing your UI to react instantly if a user revokes permissions via system settings.
-
-```dart
+// Reactive Status Watching
 Fx(() {
-  final status = Fx.platform.permissions.statusOf(FluxyPermission.location).value;
-  return status == FluxyPermissionStatus.granted 
-    ? MapView() 
-    : PermissionPlaceholder();
+  final status = Fx.platform.permissions.statusOf(FluxyPermission.camera).value;
+  return Fx.text("Camera Status: ${status.name}");
 });
 ```
 
-## Zero-Config Manifests (Android)
+---
 
-For many permissions (like Internet or Notifications), Fluxy's build engine automatically injects the required XML entries into your `AndroidManifest.xml` during compilation, reducing the chance of runtime crashes due to missing declarations.
+## Core Functionality
+
+### 1. Batch Requests
+Request multiple necessary permissions at once. Fluxy provides a clean map-based response.
+
+```dart
+final results = await Fx.platform.permissions.requestAll([
+  FluxyPermission.notification,
+  FluxyPermission.location,
+]);
+```
+
+### 2. Zero-Config Manifests (Android)
+Fluxy's build engine automatically injects required XML entries (e.g., Internet, Notifications) into your `AndroidManifest.xml` during compilation.
+
+---
+
+## The Wrong Way vs. The Right Way
+
+| Feature | [WRONG] The Outdated Way | [RIGHT] The Fluxy Standard |
+| :--- | :--- | :--- |
+| **Plugin Access** | `FluxyPluginEngine.find<FluxyPermissionsPlugin>()` | `Fx.platform.permissions` |
+| **Request Logic** | Manual polling or `if (status == ...)` | Rebuilding via the `statusOf()` signal |
+| **Settings** | Using `url_launcher` to open settings | `await Fx.platform.permissions.openSettings()` |
+| **Global State** | Manual maps for current statuses | Centralized reactive status engine |
+
+---
+
+## Pitfalls & Troubleshooting
+
+### 1. "Request returns denied without showing a popup"
+*   **The Cause**: The user previously selected "Don't ask again" or permanently denied.
+*   **The Fix**: Use `openSettings()` to guide them to manually enable it.
+
+### 2. "Status signal doesn't update when I change settings"
+*   **The Cause**: Lack of an AppResume observer.
+*   **The Fix**: Fluxy automatically refreshes permissions when the app resumes. Ensure UI is in `Fx()`.
+
+### 3. "The Android Manifest entry is missing"
+*   **The Cause**: Manual manifest editing forgotten.
+*   **The Fix**: Use the Fluxy CLI to add modules—it handles injection automatically.
+
+---
+
+---
+
+## Upcoming CLI Features
+
+In future releases, the Fluxy CLI will provide automated manifest synchronization to prevent "Missing Permission" errors during development.
+
+### 1. Architectural Health Check
+Run a deep scan of your platform requirements against your native manifests (Android/iOS).
+```bash
+fluxy doctor --fix
+```
+
+### 2. Manual Permission Sync
+Automatically inject missing `<uses-permission>` tags or `Info.plist` keys based on your installed Fluxy modules.
+```bash
+fluxy permissions sync
+```
+
+---
 
 ## Best Practices
-1. **Contextual Requests**: Don't ask for all permissions on the first splash screen. Ask when the user triggers a feature (e.g., asking for Camera inside the scan view).
-2. **Handle "Permanently Denied"**: Use `Fx.platform.permissions.openSettings()` to guide users to the system settings if they have previously denied a permission multiple times.
-3. **Use the Watcher**: Leverage `statusOf().listen()` in your controllers to adjust background service behavior based on permission availability.
+1. **Contextual Requests**: Ask for permissions only when the user triggers a feature (e.g., Camera inside the scan view).
+2. **Handle "Permanently Denied"**: Use `openSettings()` to guide users if they have denied multiple times.
+3. **Use the Watcher**: Leverage `statusOf().listen()` in your controllers to adjust background service behavior.

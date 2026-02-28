@@ -5,49 +5,132 @@ description: Premium sensory UX with centralized haptic vibration control.
 
 # Haptic Feedback
 
-Fluxy's Haptic Engine provides a high-level, semantic API for digital touch confirmation. It abstracts away raw platform vibration calls into professional-grade sensory signals.
+Fluxy's Haptic Engine provides a semantic API for digital touch confirmation, abstracting away raw platform vibration calls.
 
-## Usage
+## [GUIDE] Industrial Step-by-Step
 
-The haptic engine is available via the static `Fx.haptic` helper (or `FxHaptic` directly). 
+### 1. Installation (via CLI)
+Add the haptics module using the Fluxy CLI to maintain architectural integrity.
+```bash
+fluxy module add haptics
+```
+
+### 2. Managed Boot Sequence
+Ensure your `main.dart` is configured with the mandatory three-step boot sequence.
+```dart
+import 'package:fluxy/fluxy.dart';
+import 'core/registry/fluxy_registry.dart'; 
+
+void main() async {
+  await Fluxy.init();
+  Fluxy.registerRegistry(() => registerFluxyPlugins()); 
+  Fluxy.autoRegister(); // Boots sensory core
+  runApp(MyApp());
+}
+```
+
+### 3. Usage (Unified API)
+Access the module through the direct `Fx.haptic` helper.
 
 ```dart
 void onButtonTap() {
   Fx.haptic.light(); // Light confirmation tap
 }
+
+void onError() {
+  Fx.haptic.error(); // Triple-pulse alarm
+}
 ```
+
+---
 
 ## Semantic Levels
 
-### 1. Selection & Light Interactions
-Use for standard button clicks, toggle changes, or scroll ticks.
+### 1. Interactions
+Use for standard button clicks or scroll ticks.
 ```dart
 Fx.haptic.light();
+Fx.haptic.selection();
 ```
 
 ### 2. Physical Impact
-Use for drag-and-drop actions, component snaps, or satisfying UI physics.
+Use for drag-and-drop snaps or UI physics.
 ```dart
 Fx.haptic.medium();
 Fx.haptic.heavy();
 ```
 
-### 3. State Notifications
-Use to provide physical weight to successful operations or critical errors.
-```dart
-Fx.haptic.success(); // A satisfying "double pulse"
-Fx.haptic.error();   // A recognizable "alarm" vibration
-```
+---
 
-## Global Control
+## The Wrong Way vs. The Right Way
 
-You can disable haptics globally (e.g., when the device is in low-power mode or based on user settings).
+| Feature | [WRONG] The Outdated Way | [RIGHT] The Fluxy Standard |
+| :--- | :--- | :--- |
+| **Plugin Access** | `HapticFeedback.vibrate()` | `Fx.haptic.light()` |
+| **Logic** | Manual duration vibration | Semantic level API (`success`, `error`) |
+| **Control** | No way to disable globally | `Fx.platform.haptic.enabled.value = false` |
 
-```dart
-Fx.haptic.enabled = false; // Silences all haptic calls instantly
-```
+---
+
+## Pitfalls & Troubleshooting
+
+### 1. "Haptics are not working on Android"
+*   **The Cause**: "Touch feedback" disabled in system settings or Battery Saver is on.
+*   **The Fix**: Direct the user to enable haptics. `Fx.haptic` fails gracefully (silent) if disabled.
+
+### 2. "App feels 'noisy'"
+*   **The Cause**: Using `heavy()` on every interaction.
+*   **The Fix**: Use `light()` for 90% of interactions. Reserve `heavy()` for destructive actions.
+
+---
 
 ## Best Practices
-1. **Never Overuse**: Haptics should be subtle. Only trigger them on explicit user actions, not on every background data change.
-2. **Success/Error Pairing**: Always use `Fx.haptic.success()` alongside success toasts and `Fx.haptic.error()` alongside error alerts for a truly premium, accessible experience.
-3. **Accessibility**: Haptics are a vital part of accessibility for users with visual impairments—use them to reinforce critical UI state changes.
+1. **Never Overuse**: Haptics should be subtle. Trigger on explicit user actions only.
+2. **Success/Error Pairing**: Pair `Fx.haptic.success()` with success toasts for a premium experience.
+3. **Accessibility**: Use haptics to reinforce critical UI state changes for users with visual impairments.
+
+---
+
+## The Master Sensory Feedback Implementation
+
+In a professional application, haptics are orchestrated alongside UI state changes and sounds to provide a premium UX. Here is a complex "Submission Sequence" demonstrating best practices for sensory feedback.
+
+```dart
+class SubmissionController extends FluxController {
+  final isLoading = flux(false);
+  
+  Future<void> submitForm(Map<String, dynamic> data) async {
+    // 1. Light confirmation (User action)
+    Fx.haptic.light();
+    
+    isLoading.value = true;
+    try {
+      // 2. Perform submission logic
+      await Fx.http.post('/api/submit', body: data);
+      
+      // 3. Success state - Heavy confirmation & visual
+      Fx.haptic.success();
+      Fx.toast.success("Form Submitted!");
+      
+      // 4. Reset or Navigate
+      Fx.toNamed('/home');
+    } catch (e) {
+      // 5. Error state - Warning vibrations & Alert
+      Fx.haptic.error();
+      Fx.toast.error("Form Submission Failed!");
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  // Example of using selection haptics for sliders or pickers
+  void onValueSelected(double val) {
+    // Selection haptics are specifically tuned for rapid scroll/tick events
+    Fx.haptic.selection(); 
+    print("Selected value: $val");
+  }
+}
+```
+
+By centralizing all sensory calls under the `Fx` namespace, you ensure that your haptics are consistent across the entire app and can be globally disabled or adjusted via the registry if needed.
+

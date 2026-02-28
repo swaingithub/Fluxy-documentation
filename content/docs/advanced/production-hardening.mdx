@@ -1,0 +1,65 @@
+---
+title: Production Hardening (Legacy)
+description: This page has moved to the Production section.
+---
+
+# Production Hardening
+
+Fluxy is designed for Mission-Critical applications. Beyond just UI and state, it includes industrial-grade stability, security, and efficiency tools.
+
+## Stability: The Airbag System
+
+Crashes happen, but they should not kill your user's session. The FluxyErrorBoundary acts as a safety net for your entire application.
+
+```dart
+FluxyApp(
+  home: FluxyErrorBoundary(
+    child: RootView(),
+    fallback: CustomCrashView(), // Optional
+  ),
+)
+```
+
+### Self-Healing
+When a crash occurs in a sub-widget, the Error Boundary catches the exception, logs it to the Audit Pipeline, and offers an Attempt Recovery action that can reset local states to clear the corruption.
+
+---
+
+## Security: Industrial Vaulting
+
+While Flutter's default shared_preferences is plaintext, and secure_storage depends purely on OS hardware, Fluxy adds a Secondary Scrambling Layer.
+
+Even on rooted devices where hardware keys might be exposed, your data is protected by Fluxy XOR Scrambling.
+
+```dart
+// Writing sensitive data
+await FluxyVault.write('api_secret', '7x-99-ksj-22');
+
+// Reading back
+final secret = await FluxyVault.read('api_secret');
+```
+
+---
+
+## Efficiency: Reference Counting
+
+High-energy modules (GPS, Camera, WebSockets) should never run when they are not needed. Fluxy uses a Managed Resource Loader.
+
+If multiple widgets are using the Geo plugin, the GPS stays on. As soon as the last widget is unmounted, Fluxy enters a Graceful Sleep period (default 5s) before shutting down the hardware to save battery.
+
+---
+
+## Optimization: Signal Batching
+
+To maintain a smooth 120Hz/60Hz UI, Fluxy handles update batching automatically.
+
+If you update 50 signals in a loop, Fluxy will wait for the microtask to end and trigger only ONE UI rebuild.
+
+```dart
+batch(() {
+  user.name = "John";
+  user.age = 25;
+  user.lastActive = DateTime.now();
+  // UI rebuilds only once here.
+});
+```

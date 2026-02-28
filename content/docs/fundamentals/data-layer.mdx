@@ -69,14 +69,45 @@ class ChatRepository extends FluxRepository {
 }
 ```
 
-## Connectivity Awareness
+Every `FluxRepository` comes with a built-in `isOnline` signal. This is automatically synchronized with the global connectivity engine, allowing you to build resilient, offline-ready logic with zero configuration.
 
-Every `FluxRepository` comes with a built-in `isOnline` signal that you can use to adjust UI or logic based on network availability.
+### Use Case: Automated Synchronization
+A common requirement is to "Queue" data while offline and "Flush" it once the connection returns.
 
 ```dart
-if (repo.isOnline.value) {
-  // Sync
-} else {
-  // Show offline banner
+class TaskRepository extends FluxRepository {
+  final tasks = fluxList<Task>([], persistKey: 'offline_tasks');
+
+  @override
+  void onInit() {
+    super.onInit();
+    
+    // Automatically trigger a sync whenever the device joins a network
+    fluxEffect(() {
+      if (isOnline.value && tasks.isNotEmpty) {
+        _uploadPendingTasks();
+      }
+    });
+  }
+
+  Future<void> _uploadPendingTasks() async {
+    Fx.toast.info("Connection Restored. Syncing ${tasks.length} items...");
+    
+    for (var task in tasks) {
+      final success = await Fx.http.post('/tasks', body: task.toJson());
+      if (success) tasks.remove(task);
+    }
+  }
 }
 ```
+
+---
+
+## Data Layer vs Service Layer
+
+It is easy to confuse a `FluxRepository` with a `Service`. In Fluxy, they have distinct roles:
+
+*   **Repository (The Manager)**: Manages **Business Models** and feature-specific data (e.g., `UserRepository`, `PaymentRepository`).
+*   **Service (The Tool)**: Provides **Generic Capabilities** used across the app (e.g., `logger_service.dart`, `api_service.dart`).
+
+**Rule**: If your logic involves fetching "Products" or "Orders," it belongs in a **Repository**. If your logic involves "Sending an Analytics Event" or "Opening the Camera," it belongs in a **Service**.

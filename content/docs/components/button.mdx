@@ -105,3 +105,87 @@ Turn any String or Widget into a button instantly using the `.btn()` extension.
 
 Icon(Icons.settings).btn(onTap: () => openSettings())
 ```
+
+---
+
+## The Master Button Implementation
+
+In a professional application, you don't just use a single button. You create a cohesive set of actions with consistent spacing, variants, and responsive behavior. Here is a complex "Action Bar" example using Fluxy's atomic button system.
+
+```dart
+class ProfileActionView extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final isLoading = flux(false);
+
+    return Fx.col(
+      gap: 20,
+      children: [
+        // 1. Primary Action Group (Responsive)
+        Fx.layout(
+          mobile: Fx.col(
+            gap: 12,
+            children: [
+              Fx.button("Complete Profile").primary.fullWidth(),
+              Fx.button("Skip for now").outline.fullWidth(),
+            ],
+          ),
+          tablet: Fx.row(
+            gap: 16,
+            children: [
+              Fx.button("Complete Profile").primary.sizeLg(),
+              Fx.button("Skip for now").outline.sizeLg(),
+            ],
+          ),
+        ),
+
+        // 2. Interaction-Only Primitive (.none variant)
+        // Building a custom interactive card with no default button styles
+        Fx.button("")
+          .none
+          .bg(FxTokens.colors.card)
+          .rounded(16)
+          .border(1, FxTokens.colors.border)
+          .p(20)
+          .onTap(() => print("Custom Card Tapped"))
+          .child(
+            Fx.row(
+              children: [
+                Icon(Icons.verified_user).color(Fx.primary),
+                Fx.text("Upgrade to Pro").font.md().ml(4),
+                Spacer(),
+                Icon(Icons.chevron_right),
+              ],
+            )
+          ),
+
+        // 3. Destructive Guard (Dynamic State)
+        Fx(() => Fx.button("Delete Account")
+          .danger
+          .outline
+          .loading(isLoading.value) // Built-in reactive loading
+          .onTap(() async {
+            isLoading.value = true;
+            await Future.delayed(Duration(seconds: 2));
+            isLoading.value = false;
+            Fx.toast.info("Account Deleted (Demo)");
+          })
+          .fullWidth()
+        ),
+
+        // 4. Iconic Actions
+        Fx.row(
+          gap: 12,
+          children: [
+            Fx.button("Share").withIcon(Icon(Icons.share)).secondary,
+            Fx.button("Export").withTrailing(Icon(Icons.download)).secondary,
+          ],
+        ),
+      ],
+    );
+  }
+}
+```
+
+Fluxy's button system is built for composition. Use `.none` when you want only the tap-logic, and semantic variants like `.primary` or `.danger` when you want pre-styled, branded UI.
+

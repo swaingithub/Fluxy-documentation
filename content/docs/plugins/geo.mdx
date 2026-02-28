@@ -1,0 +1,124 @@
+---
+title: Geo (Real-Time Location)
+description: High-frequency reactive tracking, speed, and heading signals.
+---
+
+# Geo (Real-Time Location)
+
+The `fluxy_geo` plugin provides a professional way to manage device location in industrial Fluxy applications. It is designed for live-tracking apps (like delivery, logistics, or sport tracking) and provides high-frequency updates directly into reactive signals.
+
+## Installation
+
+Add the dependency to your `pubspec.yaml`:
+
+```yaml
+dependencies:
+  fluxy_geo: ^1.0.0
+```
+
+Or use the Fluxy CLI:
+
+```bash
+fluxy module add geo
+```
+
+---
+
+## Key Features
+
+- **Geofencing Engine**: Define circular monitoring zones and receive reactive updates when a user enters/exits.
+- **Live Speed & Heading**: Reactive signals for `latitude`, `longitude`, `speed`, and `heading`.
+- **High-Frequency Management**: Optimized for battery and accuracy with custom `LocationSettings`.
+- **Automatic Permissions**: Handles the requesting and checking of location permissions.
+- **Distance Utilities**: Built-in methods for calculating distances between points without leaving the reactive model.
+
+---
+
+## Usage
+
+### 1. Initialize
+The plugin handles all permission requests automatically when you start tracking.
+
+```dart
+final geo = Fluxy.register(FluxyGeoPlugin());
+
+// Start tracking with high accuracy
+await geo.startTracking();
+```
+
+### 2. Geofencing
+You can define multiple geofences. The `activeGeofences` signal will update automatically as the user moves.
+
+```dart
+// Add a 500m geofence around a warehouse
+geo.addGeofence('warehouse_a', 40.7128, -74.0060, 500.0);
+
+// Use in UI or Logic
+Fx(() {
+  final isAtWarehouse = geo.activeGeofences.value.contains('warehouse_a');
+  return Fx.text(isAtWarehouse ? 'Welcome to Warehouse A' : 'Tracking Status...');
+});
+```
+
+### 3. Connect to UI
+Use the signals in your view layer to update maps, labels, or indicators in real-time.
+
+```dart
+Fx(() {
+  if (!geo.isTracking.value) return Fx.text('Tracking Offline');
+  
+  return Fx.col([
+    Fx.text('Current Speed: ${geo.speed.value.toStringAsFixed(1)} m/s').font.bold(),
+    Fx.text('Active Zones: ${geo.activeGeofences.value.length}'),
+    Fx.text('Position: ${geo.latitude.value}, ${geo.longitude.value}').muted(),
+  ]);
+});
+```
+
+### 4. Geofencing/Distances
+Check how far the user is from a target location in a `fluxComputed`.
+
+```dart
+final destination = LatLng(40.7128, -74.0060); // NYC
+
+final distanceSignal = fluxComputed(() {
+  return geo.distanceBetween(
+    geo.latitude.value, 
+    geo.longitude.value, 
+    destination.latitude, 
+    destination.longitude
+  );
+});
+
+Fx(() {
+  return Fx.text('Distance: ${distanceSignal.value.toInt()} meters');
+});
+```
+
+---
+
+## API Reference
+
+### Signals
+| Signal | Type | Description |
+| :--- | :--- | :--- |
+| `latitude` | `Flux<double>` | Current latitude coordinate. |
+| `longitude` | `Flux<double>` | Current longitude coordinate. |
+| `activeGeofences` | `Flux<Set<String>>` | IDs of all geofences the user is currently inside. |
+| `speed` | `Flux<double>` | Current speed in meters per second. |
+| `heading` | `Flux<double>` | Current compass heading in degrees. |
+| `isTracking` | `Flux<bool>` | Whether the GPS stream is currently active. |
+
+### Methods
+- `addGeofence(id, lat, lng, radius)`: Register a circular monitoring zone.
+- `removeGeofence(id)`: Unregister a zone.
+- `startTracking({settings})`: Opens the position stream and begins updating signals.
+- `stopTracking()`: Closes the GPS stream and releases system resources.
+- `distanceBetween(lat1, lon1, lat2, lon2)`: Returns the distance in meters.
+
+---
+
+## Stability Features
+- **Auto-Flush**: In-memory location buffers are cleared on dispose to prevent battery drain.
+- **Permission Guard**: Prevents app crashes by validating permission status before initializing the stream.
+- **Resource Management**: Properly handles stream cancellation in the background to ensure OS compliance.

@@ -5,65 +5,94 @@ description: High-performance, reactive key-value storage for application state.
 
 # Persistent Storage
 
-The `fluxy_storage` module provides a unified, reactive key-value storage abstraction (supporting both **Standard** and **Secure** modes). It replaces standard "Shared Preferences" with an industrial-grade, signal-aware storage engine.
+The `fluxy_storage` module provides a unified, reactive key-value storage abstraction (supporting both **Standard** and **Secure** modes).
 
-## Installation
+## [GUIDE] Industrial Step-by-Step
 
-Add the storage module to your project:
-
+### 1. Installation (via CLI)
+Add the storage module using the Fluxy CLI to maintain architectural integrity.
 ```bash
 fluxy module add storage
 ```
 
-## Basic Operations
+### 2. Managed Boot Sequence
+Ensure your `main.dart` is configured with the mandatory three-step boot sequence.
+```dart
+import 'package:fluxy/fluxy.dart';
+import 'core/registry/fluxy_registry.dart'; 
 
-Fluxy Storage supports all standard primitives (String, Int, Double, Bool) and Complex Maps via the unified platform API.
+void main() async {
+  await Fluxy.init();
+  Fluxy.registerRegistry(() => registerFluxyPlugins()); 
+  Fluxy.autoRegister(); // Boots storage and hydrates signals
+  runApp(MyApp());
+}
+```
+
+### 3. Usage (Unified API)
+Access the module through the stable `Fx.platform` gateway.
 
 ```dart
 // Saving data
 Fx.platform.storage.set('user_name', 'Alex Stevens');
-Fx.platform.storage.setInt('app_launches', 42);
 
-// Retrieving data
-final name = Fx.platform.storage.getString('user_name', fallback: 'Guest');
-```
-
-## Advanced: Reactive Storage
-
-The true power of Fluxy Storage lies in its reactivity. You can treat the entire storage disk as a reactive source.
-
-```dart
-// This widget updates automatically whenever 'balance' changes on disk
-// even if changed from a different screen or background service!
+// Reactive UI Reading
 Fx(() {
-  final bal = Fx.platform.storage.getDouble('user_balance', fallback: 0.0);
-  return Fx.text("\$${bal.toStringAsFixed(2)}").bold();
+  final name = Fx.platform.storage.getString('user_name', fallback: 'Guest');
+  return Fx.text("Hello $name");
 });
 ```
 
-## List & Key Management
+---
 
-You can perform operations on the entire storage set reactively:
+## Core Functionality
+
+### 1. Basic Operations
+Fluxy Storage supports all standard primitives and Complex Maps via the unified platform API.
 
 ```dart
-// Get a reactive count of all stored items
-Fx(() => Fx.text("Items in Cache: ${Fx.platform.storage.keyCount.value}"));
-
-// Clear everything
-void resetApp() {
-  Fx.platform.storage.clearAll();
-}
+Fx.platform.storage.setInt('app_launches', 42);
+final count = Fx.platform.storage.getInt('app_launches');
 ```
 
-## Encryption (Unified Abstraction)
-Sensitive data (like auth tokens) is automatically stored in the device's Secure Enclave using AES-256 encryption. Fluxy provides a unified API for both encrypted and non-encrypted data.
+### 2. Encryption (Secure Mode)
+Sensitive data is automatically stored in the device's Secure Enclave using AES-256 encryption.
 
 ```dart
 // Use the 'secure' flag for sensitive items
 Fx.platform.storage.set('api_token', 'xxx_yyy_zzz', secure: true);
 ```
 
+---
+
+## The Wrong Way vs. The Right Way
+
+| Feature | [WRONG] The Outdated Way | [RIGHT] The Fluxy Standard |
+| :--- | :--- | :--- |
+| **Plugin Access** | `FluxyPluginEngine.find<FluxyStoragePlugin>()` | `Fx.platform.storage` |
+| **Data Flow** | `await prefs.getString('key')` | `Fx(() => Fx.platform.storage.getString('key'))` |
+| **Security** | Storing PII in standard key-value | `Fx.platform.storage.set(key, val, secure: true)` |
+| **Reactivity** | Manual listeners or polling | Automatic rebuilding via Fluxy signals |
+
+---
+
+## Pitfalls & Troubleshooting
+
+### 1. "Storage value is null on first build"
+*   **The Cause**: Not providing a fallback value or the disk has not finished hydrating.
+*   **The Fix**: Always use the `fallback` parameter: `Fx.platform.storage.getString('key', fallback: '')`.
+
+### 2. "Secure storage fails on Android"
+*   **The Cause**: Missing `minSdkVersion 18`.
+*   **The Fix**: Ensure your `android/app/build.gradle` has at least `minSdkVersion 18`.
+
+### 3. "UI doesn't update when I change a value"
+*   **The Cause**: You are not using an `Fx()` builder around the retrieval code.
+*   **The Fix**: Wrap the widget that displays the stored data in `Fx()`.
+
+---
+
 ## Best Practices
-1. **Fallback Values**: Always provide a `fallback` value in your getters to avoid null pointer exceptions during the first app launch.
+1. **Fallback Values**: Always provide a `fallback` value in your getters to avoid null pointer exceptions.
 2. **Key Constants**: Store your storage keys in a clean class (e.g., `AppKeys.userName`) to avoid typos.
-3. **Don't Overuse Secure**: Encryption adds a small overhead. Only use `secure: true` for truly sensitive data like tokens or PII (Personally Identifiable Information).
+3. **Don't Overuse Secure**: Encryption adds overhead. Only use `secure: true` for truly sensitive data.

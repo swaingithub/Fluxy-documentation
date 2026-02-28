@@ -135,3 +135,27 @@ void main() async {
 ```
 
 Now you're ready to start building with the Fluxy Platform!
+
+## Workspace & Monorepo Setup
+
+If you are developing a modular ecosystem with multiple local packages, you should use the **Workspace Authority** tools:
+
+1. **Activate Melos (Industrial Management)**
+   ```bash
+   dart pub global activate melos
+   ```
+
+2. **Bootstrap the Workspace**
+   Connects all local modules (`auth`, `storage`, etc.) together:
+   ```bash
+   fluxy melos bootstrap
+   ```
+
+3. **Verify Integrity**
+   Run the global analysis and test suite:
+   ```bash
+   fluxy melos run analyze
+   fluxy melos run test
+   ```
+
+For more details on managing multiple packages, see the **[Workspace Authority](/docs/ecosystem/workspace-authority)** guide.

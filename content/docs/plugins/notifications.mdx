@@ -1,52 +1,59 @@
 ---
 title: Notifications
-description: Enterprise-grade notification system for Fluxy apps with scheduled alerts and smart permissions.
+description: Enterprise-grade notification system for Fluxy apps.
 ---
 
 # Notifications
 
-Fluxy provides an industrial-grade notification system (compatible with `fluxy_notifications v20.0+`) that handles channels, permissions, and scheduling with zero-config.
+Fluxy provides an industrial-grade notification system that handles channels, permissions, and scheduling with zero-config.
 
-## Installation
+## [GUIDE] Industrial Step-by-Step
 
-Add the notifications module to your project:
-
+### 1. Installation (via CLI)
+Add the notifications module using the Fluxy CLI to maintain architectural integrity.
 ```bash
 fluxy module add notifications
 ```
 
-## Basic Usage
-
-Trigger a standard notification immediately via the unified platform API:
-
+### 2. Managed Boot Sequence
+Ensure your `main.dart` is configured with the mandatory three-step boot sequence.
 ```dart
-Fx.platform.notifications.show(
-  title: "New Update",
-  body: "A new framework update is available.",
-);
+import 'package:fluxy/fluxy.dart';
+import 'core/registry/fluxy_registry.dart'; 
+
+void main() async {
+  await Fluxy.init();
+  Fluxy.registerRegistry(() => registerFluxyPlugins()); 
+  Fluxy.autoRegister(); // Boots notification listeners and channels
+  runApp(MyApp());
+}
 ```
 
-## Scheduled Notifications
-
-Schedule notifications for a future time. Fluxy handles `Exact Alarms` permissions and robust fallback logic automatically on Android 12+.
+### 3. Usage (Unified API)
+Access the module through the stable `Fx.platform` gateway.
 
 ```dart
+// Show immediate notification
+Fx.platform.notifications.show(
+  title: "New Message",
+  body: "You have received a new update.",
+);
+
+// Schedule for later
 Fx.platform.notifications.schedule(
   id: 1,
-  title: "Daily Standup",
-  body: "Don't forget the team meeting!",
-  scheduledDate: DateTime.now().add(Duration(hours: 2)),
-  payload: {"target": "meeting_screen"},
+  title: "Reminder",
+  body: "Time for your standup!",
+  scheduledDate: DateTime.now().add(Duration(hours: 1)),
 );
 ```
 
-### Timezone Awareness
-Notifications are now timezone-aware by default, ensuring they trigger at the correct local time even if the user travels.
+---
 
-## Advanced Features
+## Core Functionality
 
-### Groups & Channels
-Organize notifications into categories for better user control.
+### 1. Groups & Channels
+Organize notifications into categories for better user control (Android).
 
 ```dart
 Fx.platform.notifications.createChannel(
@@ -56,30 +63,39 @@ Fx.platform.notifications.createChannel(
 );
 ```
 
-### Automatic Permissions
-Fluxy automatically handles notification permissions for Android 13+ and iOS. It checks and requests permissions only when needed.
+### 2. Timezone Awareness
+Notifications are timezone-aware by default, triggering at the correct local time even if the user travels.
 
-```dart
-if (await Fx.platform.notifications.hasPermission()) {
-  // Proceed with notifications
-} else {
-  await Fx.platform.notifications.requestPermission();
-}
-```
+---
 
-## Configuration
+## The Wrong Way vs. The Right Way
 
-In the "Platform Era", use `Fluxy.autoRegister()` to initialize all modules effortlessly.
+| Feature | [WRONG] The Outdated Way | [RIGHT] The Fluxy Standard |
+| :--- | :--- | :--- |
+| **Plugin Access** | `FluxyPluginEngine.find<FluxyNotificationsPlugin>()` | `Fx.platform.notifications` |
+| **Logic** | Manual boilerplate for channels | Auto-channeling via the platform API |
+| **Scheduling** | Guessing timezones for alerts | Native timezone-aware scheduling |
+| **Permissions** | Calling `permission_handler` directly | `await Fx.platform.notifications.requestPermission()` |
 
-```dart
-void main() async {
-  await Fluxy.init();
-  Fluxy.autoRegister(); // Automatically boots notifications module
-  
-  runApp(MyApp());
-}
-```
+---
 
-## Platform Safety
-The framework now automatically injects necessary Android `BroadcastReceivers` for notifications to persist across reboots, providing true enterprise-level reliability.
+## Pitfalls & Troubleshooting
 
+### 1. "Scheduled notifications don't fire after reboot"
+*   **The Cause**: Missing `RECEIVE_BOOT_COMPLETED` permission.
+*   **The Fix**: Ensure your manifest includes the tags or let Fluxy CLI inject them.
+
+### 2. "Notifications don't show on Android 13+"
+*   **The Cause**: Not requesting `POST_NOTIFICATIONS` permission explicitly.
+*   **The Fix**: Use `requestPermission()` before attempting to show any alerts.
+
+### 3. "The app crashes when creating a channel"
+*   **The Cause**: Duplicate channel IDs or invalid importance levels.
+*   **The Fix**: Verify channel IDs are unique and use the `Importance` enum.
+
+---
+
+## Best Practices
+1. **Contextual Requests**: Only ask for notification permissions when it makes sense (e.g., after an order).
+2. **Clear Channels**: Use descriptive names so users can choose what to disable.
+3. **Payload Management**: Use JSON payloads to route users to deep-linked screens on tap.

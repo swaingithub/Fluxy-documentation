@@ -1,0 +1,159 @@
+---
+title: Sync (Offline-First)
+description: Persistent synchronization engine for offline-first applications.
+---
+
+# Sync (Offline-First)
+
+The `fluxy_sync` plugin provides the infrastructure for **Offline-First** applications. It manages a persistent queue of data operations (like saving a post, updating a profile, or sending a message) and ensures they are safely synchronized with your server the moment the device returns online.
+
+## Installation
+
+Add the dependency to your `pubspec.yaml`:
+
+```yaml
+dependencies:
+  fluxy_sync: ^1.0.0
+```
+
+Or use the Fluxy CLI:
+
+```bash
+fluxy module add sync
+```
+
+---
+
+## Key Features
+
+- **Persistent Queue**: Operations are saved to `fluxy_storage` so they survive app restarts or device reboots.
+- **Auto-Sync**: Automatically detects network restoration via `fluxy_connectivity` and triggers synchronization.
+- **State Tracking**: Monitor `isSyncing` and `pendingCount` to show progress in your UI.
+- **Robustness**: Supports exponential backoff and retry limits for failing operations.
+
+---
+
+## Usage
+
+### 1. Initialize
+The Sync plugin depends on `FluxyStoragePlugin` and `FluxyConnectivityPlugin`.
+
+```dart
+final sync = Fluxy.register(FluxySyncPlugin());
+```
+
+### 2. Queue an Operation
+Instead of calling your API directly, queue the operation. This ensures your user's data is never lost if the connection drops.
+
+```dart
+await sync.queue(
+  'POST', 
+  '/api/posts', 
+  body: {
+    'title': 'My Fluxy Journey',
+    'content': 'Fluxy makes offline-first easy!'
+  }
+);
+```
+
+### 3. Reactive UI
+Show the user how many items are waiting to be uploaded.
+
+```dart
+Fx(() {
+  if (sync.isSyncing.value) {
+    return Fx.row([
+      Fx.spinner().size(16),
+      Fx.text(' Syncing ${sync.pendingCount.value} items...').muted(),
+    ]);
+  }
+  
+  if (sync.pendingCount.value > 0) {
+    return Fx.text('${sync.pendingCount.value} pending updates').blue();
+  }
+  
+  return Fx.icon(Icons.check_circle).green();
+});
+```
+
+---
+
+## How it Works
+
+1. **Commit**: When you call `sync.queue()`, Fluxy commits the operation to encrypted local storage immediately.
+2. **Listen**: The engine listens to the `isOnline` signal from the Connectivity module.
+3. **Flush**: When `isOnline` becomes true, the engine begins "flushing" the queue in chronological order.
+4. **Retry**: If an operation fails, it is kept in the queue with an incremented retry count.
+
+> [!IMPORTANT]
+> To use `fluxy_sync`, you must have `fluxy_storage` and `fluxy_connectivity` registered in your application.
+
+---
+
+## API Reference
+
+### Signals
+| Signal | Type | Description |
+| :--- | :--- | :--- |
+| `isSyncing` | `Flux<bool>` | True while the background worker is flushing the queue. |
+| `pendingCount` | `Flux<int>` | The number of operations currently waiting in the queue. |
+
+- `clearQueue()`: Wipes all pending tasks from the storage.
+
+---
+
+## The Master Sync Implementation
+
+In a professional offline-first application, the Sync engine is used to mask network latency and ensure data integrity. Here is a complex "Social Post" implementation demonstrating best practices for offline-first orchestration.
+
+```dart
+class PostController extends FluxController {
+  final sync = Fluxy.use<FluxySyncPlugin>();
+  
+  // 1. Reactive state for the UI
+  final posts = flux<List<Post>>([]);
+  final isFetching = flux(false);
+
+  Future<void> createPost(String content) async {
+    final newPost = Post(id: 'temp_${DateTime.now().ms}', content: content);
+    
+    // 2. Optimistic Update: Update UI immediately
+    posts.update((list) => [newPost, ...list]);
+    
+    try {
+      // 3. Queue the operation for persistent background sync
+      // This ensures the post is sent even if the app is closed or 
+      // the device loses power before the next sync cycle.
+      await sync.queue(
+        'POST', 
+        '/api/v1/posts', 
+        body: {'content': content, 'local_id': newPost.id}
+      );
+      
+      Fx.toast.info("Post queued for sync");
+    } catch (e) {
+      // 4. Handle extreme local failures (e.g. storage full)
+      Fx.log.fatal("Sync Queueing Failed", error: e);
+      // Rollback optimistic update if necessary
+      posts.update((list) => list.where((p) => p.id != newPost.id).toList());
+    }
+  }
+}
+
+// UI implementation combining Sync status
+class SyncIndicator extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final sync = Fluxy.use<FluxySyncPlugin>();
+    
+    return Fx(() => Fx.row([
+        if (sync.isSyncing.value) 
+          Fx.spinner().size(12).mr(8),
+        Fx.text("${sync.pendingCount.value} pending updates").font.xs(),
+    ]).p(8).bg(Fx.primary.withOpacity(0.1)).rounded(20));
+  }
+}
+```
+
+By centralizing all hardware knowledge under the `Fx.platform.sync` helper, you ensure that your diagnostics and analytics are consistent and easy to maintain across all target platforms.
+

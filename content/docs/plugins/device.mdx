@@ -1,0 +1,99 @@
+---
+title: Device & Environment
+description: Comprehensive hardware and platform awareness for Fluxy applications.
+---
+
+# Device & Environment
+
+The `fluxy_device` module provides standard access to hardware information, platform types, and application versions, allowing you to build environment-aware logic without manual platform checks.
+
+## [GUIDE] Industrial Step-by-Step
+
+### 1. Installation (via CLI)
+Add the device module using the Fluxy CLI to maintain architectural integrity.
+```bash
+fluxy module add device
+```
+
+### 2. Managed Boot Sequence
+Ensure your `main.dart` is configured with the mandatory three-step boot sequence.
+```dart
+import 'package:fluxy/fluxy.dart';
+import 'core/registry/fluxy_registry.dart'; 
+
+void main() async {
+  await Fluxy.init();
+  Fluxy.registerRegistry(() => registerFluxyPlugins()); 
+  Fluxy.autoRegister(); // Boots environment core
+  runApp(MyApp());
+}
+```
+
+### 3. Usage (Unified API)
+Access the module through the direct `Fx.device` helper.
+
+```dart
+void checkPlatform() {
+  final meta = Fx.device.meta.value;
+  print("Running on: ${meta['platform']}");
+}
+
+void getVersion() {
+  print("App version: ${Fx.device.appVersion.value}");
+}
+```
+
+---
+
+## Reactive Environment Tracking
+
+The `meta` and `appVersion` fields are reactive `Flux` signals. You can use them directly in your UI to show platform-specific content.
+
+```dart
+Fx(() => Fx.text("Device: ${Fx.device.meta.value['model'] ?? 'Unknown'}"))
+```
+
+---
+
+## The Master Environment Implementation
+
+In a professional application, you use device information for analytics, feature tunneling, and UI adaptations. Here is a complex "Telemetry Sequence" demonstrating best practices for environment awareness.
+
+```dart
+class TelemetryController extends FluxController {
+  
+  void logAppStart() {
+    final deviceMeta = Fx.device.meta.value;
+    final version = Fx.device.appVersion.value;
+    
+    // 1. Create a semantic payload for analytics
+    final payload = {
+      'event': 'app_opened',
+      'version': version,
+      'platform': deviceMeta['platform'],
+      'model': deviceMeta['model'],
+      'os_info': deviceMeta['os'] ?? deviceMeta['sdk'],
+      'is_physical': Fx.device.isPhysical,
+    };
+    
+    // 2. Transmit to analytics layer
+    Fx.platform.analytics.logEvent('telemetry_init', payload);
+  }
+
+  // Example of platform-specific UI logic
+  Widget buildPlatformTag() {
+    return Fx(() {
+      final platform = Fx.device.meta.value['platform'] ?? 'unknown';
+      
+      return Fx.row(
+        children: [
+          Icon(platform == 'ios' ? Icons.apple : Icons.android),
+          Fx.text("Verified Build: v${Fx.device.appVersion.value}").ml(8),
+        ],
+      ).p(8).bg(Fx.primary.withOpacity(0.1)).rounded(8);
+    });
+  }
+}
+```
+
+By centralizing all hardware knowledge under the `Fx.device` helper, you ensure that your diagnostics and analytics are consistent and easy to maintain across all target platforms.

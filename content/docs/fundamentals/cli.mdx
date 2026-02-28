@@ -62,14 +62,34 @@ fluxy cloud build android
 ```
 
 ### `fluxy cloud deploy`
-
-Sets up and executes automated deployment pipelines to TestFlight (iOS) and Google Play (Android). It automates the submission process and metadata management.
-
-```bash
-fluxy cloud deploy
-```
-
-## Generators & Blueprints
+ 
+ Sets up and executes automated deployment pipelines to TestFlight (iOS) and Google Play (Android). It automates the submission process and metadata management.
+ 
+ ```bash
+ fluxy cloud deploy
+ ```
+ 
+ ## Module Management (v1.0.0+)
+ 
+ Manage your project's modular dependency tree and internal plugin registry.
+ 
+ ### `fluxy module add <name>`
+ 
+ Installs a platform module via `pub add` and automatically regenerates the architectural registry in `lib/core/registry/fluxy_registry.dart`.
+ 
+ ```bash
+ fluxy module add connectivity
+ ```
+ 
+ ### `fluxy module list`
+ 
+ Displays all available and installed platform modules in the Fluxy ecosystem.
+ 
+ ```bash
+ fluxy module list
+ ```
+ 
+ ## Generators & Blueprints
 
 Generate components and boilerplate quickly to maintain project consistency.
 

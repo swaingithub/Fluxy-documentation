@@ -2,7 +2,10 @@
   "pages": [
     "index",
     "why-fluxy",
+    "installation",
     "quick-start",
+    "feature-catalog",
+    "cookbook",
     "---Core Engine---",
     "fundamentals",
     "---Styling & Layout---",
@@ -15,6 +18,7 @@
     "---Advanced Guides---",
     "architecture",
     "production",
+    "security-audit",
     "devtools",
     "case-studies",
     "---Fluxy Plugins---",

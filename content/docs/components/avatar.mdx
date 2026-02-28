@@ -60,3 +60,60 @@ Fx.avatar(
 )
 .shadow.md // Apply proxy styles
 ```
+
+---
+
+## The Master Avatar Implementation
+
+In a professional application, avatars are often part of a complex "User Header" or "Member List". Here is an example of a responsive "Profile Ribbon" using `FxAvatar`.
+
+```dart
+class ProfileRibbon extends StatelessWidget {
+  final User user;
+  
+  ProfileRibbon({required this.user});
+
+  @override
+  Widget build(BuildContext context) {
+    return Fx.row(
+      gap: 16,
+      children: [
+        // 1. Dynamic Avatar with reactive state
+        Fx.avatar(
+          image: user.photoUrl,
+          fallback: user.fullName,
+          size: FxAvatarSize.lg,
+          shape: FxAvatarShape.circle,
+        )
+        .border(2, Fx.primary) // Adding brand ring
+        .p(2) // Spacing between ring and image
+        .shadow.sm(),
+
+        // 2. Info Cluster
+        Fx.col(
+          cross: CrossAxisAlignment.start,
+          children: [
+            Fx.text(user.fullName).font.lg().font.bold(),
+            Fx.text(user.email).font.sm().color(FxTokens.colors.muted),
+          ],
+        ),
+        
+        Spacer(),
+        
+        // 3. Online Indicator
+        Fx.box()
+          .w(12).h(12)
+          .bg(user.isOnline ? Colors.green : Colors.grey)
+          .rounded.full()
+      ],
+    )
+    .p(16)
+    .bg(FxTokens.colors.card)
+    .rounded(12)
+    .shadow.md();
+  }
+}
+```
+
+Fluxy's avatar system automatically handles the fallback to initials if the URL is null or invalid, making it extremely robust for data-driven UIs.
+

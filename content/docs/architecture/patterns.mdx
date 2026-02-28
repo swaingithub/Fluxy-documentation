@@ -1,0 +1,75 @@
+---
+title: Standard Implementation Patterns
+description: The official Fluxy blueprint for organizing professional applications.
+---
+
+# The Fluxy Blueprint
+
+One of the most common questions is: "Where do I put my code?" This guide defines the standard "Feature-First" architecture for Fluxy applications to ensure they stay modular and stable.
+
+---
+
+## The Recommended Folder Structure
+
+A professional Fluxy app should be organized by feature, not by technical type (e.g., all controllers in one folder is hindered for scale).
+
+```text
+lib/
+├── core/
+│   ├── registry/
+│   │   └── fluxy_registry.dart    # Standard: Register all plugins here
+│   └── theme/
+│       └── app_theme.dart         # Standard: Define FxStyle tokens here
+├── features/
+│   ├── auth/
+│   │   ├── auth.controller.dart   # Logic (Signals & Methods)
+│   │   ├── auth.view.dart         # UI (Fx DSL)
+│   │   └── auth.repository.dart   # Data (API calls)
+│   └── home/
+├── services/
+│   └── push_service.dart          # Global hardware listeners
+└── main.dart                      # Initialization & App entry
+```
+
+---
+
+## Where to Implement What?
+
+### 1. Business Logic (.controller.dart)
+**Rule:** If it is a flux() signal or a Future that changes state, it belongs in a Controller.
+- **Tools to use:** flux(), computed(), batch().
+- **Relationship:** Controllers are usually singletons registered via Fluxy.register().
+
+### 2. UI & Design (.view.dart)
+**Rule:** Keep your build methods lean. They should only listen to signals and call controller methods.
+- **Tools to use:** Fx.text(), Fx.box(), Fx.row().
+- **Pattern:** Use Fx(() => ...) only around the specific text or widgets that need to change.
+
+### 3. Hardware & External Data (.repository.dart or .service.dart)
+**Rule:** Anything that talks to the internet or hardware modules (Geo, Camera).
+- **Tools to use:** Fx.http, Fx.platform.
+
+---
+
+## The Fluxy Implementation Lifecycle
+
+Follow these 4 steps every time you build a new feature:
+
+1.  **Contract (Registry)**: Register any new plugins in fluxy_registry.dart.
+2.  **Brain (Controller)**: Define the reactive state (flux) and functions.
+3.  **Skeleton (View Layout)**: Use Fx.page or Fx.scaffold to create the structure.
+4.  **Bridges (Reactivity)**: Wrap your UI nodes in Fx() to connect them to the Controller's signals.
+
+---
+
+## The Fluxy Golden Rules
+
+1.  **Never use setState()**: Use flux signals instead.
+2.  **Never use TextEditingController**: Use flux("") + Fx.field(signal: name).
+3.  **Wrap Small, Not Big**: Don't wrap your whole page in Fx(). Wrap only the specific text or icon that changes. This ensures 120Hz performance.
+4.  **Use Kill-Switches**: If you are adding a risky new feature, wrap it in Fx.feature('key') immediately.
+
+---
+
+### Need a Practical Example?
+Check out the [Feature Catalog](/docs/feature-catalog) to see which tools to pick for your next implementation step.

@@ -51,3 +51,67 @@ FxLayout(
   },
 )
 ```
+
+---
+
+## The Master Responsive Implementation
+
+In a professional application, you need to adapt your UI strategy based on available space. Here is a complex "Dashboard Shell" demonstrating Fluxy's responsive layout engine.
+
+```dart
+class DashboardShell extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Fx.layout(
+      // 1. Mobile Strategy: Stacked layout with bottom navigation
+      mobile: (context) => Fx.col(
+        children: [
+          HeaderWidget(),
+          Fx.box().h(10),
+          StatsGrid(columns: 1),
+          RecentActivityList(),
+          Spacer(),
+          MobileBottomBar(),
+        ],
+      ).p(16),
+      
+      // 2. Tablet Strategy: Side-by-side grid with larger margins
+      tablet: (context) => Fx.row(
+        children: [
+          NavigationRail(),
+          Fx.col(
+            children: [
+              HeaderWidget(),
+              StatsGrid(columns: 2),
+              RecentActivityList(),
+            ],
+          ).expand().p(24),
+        ],
+      ),
+
+      // 3. Desktop Strategy: Full sidebar with multi-column stats
+      desktop: (context) => Fx.row(
+        children: [
+          DesktopSidebar(),
+          Fx.col(
+            children: [
+              HeaderWidget(),
+              Fx.row(
+                gap: 20,
+                children: [
+                  StatsGrid(columns: 4).expand(flex: 2),
+                  NotificationsPanel().expand(),
+                ],
+              ),
+              RecentActivityList(),
+            ],
+          ).expand().p(32),
+        ],
+      ),
+    );
+  }
+}
+```
+
+Fluxy's `Fx.layout` automatically listens to device orientation and size changes, triggering atomic rebuilds only where necessary.
+

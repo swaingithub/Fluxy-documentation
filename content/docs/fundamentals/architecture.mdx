@@ -98,8 +98,101 @@ graph LR
     end
 ```
 
-## Structural Recursion (ParentData Preservation)
+---
 
-Fluxy's engine is designed to be "layout aware." It uses **Structural Recursion** to correctly handle Flutter's `ParentData` requirements. 
+## The Master Feature Structure
 
-If you apply modifiers to widgets like `Expanded`, `Flexible`, or `Positioned`, Fluxy "peers through" these wrappers to apply styles to the inner child without breaking the communication between the layout widget and its parent (like a `Row` or `Stack`). This eliminates the common "Incorrect use of ParentDataWidget" errors.
+Fluxy enforces a "Feature-First" architecture. Instead of putting all controllers in one folder and all views in another, we group them by business utility. Here is a complete representation of a **Product Catalog** feature.
+
+### Folder Structure
+```text
+lib/
+└── features/
+    └── catalog/
+        ├── catalog.controller.dart  # Business Logic
+        ├── catalog.repository.dart  # Data Orchestration
+        ├── catalog.view.dart        # UI Layer 
+        └── widgets/                 # Child components
+            └── product_card.dart
+```
+
+### Implementation Example
+
+```dart
+// 1. DATA LAYER: catalog.repository.dart
+class CatalogRepository extends FluxRepository {
+  // Offline-first storage automatically managed
+  late final products = flux([], persistKey: 'cached_products');
+
+  Future<void> refresh() async {
+    final data = await Fx.http.get('/api/products');
+    products.value = data; // Triggers UI across the whole app
+  }
+}
+
+// 2. LOGIC LAYER: catalog.controller.dart
+class CatalogController extends FluxController {
+  final repo = use<CatalogRepository>();
+  final searchQuery = flux('', label: 'catalog_search');
+
+  // Computed: Real-time filtering with 0 listener boilerplate
+  late final filteredProducts = fluxComputed(() {
+    if (searchQuery.value.isEmpty) return repo.products.value;
+    return repo.products.value.where((p) => p.name.contains(searchQuery.value)).toList();
+  });
+
+  void onProductTap(Product p) => Fx.platform.haptics.heavy();
+}
+
+// 3. UI LAYER: catalog.view.dart
+class CatalogView extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // Controller is automatically found in the registry
+    final logic = use<CatalogController>();
+
+    return Fx.layout(
+      // Responsive layout: Mobile vs Tablet/Desktop
+      mobile: Fx.col(
+        children: [
+          Fx.field(logic.searchQuery).placeholder("Search..."),
+          
+          Fx(() => Fx.col(
+            children: logic.filteredProducts.value.map((p) => ProductCard(p)).toList(),
+          )).scrollable(),
+        ],
+      ),
+    );
+  }
+}
+```
+
+This structural pattern ensures that your code is modular, testable, and scales to hundreds of features without becoming a "Spaghetti" codebase. 
+
+---
+
+## Data vs Services (The Toolbelt vs The Manager)
+
+In Fluxy, we distinguish between **Repositories** (Data Layer) and **Services** (Infrastructure Layer).
+
+| Concept | Role | Example |
+| :--- | :--- | :--- |
+| **Repository** | **The Manager**: Owns feature-specific data (Products, Users). | `catalog.repository.dart` |
+| **Service** | **The Tool**: Provides global capabilities (Camera, Logs, Auth). | `auth.service.dart` |
+
+*   **Rule of Thumb**: If it manages your business models, it's a **Repository**. If it provides a generic hardware or utility function, it's a **Service**.
+
+---
+
+## Routing Strategy (Centralized vs Isolated)
+
+Fluxy does not mandate a specific location for routes. Choose the strategy that matches your team size.
+
+### 1. Centralized Strategy (Small Teams)
+Keep a single `lib/core/routes.dart` file. It's easier to see the entire application flow in one place.
+
+### 2. Isolated Strategy (Enterprise Teams)
+Each feature folder owns a `feature.route.dart` file. This prevents merge conflicts when 10+ developers are working on different modules simultaneously.
+
+> [!TIP]
+> Start with a **Centralized** route file. Only move to **Isolated** routes when your feature folder becomes complex or your team grows.

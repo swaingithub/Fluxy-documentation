@@ -1,0 +1,176 @@
+---
+title: Industrial Hardening
+description: Robustness, security, and stability suite for Fluxy.
+---
+
+# Fluxy Industrial Hardening Suite
+
+Fluxy is designed as a Production Shield. This guide explains how to use our enterprise-grade features to protect your application from crashes, security breaches, and resource leaks.
+
+---
+
+## 1. Emergency Kill-Switch (Feature Toggles)
+**The Concept:** If a specific feature (like Live Maps) has a bug in production, you can disable that feature instantly from your server instead of having the app crash. The rest of the app stays operational.
+
+### How to Implement:
+1.  **Define a Key:** Choose a name for your feature (e.g., 'maps_module').
+2.  **Wrap the UI:** Use the Fx.feature widget in your build method.
+3.  **The fallback:** Decide what the user sees when the feature is OFF (e.g., a "Coming Soon" message).
+
+```dart
+Fx.feature('maps_module', 
+  child: LiveMapWidget(),
+  fallback: Fx.text("Maps are undergoing maintenance.").muted(),
+)
+```
+
+**To Toggle via Code:**
+```dart
+FluxyFeatureToggle.kill('maps_module'); // Feature disappears instantly
+FluxyFeatureToggle.restore('maps_module'); // Feature comes back
+```
+
+---
+
+## 2. X-Ray Observability (Transparency)
+**The Concept:** Monitor the heartbeat of your state changes and UI frames to identify performance bottlenecks.
+
+### How to Use:
+Fluxy automatically tracks signals in the background. You can listen to the stream of events or check stats anytime.
+
+```dart
+// Check which signal is updating the most
+final signalLeaderboard = FluxyObservability.signalStats;
+
+// Rebuild Leaderboard
+final widgetStats = FluxyObservability.rebuildStats;
+```
+
+**Best Practice:** Check these stats during development. If a signal shows excessive updates, it likely indicates a logic error or infinite loop.
+
+---
+
+## 3. Graceful Sleep (Resource Efficiency)
+**The Concept:** High-energy hardware (GPS, Camera, Bluetooth) drains battery. Fluxy ensures these only stay active when needed using reference counting.
+
+### How to Implement:
+Use FluxyResource to wrap your expensive objects.
+
+```dart
+final highPrecisionGps = FluxyResource<GPSInstance>(
+  name: 'GPS Engine',
+  onStart: () => GPS.powerOn(),
+  onStop: (instance) => GPS.powerOff(),
+  idleTimeout: Duration(seconds: 10), // Wait 10s before sleeping
+);
+
+// In your Widget:
+void onShowMap() => highPrecisionGps.acquire(); // Counter +1
+void onHideMap() => highPrecisionGps.release(); // Counter -1
+```
+
+**The Process:** If multiple widgets acquire the GPS, it stays on. When the last widget releases it, Fluxy waits for the idleTimeout (Graceful Sleep). If no one re-acquires it, the hardware is shut down.
+
+---
+
+## 4. Stability Airbag (Error Boundaries)
+**The Concept:** A single layout error should not crash your entire application. Fluxy intercepts these errors and presents a recovery UI.
+
+### How to Implement:
+Wrap your main application or specific critical pages.
+
+```dart
+FluxyErrorBoundary(
+  child: DashboardView(),
+)
+```
+
+**Step-by-Step Recovery:**
+1.  **Intercept**: The boundary catches the error.
+2.  **Display**: A user-friendly error screen appears.
+3.  **Audit**: The error is automatically sent to the FluxyLogger pipeline.
+4.  **Restore**: The user can attempt to re-initialize the widget tree.
+
+---
+
+## 5. Layered Security (The Vault)
+**The Concept:** Standard mobile storage can be vulnerable on rooted devices. Fluxy adds an additional application-level XOR encryption layer.
+
+### How to Implement:
+1.  **Initialize**: Set a unique salt in your main().
+2.  **Vault operations**: Use FluxyVault instead of standard SharedPreferences.
+
+```dart
+// main.dart
+FluxyVault.init(salt: 'SECURE_FLUX_2026');
+
+// Anywhere in your app
+await FluxyVault.write('secret_auth_token', 'token_123');
+final token = await FluxyVault.read('secret_auth_token');
+```
+
+---
+
+## The Production Checklist
+---
+
+## The Production Shield Pattern
+
+In an industrial application, you should never trust a feature 100%. Use the **Production Shield** pattern to wrap critical business modules. This example shows how to protect a "Payment Engine" using the full Stability Suite.
+
+```dart
+class PaymentFeature extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // 1. Structural Crash Protection
+    return FluxyErrorBoundary(
+      fallback: (error) => Fx.text("Payment Center is currently unavailable.").center(),
+      child: Fx.col(
+        children: [
+          // 2. Remote Kill-Switch (Controlled via Cloud/Registry)
+          Fx.feature('payment_engine',
+            fallback: Fx.box(
+              padding: 20,
+              bg: Colors.orange.shade50,
+              child: Fx.text("Online payments are under maintenance. Please use Cash.").muted(),
+            ),
+            child: Fx.col(
+              children: [
+                Fx.text("Premium Checkout").h1(),
+                
+                // 3. Resource-Aware Logic (Biometrics)
+                Fx.button("Confirm Payment", onTap: () async {
+                  final biometric = Fx.platform.biometric;
+                  
+                  // Resource: Only power on hardware when needed
+                  final success = await biometric.authenticate(
+                    reason: 'Authorize Payment of \$49.00',
+                  );
+                  
+                  if (success) {
+                    processOrder();
+                  }
+                }),
+                
+                // 4. Secure Vault Storage (Level-2 XOR encryption)
+                Fx.link("View Receipt", onTap: () async {
+                  final token = await FluxyVault.read('last_transaction_id');
+                  openReceipt(token);
+                }),
+              ],
+            ),
+          ),
+          
+          // 5. Live Observability Badge (Development only)
+          if (Fx.isDebug) 
+            Fx(() => Fx.badge("Rebuilds: ${FluxyObservability.rebuildCount('checkout')}"))
+        ],
+      ),
+    );
+  }
+}
+```
+
+By following these patterns, you build a robust and stable application infrastructure that can survive crashes and handle remote emergency shutdowns gracefully.
+
+**By following these steps, you build a robust and stable application infrastructure.**

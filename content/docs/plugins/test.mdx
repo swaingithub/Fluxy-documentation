@@ -1,0 +1,132 @@
+---
+title: Test Engine (Industrial Debugging)
+description: Stability benchmarking and programmatic signal snapshots for production testing.
+---
+
+# Test Engine (Industrial Debugging)
+
+The `fluxy_test` module provides a comprehensive suite for auditing application stability, forcing edge-case layout crashes, and capturing programmatic state snapshots.
+
+## [GUIDE] Industrial Step-by-Step
+
+### 1. Installation (via CLI)
+Add the test module using the Fluxy CLI to maintain architectural integrity.
+```bash
+fluxy module add test
+```
+
+### 2. Managed Boot Sequence
+Ensure your `main.dart` is configured with the mandatory three-step boot sequence.
+```dart
+import 'package:fluxy/fluxy.dart';
+import 'core/registry/fluxy_registry.dart'; 
+
+void main() async {
+  await Fluxy.init();
+  Fluxy.registerRegistry(() => registerFluxyPlugins()); 
+  Fluxy.autoRegister(); // Boots sensory core
+  runApp(MyApp());
+}
+```
+
+### 3. Usage (Unified API)
+Access the module through the direct `Fx.test` helper.
+
+```dart
+void captureState() {
+  // 1. Capture snapshot of all labeled signals
+  final snapshot = FluxRegistry.captureSnapshot();
+  print("Current App State Map: $snapshot");
+  
+  // 2. Restore later (Time Travel / Debugging)
+  FluxRegistry.restoreSnapshot(snapshot);
+  Fx.toast.info("State Restored");
+}
+
+void forceCrashAudit() {
+  // Triggers a simulated industrial failure that the Stability Kernel intercepts
+  FluxyError.report('SIMULATED_FAILURE', StackTrace.current);
+}
+```
+
+---
+
+## Stability Benchmarks
+
+One of the most powerful features of the Test engine is the `FluxyCrashTestSuite`. This is an in-app utility designed to intentionally trigger "Classic Flutter" crashes (like Unbounded Scroll or Infinite Flex) to verify the Resilience of the Fluxy Stability Kernel.
+
+```dart
+// Adding the test suite to a developer menu
+Fx.button("Stability Benchmark", onTap: () {
+  Fx.toNamed('/dev/stability', arguments: const FluxyCrashTestSuite());
+});
+```
+
+The Stability Kernel (underneath the test module) intercepts these common layout errors and automatically fixes them by injecting `Expanded` or `Clip` widgets, keeping your production app running even under stress.
+
+---
+
+## The Master Test & Snapshot Implementation
+
+In a professional application, the test engine is used to build custom "Developer Tools" for in-app QA and regression testing. Here is a complex "QA Console" demonstrating best practices for state inspection.
+
+```dart
+class QAController extends FluxController {
+  final snapshots = flux<List<Map<String, dynamic>>>([]);
+  final lastStabilityReport = flux<String>('All systems optimal');
+
+  @override
+  void onInit() {
+    super.onInit();
+    // 1. Subscribe to Stability Kernel events
+    fluxEffect(() {
+      final fixesApplied = FluxyStabilityMetrics.totalFixesApplied.value;
+      if (fixesApplied > 0) {
+        lastStabilityReport.value = "Kernel Intercepted $fixesApplied layout issues.";
+      }
+    });
+  }
+
+  void saveCurrentState() {
+    // 2. Capture a deep snapshot of the app state
+    final appSnapshot = FluxRegistry.captureSnapshot();
+    
+    // 3. Store for time travel
+    final currentList = List<Map<String, dynamic>>.from(snapshots.value);
+    currentList.add(appSnapshot);
+    snapshots.value = currentList;
+    
+    Fx.toast.success("State Hydrated & Captured");
+  }
+
+  void rollbackTo(int index) {
+    // 4. Time travel back to a previous captured state
+    final targetSnapshot = snapshots.value[index];
+    FluxRegistry.restoreSnapshot(targetSnapshot);
+    Fx.toast.info("State Rollback Successful");
+  }
+}
+
+// 5. In-App Performance Monitor (UI)
+class QASnapshotList extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final qa = Fluxy.use<QAController>();
+    
+    return Fx(() => Fx.col(
+      gap: 12,
+      children: [
+        Fx.text(qa.lastStabilityReport.value).bold().red(),
+        
+        ...qa.snapshots.value.asMap().entries.map((entry) => 
+          "Rollback to Snapshot #${entry.key}".outlineBtn(
+             onTap: () => qa.rollbackTo(entry.key)
+          )
+        ).toList(),
+      ],
+    ).scrollable());
+  }
+}
+```
+
+By centralizing all hardware knowledge under the `Fx.test` helper, you ensure that your diagnostics and analytics are consistent and easy to maintain across all target platforms.

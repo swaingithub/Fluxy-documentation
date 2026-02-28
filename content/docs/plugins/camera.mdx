@@ -1,14 +1,51 @@
 ---
 title: Camera
-description: A high-performance camera plugin for Fluxy with built-in UI components for scanning and capturing.
+description: High-performance camera integration with managed UI and lifecycle.
 ---
 
 # Camera
 
-The Fluxy Camera plugin simplifies camera integration by providing pre-built modals and streamlined controller management. It is optimized for real-time preview and fully integrated with the `FxImage` engine.
+The Fluxy Camera plugin simplifies camera integration by providing pre-built modals and streamlined controller management. It is fully integrated with the `FxImage` engine.
 
-## Full View Modal
+## [GUIDE] Industrial Step-by-Step
 
+### 1. Installation (via CLI)
+Add the camera module using the Fluxy CLI to maintain architectural integrity.
+```bash
+fluxy module add camera
+```
+
+### 2. Managed Boot Sequence
+Ensure your `main.dart` is configured with the mandatory three-step boot sequence.
+```dart
+import 'package:fluxy/fluxy.dart';
+import 'core/registry/fluxy_registry.dart'; 
+
+void main() async {
+  await Fluxy.init();
+  Fluxy.registerRegistry(() => registerFluxyPlugins()); 
+  Fluxy.autoRegister(); // Boots camera and permission handlers
+  runApp(MyApp());
+}
+```
+
+### 3. Usage (Unified API)
+Access the module through the stable `Fx.platform` gateway.
+
+```dart
+// Open managed capture UI
+final XFile? photo = await Fx.platform.camera.fullView(context: context);
+
+if (photo != null) {
+  print("Captured: ${photo.path}");
+}
+```
+
+---
+
+## Core Functionality
+
+### 1. Full View Modal
 The most common use case is opening a full-screen camera view to capture photos or scan codes.
 
 ```dart
@@ -18,54 +55,119 @@ final XFile? photo = await Fx.platform.camera.fullView(
 );
 ```
 
-## Inline Camera
-
+### 2. Inline Camera
 For custom layouts, use the `FxCamera` widget:
 
 ```dart
-Fx.col().children([
-  FxCamera(
-    onCapture: (file) => print("Saved to ${file.path}"),
-    controller: myController,
-  ).h(300).rounded(20),
-  
-  Fx.button("Switch Camera").onTap(() => myController.toggleLens()),
-]);
+FxCamera(
+  onCapture: (file) => print("Saved to ${file.path}"),
+  controller: myController,
+).h(300).rounded(20);
 ```
 
-## Features
+---
 
+## Features
 - **Quick UI**: Open a professional camera interface with one call.
 - **Smart Constraints**: Automatically handles aspect ratios and orientations.
-- **Low Latency**: Optimized for real-time scanning and preview.
+- **Permissions**: Manages permissions gracefully—requested on first call.
 
-## Permissions
+---
 
-Fluxy Camera manages permissions gracefully. It will request camera and gallery access on the first call if not already granted.
+## The Wrong Way vs. The Right Way
+
+| Feature | [WRONG] The Outdated Way | [RIGHT] The Fluxy Standard |
+| :--- | :--- | :--- |
+| **Plugin Access** | `FluxyPluginEngine.find<FluxyCameraPlugin>()` | `Fx.platform.camera` |
+| **Capture UI** | Building custom CameraPreview stacks | `await Fx.platform.camera.fullView()` |
+| **Lifecycle** | Manually disposing `CameraController` | Managed by framework on view close |
+| **Permissions** | Checking `permission_handler` manually | Automatic checking inside `fullView` |
+
+---
+
+## Pitfalls & Troubleshooting
+
+### 1. "Black screen on camera open"
+*   **The Cause**: Running on an emulator without a virtual camera set up.
+*   **The Fix**: Ensure your emulator has a "Back" camera enabled in settings.
+
+### 2. "Camera doesn't initialize on first tap"
+*   **The Cause**: Missing cold boot initialization or `main()` sequence error.
+*   **The Fix**: Ensure you are calling `await Fluxy.init()` and `Fluxy.autoRegister()` in your `main()`.
+
+### 3. "Memory spike after taking 20+ photos"
+*   **The Cause**: Storing high-resolution files without clearing cache.
+*   **The Fix**: Use `Fx.platform.camera.disposeCache()` and clean up temporary files if not needed.
+
+---
+
+## Best Practices
+1. **Contextual Permissions**: Only trigger `fullView()` when the user explicitly clicks a "Scan" or "Capture" button.
+2. **Dispose Assets**: Use `Fx.storage` to track and clean up old photos periodically.
+3. **Handle No-Hardware**: Always check `Fx.platform.camera.cameras.isEmpty` to show a fallback message.
+
+---
+
+## The Master Camera Implementation
+
+In a professional application, the camera is orchestrated within `FluxController` to handle permissions, capture, and subsequent processing (like uploading or AI scanning). Here is a complex "Profile Photo" implementation.
 
 ```dart
-if (await Fx.platform.camera.hasPermission()) {
-  // ready to go
+class ProfilePhotoController extends FluxController {
+  final photo = flux<XFile?>(null);
+  final isUploading = flux(false);
+
+  Future<void> updateAvatar() async {
+    // 1. Open the managed camera UI
+    final XFile? captured = await Fx.platform.camera.fullView(
+      context: Fx.context,
+      enableAutoCapture: false, // Wait for user trigger
+    );
+
+    if (captured != null) {
+      photo.value = captured;
+      await _uploadToCloud(captured);
+    }
+  }
+
+  Future<void> _uploadToCloud(XFile file) async {
+    isUploading.value = true;
+    try {
+      // 2. Perform the upload via Fluxy Networking
+      await Fx.http.postFile('/api/user/avatar', file: file);
+      Fx.toast.success("Avatar Updated Successfully");
+    } catch (e) {
+      Fx.log.fatal("Upload Interrupted", error: e);
+    } finally {
+      isUploading.value = false;
+    }
+  }
+}
+
+// UI Layer
+class AvatarWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final controller = Fluxy.use<ProfilePhotoController>();
+    
+    return Fx.stack([
+      // 3. Dynamic Preview with reactive state
+      Fx(() => Fx.avatar(
+        image: controller.photo.value?.path,
+        fallback: "User",
+        size: FxAvatarSize.xl,
+      ).loading(controller.isUploading.value)),
+      
+      // 4. Trigger Button
+      Fx.iconButton(Icons.camera_alt, onTap: controller.updateAvatar)
+        .bg(Fx.primary)
+        .white()
+        .rounded.full()
+        .positioned(bottom: 0, right: 0),
+    ]);
+  }
 }
 ```
 
-## Advanced Configuration
-
-You can customize the camera behavior during initialization:
-
-```dart
-Fluxy.init(
-  plugins: [
-    FluxyCameraPlugin(
-      resolution: ResolutionPreset.ultraHigh, // 4K support
-      enableAudio: true,
-    ),
-  ],
-);
-```
-
-## Best Practices
-1. **Contextual Permissions**: Only trigger `fullView()` or check permissions when the user explicitly clicks a "Scan" or "Capture" button.
-2. **Dispose Assets**: If you captured local files to temporary storage, use `Fx.storage` to track them and clean up old photos periodically.
-3. **Handle No-Hardware**: Always check `Fx.platform.camera.cameras.isEmpty` to show a fallback message for devices without working lenses (like older emulators).
+By centralizing all hardware knowledge under the `Fx.platform.camera` helper, you ensure that your diagnostics and analytics are consistent and easy to maintain across all target platforms.
 

@@ -1,0 +1,108 @@
+---
+title: Advanced Components
+description: Professional-grade reactive charts, tables, and multimedia components.
+---
+
+# Advanced Components
+
+Fluxy goes beyond basic buttons and text. We provide a suite of premium, reactive components designed for high-end industrial dashboards.
+
+---
+
+## FxChart (Reactive DataViz)
+
+The `FxChart` component renders high-performance Bar and Line charts that animate automatically when their source signals update.
+
+```dart
+final revenueData = [
+  FxChartPoint(label: 'Jan', value: 450),
+  FxChartPoint(label: 'Feb', value: 890),
+  FxChartPoint(label: 'Mar', value: 320),
+].obs;
+
+FxChart(
+  data: revenueData,
+  type: FxChartType.line,
+  height: 250,
+  style: FxStyle(color: Colors.blue),
+)
+```
+
+### Key Features:
+- **Reactive Data**: Pass a `FluxList` or standard `List`, and the chart handles the updates.
+- **Built-in Animations**: Smooth transitions between data states.
+- **Line & Bar Modes**: Toggle visualization with the `type` parameter.
+
+---
+
+## FxTable (Data Grids)
+
+Render large datasets with zero boilerplate and reactive cells.
+
+```dart
+FxTable(
+  columns: ['ID', 'Product', 'Status'],
+  rows: [
+    ['001', 'Fluxy Engine', 'Operational'],
+    ['002', 'Vault Shield', 'Secured'],
+  ],
+  style: FxStyle(border: Border.all(color: Colors.grey[200])),
+)
+```
+
+---
+
+## Utility Components
+
+### FxShimmer (Loading States)
+Easily create professional skeleton loaders.
+```dart
+Fx.shimmer(
+  child: Fx.box().w(200).h(20).bg(Colors.grey[300]),
+)
+```
+
+### FxAvatar
+Highly customizable user avatars with fallback support.
+```dart
+Fx.avatar(
+  url: 'https://example.com/user.jpg',
+  placeholder: 'JD',
+  size: 48,
+)
+```
+
+---
+
+## Multimedia & Feedback
+
+### FxImage (Optimized)
+An enhanced image loader with built-in memory caching and fade-in effects.
+```dart
+Fx.image('logo.png').cover().rounded(12)
+```
+
+### FxDropdown
+A premium reactive dropdown that binds directly to a signal.
+```dart
+final selectedCategory = flux('Electronics');
+
+Fx.dropdown(
+  signal: selectedCategory,
+  items: ['Electronics', 'Furniture', 'Clothing'],
+)
+```
+
+---
+
+## The Master DSL Mapping
+
+Almost all advanced components can be styled using the standard chainable DSL:
+
+```dart
+Fx.image('header.jpg')
+  .h(200)
+  .width(double.infinity)
+  .shadow.md
+  .onTap(() => print("Image clicked"));
+```

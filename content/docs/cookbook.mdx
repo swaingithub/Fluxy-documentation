@@ -1,0 +1,126 @@
+---
+title: The Fluxy Cookbook
+description: Quick solutions for common development challenges using the Fluxy framework.
+---
+
+# The Fluxy Cookbook
+
+This is a collection of Recipes to solve common real-world problems. If you know what you want to build, but don't know which Fluxy tool to use, start here.
+
+---
+
+## Authentication & Security
+
+### How do I save a login token securely?
+- **Tool:** FluxyVault
+- **Solution:** Use the vault for encrypted storage instead of standard preferences.
+```dart
+// main.dart
+FluxyVault.init(salt: 'my_unique_app_salt');
+
+// controller.dart
+void saveToken(String token) async {
+  await FluxyVault.write('auth_token', token);
+}
+```
+
+### How do I securely hide features based on user permissions?
+- **Tool:** Fx.feature()
+- **Solution:** Wrap UI sections with feature keys that you can toggle from your Auth controller.
+```dart
+Fx.feature('admin_panel', 
+  child: AdminDashboard(),
+  fallback: AccessDeniedWidget()
+)
+```
+
+---
+
+## Performance & State
+
+### My UI is rebuilding too much when I update a list.
+- **Tool:** batch()
+- **Solution:** Wrap your multiple state changes in a single batch block.
+```dart
+batch(() {
+  list.add(item);
+  counter.value++;
+  isLoaded.value = true;
+}); // Rebuilds the UI exactly ONCE.
+```
+
+### How do I perform a heavy calculation without freezing the UI?
+- **Tool:** fluxWorker()
+- **Solution:** Offload the math to a worker signal that runs in a separate microtask.
+```dart
+final heavyResult = fluxWorker(() {
+  return performExpensiveMath(largeData);
+});
+```
+
+---
+
+## UI & Layout
+
+### How do I make my app look professional on Tablet and Mobile?
+- **Tool:** Fx.layout()
+- **Solution:** Use the responsive switcher instead of manual media queries.
+```dart
+Fx.layout(
+  mobile: MobileHome(),
+  tablet: TabletDashboard(),
+  desktop: DesktopSaaSView(),
+)
+```
+
+### How do I add a Success toast after a button click?
+- **Tool:** Fx.toast
+- **Solution:** Call the global feedback engine from your onTap.
+```dart
+Fx.primaryButton('Submit', onTap: () {
+  controller.submit();
+  Fx.toast.success('Record Saved!');
+});
+```
+
+---
+
+## Hardware & Battery
+
+### How do I use GPS without killing the user's battery?
+- **Tool:** FluxyResource (Graceful Sleep)
+- **Solution:** Use reference counting so the GPS turns off automatically when the user leaves the page.
+```dart
+final gps = FluxyResource<GPS>(
+  onStart: () => GPS.on(),
+  onStop: (i) => GPS.off(),
+  idleTimeout: Duration(seconds: 10),
+);
+
+// Map Page
+void onInit() => gps.acquire();
+void onDispose() => gps.release();
+```
+
+---
+
+## Real-Time Data
+
+### How do I bridge a standard WebSocket stream into my UI?
+- **Tool:** Stream Bridge pattern
+- **Solution:** Listen to the stream and push values into a signal.
+```dart
+final stockPrice = flux(0.0);
+
+void connectStockStream() {
+  myExternalStream.listen((price) => stockPrice.value = price);
+}
+
+// In UI
+Fx(() => Fx.text("\$${stockPrice.value}"))
+```
+
+---
+
+### Need more help?
+Check out the [Feature Catalog](/docs/feature-catalog) for the full technical list, or see our [Standard Implementation Patterns](/docs/architecture/patterns) for folder structure guidance.

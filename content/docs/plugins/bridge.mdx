@@ -1,0 +1,82 @@
+---
+title: Stream Bridge (Reactive)
+description: Connect existing Dart Streams to Fluxy signals with auto-disposal.
+---
+
+# Stream Bridge (Reactive)
+
+The `fluxy_stream_bridge` plugin provides a professional way to bring external data sources (like Firebase, MQTT, Bluetooth, or standard Dart `StreamController` data) into the Fluxy reactive ecosystem.
+
+## Installation
+
+Add the dependency to your `pubspec.yaml`:
+
+```yaml
+dependencies:
+  fluxy_stream_bridge: ^1.0.0
+```
+
+Or use the Fluxy CLI:
+
+```bash
+fluxy module add bridge
+```
+
+---
+
+## Key Features
+
+- **One-Liner Conversion**: Use `.toFlux()` on any Dart Stream to get a reactive signal.
+- **Auto-Disposal**: Subscriptions are automatically tracked and canceled when the app or module is disposed.
+- **Type-Safety**: Maintains full generic type safety during conversion.
+- **Framework Integration**: Wires into the `onDispose` lifecycle of the Fluxy engine.
+
+---
+
+## Usage
+
+### 1. Initialize
+Register the plugin in your main initialization flow.
+
+```dart
+Fluxy.register(FluxyStreamBridgePlugin());
+```
+
+### 2. Bridge a Stream
+Convert any stream to a Flux signal. This is perfect for listening to database changes.
+
+```dart
+// Example: Listening to Firestore or a Socket
+final notifications = FirebaseFirestore.instance
+    .collection('notifications')
+    .snapshots()
+    .toFlux([]); // Initial value is empty list
+
+// Now use it in UI
+Fx(() {
+  return Fx.text('You have ${notifications.value.length} alerts');
+});
+```
+
+### 3. Manual Piping
+If you prefer not to use extensions, use the plugin instance directly.
+
+```dart
+final bridge = use<FluxyStreamBridgePlugin>();
+final sensorData = bridge.pipe(mySensorStream, 0.0);
+```
+
+---
+
+## API Reference
+
+### Methods
+- `pipe<T>(stream, initialValue)`: Subscribes to a stream and returns a `Flux<T>`.
+- `toFlux(initialValue)`: (Extension) Convenient way to convert any `Stream<T>` to `Flux<T>`.
+
+---
+
+## Stability Features
+- **Subscription Tracking**: Every bridged stream is added to a managed registry. When you call `onDispose()` (handled automatically by Fluxy on app close), all listeners are zeroed out.
+- **Error Propagation**: Stream errors are captured and can be handled via standard Fluxy error pipelines.
+- **Lazy Evaluation**: The signal only maintains the *latest* value, ensuring memory efficiency even with high-frequency streams.

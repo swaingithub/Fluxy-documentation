@@ -7,7 +7,7 @@ description: Complete guide for upgrading from v0.2.5 to v0.2.6 - Industrial Log
 
 Fluxy v0.2.6 introduces **Industrial Log Professionalization** and **Experimental Guardrails**. This guide will help you migrate from v0.2.5 to v0.2.6.
 
-## 🚨 Breaking Changes
+## Breaking Changes
 
 ### 1. Professional Logging System
 The emoji-based logging system has been replaced with semantic bracketed tags for better readability and professional debugging.
@@ -15,7 +15,7 @@ The emoji-based logging system has been replaced with semantic bracketed tags fo
 ### 2. Experimental Feature Guardrails
 OTA, SDUI, and Cloud CLI features are now clearly marked as experimental with warnings.
 
-## 📋 Migration Steps
+## Migration Steps
 
 ### Step 1: Update Core Package
 Update your `pubspec.yaml`:
@@ -30,9 +30,9 @@ If you were monitoring specific emoji-based logs, update your log parsing:
 
 ```dart
 // Before (v0.2.5)
-// 🛡️ [KERNEL] Stability Kernel initialized
-// 📦 [SYS] Package system ready
-// 📸 [CAMERA] Camera module loaded
+// [KERNEL] Stability Kernel initialized
+// [SYS] Package system ready
+// [CAMERA] Camera module loaded
 
 // After (v0.2.6)
 // [KERNEL] [INIT] Stability Kernel initialized
@@ -55,16 +55,16 @@ If you're using experimental features, be aware of new warnings:
 flutter pub get
 ```
 
-## 🔄 Log System Changes
+## Log System Changes
 
 ### Before (v0.2.5)
 ```dart
 // Emoji-based logs
-🛡️ [KERNEL] Auto-repair applied to layout violation
-📦 [SYS] Plugin registry initialized
-📸 [CAMERA] Camera capture completed
-🔐 [AUTH] Authentication successful
-📡 [NETWORK] HTTP request completed
+// [KERNEL] Auto-repair applied to layout violation
+// [SYS] Plugin registry initialized
+// [CAMERA] Camera capture completed
+// [AUTH] Authentication successful
+// [NETWORK] HTTP request completed
 ```
 
 ### After (v0.2.6)
@@ -77,7 +77,7 @@ flutter pub get
 [NETWORK] [DATA] HTTP request completed
 ```
 
-## 🏷️ New Log Tag System
+## New Log Tag System
 
 ### System Components
 - `[KERNEL]` - Core stability kernel operations
@@ -96,7 +96,7 @@ flutter pub get
 ### Experimental Features
 - `[EXPERIMENTAL]` - Experimental feature usage warnings
 
-## ⚠️ Experimental Guardrails
+## Experimental Guardrails
 
 ### OTA (Over-the-Air) Updates
 ```dart
@@ -122,7 +122,7 @@ flutter pub get
 [EXPERIMENTAL] GitHub Actions generation is experimental
 ```
 
-## 🧪 Testing Your Migration
+## Testing Your Migration
 
 ### 1. Check Log Output
 Run your app and verify logs appear with new format:
@@ -147,7 +147,7 @@ Update any log monitoring systems to parse new format:
 
 ```dart
 // Update regex patterns
-// Old: /\[(🛡️|📦|📸|🔐|📡)\]/
+// Old: /\[(KERNEL|SYS|CAMERA|AUTH|NETWORK)\]/
 // New: /\[(KERNEL|SYS|DATA|IO)\]/
 ```
 
@@ -165,7 +165,7 @@ Update any log monitoring systems to parse new format:
 **Problem**: Log monitoring tools can't parse new format
 **Solution**: Update parsing regex to match new bracketed tag format
 
-## 🎯 Benefits of Migration
+## Benefits of Migration
 
 ### 1. Professional Logging
 - **Better Readability**: Clear semantic tags instead of emojis
@@ -184,7 +184,7 @@ Update any log monitoring systems to parse new format:
 - **Severity Levels**: Standardized log levels
 - **Diagnostic Clarity**: Better error tracking and debugging
 
-## 📞 Need Help?
+## Need Help?
 
 If you encounter issues during migration:
 
@@ -193,6 +193,6 @@ If you encounter issues during migration:
 3. **Ask Community**: [GitHub Discussions](https://github.com/swaingithub/fluxy/discussions)
 4. **Report Issues**: [GitHub Issues](https://github.com/swaingithub/fluxy/issues)
 
-## 🎉 You're Done!
+## You're Done!
 
 Once you've completed these steps, your app should be running on Fluxy v0.2.6 with the professional logging system and experimental guardrails. Enjoy the improved debugging experience!

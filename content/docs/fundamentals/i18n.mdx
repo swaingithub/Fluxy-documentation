@@ -1,0 +1,96 @@
+---
+title: Internationalization (i18n)
+description: Reactive multi-language support with pluralization and interpolation.
+---
+
+# Internationalization (i18n)
+
+Fluxy includes a high-performance, reactive translation engine. Unlike other solutions that require context-passing or complex configuration, Fluxy i18n is built directly into the reactivity model string-first.
+
+---
+
+## Setup & Configuration
+
+Load your translations into the `FluxyI18n` engine during application startup.
+
+```dart
+void main() {
+  FluxyI18n.load({
+    'en': {
+      'welcome': 'Welcome, {name}!',
+      'items': {
+        'zero': 'No items',
+        'one': 'One item',
+        'other': '{count} items'
+      }
+    },
+    'es': {
+      'welcome': '¡Bienvenido, {name}!'
+    }
+  });
+
+  runApp(MyApp());
+}
+```
+
+---
+
+## Reactive Usage
+
+Once loaded, any string in your application can be translated using the `.tr` extension.
+
+### Basic Translation
+```dart
+Fx(() => Fx.text('welcome'.tr))
+```
+
+### With Interpolation (Placeholders)
+```dart
+Fx(() => Fx.text('welcome'.trArgs({'name': 'John'})))
+```
+
+### Pluralization
+Fluxy automatically picks the correct string based on numeric count.
+```dart
+final itemCount = flux(0);
+
+Fx(() => Fx.text('items'.trPlural(itemCount.value)))
+```
+
+---
+
+## Changing Languages
+
+Changing the language is as simple as updating the `localeSignal`. Every widget in your app using a `.tr` extension will rebuild **immediately** to show the new language.
+
+```dart
+// Change to Spanish
+FluxyI18n.setLocale(Locale('es'));
+```
+
+---
+
+## UI Shortcuts
+
+Fluxy provides ultra-short syntax for common translation UI tasks.
+
+```dart
+// Way 1: Extension widget
+'welcome'.trText(style: Fx.h1)
+
+// Way 2: Inside Fx DSL
+Fx.text('welcome'.tr).bold()
+```
+
+---
+
+## Advanced: Shared Arguments
+
+You can pass reactive signals directly into translation arguments to create highly dynamic text.
+
+```dart
+final name = flux('Jane');
+Fx(() => Fx.text('welcome'.trArgs({'name': name.value})))
+```
+
+**Workflow Tip:** For production apps, we recommend storing your translation Maps in separate JSON files and loading them via `FluxyI18n.load(jsonDecode(fileContent))`.

@@ -9,6 +9,7 @@
     "devtools",
     "play",
     "cloud-builds",
+    "workspace-authority",
     "---Advanced & Future---",
     "ota-engine",
     "examples",

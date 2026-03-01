@@ -1,23 +1,23 @@
 ---
-title: FxBottomBar
+title: Fx.bottomNav (BottomBar)
 description: A pill-style, animated navigation bar for primary app shell navigation.
 ---
 
-# FxBottomBar
+# Fx.bottomNav (BottomBar)
 
-`FxBottomBar` is a navigation component designed for primary app shells. It features physics-based selection tracking and smooth transitions.
+`Fx.bottomNav` is a navigation component designed for primary app shells. It features physics-based selection tracking and smooth transitions using the `FxBottomBar` engine.
 
 ## Usage
 
 ```dart
-FxBottomBar(
-  selectedIndex: currentTab, // Signal<int>
-  items: [
-    FxBottomBarItem(icon: Icons.home, label: "Home"),
-    FxBottomBarItem(icon: Icons.search, label: "Search"),
-    FxBottomBarItem(icon: Icons.person, label: "Profile"),
-  ],
+Fx.bottomNav(
+  currentIndex: currentTab.value,
   onTap: (index) => currentTab.value = index,
+  items: [
+    BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+    BottomNavigationBarItem(icon: Icon(Icons.search), label: "Search"),
+    BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
+  ],
 )
 ```
 
@@ -25,10 +25,10 @@ FxBottomBar(
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
-| `selectedIndex` | `Signal<int>` | required | The active tab index. |
-| `items` | `List<FxBottomBarItem>` | required | List of navigation items. |
-| `onTap` | `ValueChanged<int>?` | `null` | Optional callback when tab is selected. |
-| `style` | `FxStyle?` | `null` | Custom styling for the bar container. |
+| `currentIndex` | `int` | required | The active tab index. |
+| `items` | `List<BottomNavigationBarItem>` | required | List of navigation items. |
+| `onTap` | `ValueChanged<int>` | required | Callback when tab is selected. |
+| `containerStyle` | `FxStyle?` | `null` | Custom styling for the bar container. |
 
 ---
 
@@ -43,28 +43,25 @@ class AppShellNavigation extends StatelessWidget {
     final activeTab = flux(0);
     final notificationCount = flux(3);
 
-    return Fx.bottomBar(
-      selectedIndex: activeTab,
+    return Fx(() => Fx.bottomNav(
+      currentIndex: activeTab.value,
       onTap: (i) => activeTab.value = i,
-      style: FxStyle(
+      containerStyle: FxStyle(
         bg: Colors.white.withOpacity(0.8),
         blur: 20, // Glassmorphic effect
         border: Border(top: BorderSide(color: Colors.slate200, width: 1)),
         p: 12,
       ),
       items: [
-        FxBottomBarItem(icon: Icons.grid_view_rounded, label: "Home"),
-        FxBottomBarItem(
-          icon: Icons.chat_bubble_outline_rounded, 
+        BottomNavigationBarItem(icon: Icon(Icons.grid_view_rounded), label: "Home"),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.chat_bubble_outline_rounded),
           label: "Messages",
-          // Integrated badge for navigation items
-          badge: Fx.badge(label: notificationCount.value.toString(), color: Colors.red),
         ),
-        FxBottomBarItem(icon: Icons.account_circle_outlined, label: "Profile"),
+        BottomNavigationBarItem(icon: Icon(Icons.account_circle_outlined), label: "Profile"),
       ],
-    );
+    ));
   }
 }
-```
 
 Fluxy's navigation system utilizes high-performance physics-based animations for selection indicators, providing a premium "liquid" feel that is characteristic of high-end industrial applications.

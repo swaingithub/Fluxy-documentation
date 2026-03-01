@@ -1,0 +1,105 @@
+---
+title: Fx.scaffold (Shell)
+description: The master container for screen-level layouts including AppBars, Drawers, and BottomBars.
+---
+
+# App Shell (Scaffold & Page)
+
+Fluxy provides high-level primitives for defining the structural skeleton of your screens. These replace the standard `Scaffold` with pre-configured defaults and improved reactive integration.
+
+## Fx.scaffold
+
+`Fx.scaffold` is a clean wrapper around Flutter's `Scaffold`. It allows you to define headers, footers, and floating actions without context-heavy boilerplate.
+
+```dart
+Fx.scaffold(
+  appBar: Fx.appBar(title: "Settings"),
+  body: SettingsPanel(),
+  floatingActionButton: Fx.button("SAVE").primary(),
+  bottomNavigationBar: Fx.bottomNav(...),
+)
+```
+
+## Fx.appBar
+
+A declarative header with industrial styling. It handles the alignment of titles and actions automatically.
+
+```dart
+Fx.appBar(
+  title: "Dashboard",
+  leading: Icon(Icons.menu).onTap(() => Fx.openDrawer()),
+  actions: [
+    Icon(Icons.search).onTap(() => _search()),
+    Icon(Icons.more_vert).onTap(() => _menu()),
+  ],
+)
+```
+
+## Fx.page (Web-First Container)
+
+`Fx.page` is a specialized scaffold pre-configured for web applications. It wraps your body content in a **responsive, centered container** with a maximum width, ensuring your app looks professional on ultra-wide monitors.
+
+```dart
+Fx.page(
+  maxWidth: 800, // Content is centered and restricted to 800px on desktop
+  child: Fx.col(
+    children: [
+      Fx.text("Welcome back").h1(),
+      LoginForm(),
+    ],
+  ),
+)
+```
+
+## API Reference
+
+| Component | Key Parameters | Purpose |
+| :--- | :--- | :--- |
+| `Fx.scaffold` | `appBar`, `body`, `drawer`, `bottomNavigationBar` | The root container for a screen. |
+| `Fx.appBar` | `title`, `leading`, `actions`, `centerTitle` | The standard header bar. |
+| `Fx.page` | `child`, `maxWidth`, `useContainer` | A "ready-to-go" layout for web/SaaS screens. |
+
+---
+
+## The Master Shell Implementation
+
+An industrial "Product View" using `Fx.page` with a sticky header and a floating call-to-action.
+
+```dart
+class ProductPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Fx.page(
+      maxWidth: 1200,
+      appBar: Fx.appBar(
+        titleWidget: Fx.row(
+          gap: 12,
+          children: [
+            Fx.icon(Icons.shopping_cart_outlined),
+            Fx.text("Industrial Store").bold(),
+          ],
+        ),
+        actions: [
+          Fx.avatar(fallback: "JD").onTap(() => Fx.to('/profile')),
+        ],
+      ),
+      child: Fx.col(
+        gap: 24,
+        children: [
+          Fx.img("product_hero.jpg").h(400).cover().rounded(24),
+          Fx.text("Fluxy SDK Enterprise").h1(),
+          Fx.text("The complete observability and performance shield.").muted(),
+          ProductSpecsGrid(),
+        ],
+      ).p(32),
+      floatingActionButton: Fx.button("BUY NOW")
+        .primary()
+        .shadowXL()
+        .animate(scale: 1.1, duration: 300.ms)
+        .loop(reverse: true),
+    );
+  }
+}
+```
+
+Fluxy's shell components ensure that your application hierarchy is flat, easy to read, and automatically optimized for both mobile and web viewports.

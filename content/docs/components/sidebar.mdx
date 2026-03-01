@@ -42,6 +42,25 @@ The `items` section is automatically scrollable using `Fx.list`, ensuring that l
 | `width` | `double` | `280` | The fixed horizontal width. |
 | `style` | `FxStyle` | `none` | Custom container styling. |
 
+## Fx.drawer
+
+When building for mobile, use `Fx.drawer` instead of `Fx.sidebar` to create an off-canvas navigation menu.
+
+```dart
+Fx.drawer(
+  width: 304, // Material 3 standard desktop/tablet drawer width
+  backgroundColor: Colors.white,
+  child: Fx.col(
+    children: [
+      DrawerHeaderWidget(),
+      NavigationList(),
+    ],
+  ),
+)
+```
+
+**Pro Tip**: You can integrate `Fx.drawer` into standard Flutter `Scaffold` or Fluxy's `Fx.scaffold` via the `drawer:` parameter. `Fx.dashboard` handles the drawer/sidebar switching automatically for you.
+
 ---
 
 ## The Master Sidebar Implementation

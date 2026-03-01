@@ -11,7 +11,22 @@ Use this dictionary to find the Fluxy equivalent of common Flutter components an
 
 ---
 
-## 1. Core Layout & UI
+## 1. High-Level Shell & App Architecture
+
+Fluxy defines the entire application skeleton with high-level builders that replace the verbose boilerplate of `MaterialApp` and `Scaffold`.
+
+| Flutter Component | Fluxy Equivalent | Advantage | Details |
+| :--- | :--- | :--- | :--- |
+| **`MaterialApp`** | **`FluxyApp`** | Built-in reactive theme matching, router integration, and global error handling. | [View Docs](/docs/installation#wrapping-your-app) |
+| **`Scaffold`** | **`Fx.scaffold()`** | Standard screen shell with pre-styled defaults and notch awareness. | [View Docs](/docs/components/shell#fxscaffold) |
+| **`AppBar`** | **`Fx.appBar()`** | Clean, declarative header with industrial styling and action registry. | [View Docs](/docs/components/shell#fxappbar) |
+| **`BottomNavigationBar`**| **`Fx.bottomNav()`** | Premium pill-style animated navigation. Context-free state binding. | [View Docs](/docs/components/bottom-bar) |
+| **`Drawer`** | **`Fx.sidebar()`** / **`.drawer()`**| Automatically switches between mobile Drawer and desktop Sidebar. | [View Docs](/docs/components/sidebar) |
+| **Web Main Container** | **`Fx.page()`** | Scaffolding with a centered container perfect for web splash/auth pages. | [View Docs](/docs/components/shell#fxpage-web-first-container) |
+
+---
+
+## 2. Core Layout & UI
 
 | Flutter Widget | Fluxy Syntax | Why use Fluxy? | Details |
 | :--- | :--- | :--- | :--- |
@@ -30,7 +45,7 @@ Use this dictionary to find the Fluxy equivalent of common Flutter components an
 
 ---
 
-## 2. Text & Typography
+## 3. Text & Typography
 
 | Flutter Style | Fluxy Modifier | Description | Details |
 | :--- | :--- | :--- | :--- |
@@ -42,7 +57,7 @@ Use this dictionary to find the Fluxy equivalent of common Flutter components an
 
 ---
 
-## 3. Lists, Grids & Scrolling
+## 4. Lists, Grids & Scrolling
 
 | Flutter Widget | Fluxy Syntax | Advantage | Details |
 | :--- | :--- | :--- | :--- |
@@ -56,7 +71,7 @@ Use this dictionary to find the Fluxy equivalent of common Flutter components an
 
 ---
 
-## 4. State & Logic
+## 5. State & Logic
 
 | Flutter / Provider Concept | Fluxy Equivalent | Description | Details |
 | :--- | :--- | :--- | :--- |
@@ -69,7 +84,7 @@ Use this dictionary to find the Fluxy equivalent of common Flutter components an
 
 ---
 
-## 5. Feedback & Hardening
+## 6. Feedback & Hardening
 
 | Flutter Component | Fluxy Syntax | Description | Details |
 | :--- | :--- | :--- | :--- |
@@ -82,7 +97,7 @@ Use this dictionary to find the Fluxy equivalent of common Flutter components an
 
 ---
 
-## 6. Advanced Layout Shelfs
+## 7. Advanced Layout Shelfs
 
 Fluxy provides high-level "Shelfs" that replace 100s of lines of boilerplate for common app architectures.
 
@@ -92,6 +107,21 @@ Fluxy provides high-level "Shelfs" that replace 100s of lines of boilerplate for
 | Custom Nav Bar Row | **`Fx.navbar()`** | Type-safe navigation header with action registry. | [View Docs](/docs/components/navbar) |
 | Vertical List + Header | **`Fx.sidebar()`** | Industrial-grade sidebar with auto-scrolling items. | [View Docs](/docs/components/sidebar) |
 | Responsive Value Logic | **`Fx.on(context)`** | Clean `mobile: child, desktop: child` switcher. | [View Docs](/docs/layout/responsive-design#fxon-utility) |
+
+---
+
+## 8. Common Components & Forms
+
+| Flutter Widget | Fluxy Syntax | Advantage | Details |
+| :--- | :--- | :--- | :--- |
+| **`ElevatedButton`** | **`Fx.button().primary()`** | Pre-styled, chainable buttons with loading states. | [View Docs](/docs/components/button) |
+| **`TextButton`** | **`Fx.button().ghost()`** | Clean text buttons without elevation. | [View Docs](/docs/components/button) |
+| **`TextField`** | **`Fx.input()`** / **`Fx.field()`** | Bound directly to reactives, integrated validation. | [View Docs](/docs/forms/input) |
+| **`DropdownButton`** | **`Fx.dropdown()`** | Fully styled dropdown that just requires a `Signal`. | [View Docs](/docs/forms/dropdown) |
+| **`Image.network`** | **`Fx.img()`** | Automatic caching, seamless loading/error states, and shapes. | [View Docs](/docs/components/image) |
+| **`CircleAvatar`** | **`Fx.avatar()`** | Instant sizing, fallback initials, and image support. | [View Docs](/docs/components/avatar) |
+| **`DataTable`** | **`Fx.table()`** | Boilerplate-free, responsive row handling. | [View Docs](/docs/components/table) |
+| **`Badge`** | **`Fx.badge()`** | Perfect industrial badges for status indicators. | [View Docs](/docs/components/badge) |
 
 ---
 

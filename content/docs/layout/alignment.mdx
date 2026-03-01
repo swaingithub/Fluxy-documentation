@@ -137,28 +137,39 @@ Fx.stack(
 
 ---
 
-## Layout Intelligence (Structural Recursion)
+## Alignment Modifiers
 
-Fluxy handles `ParentData` automatically, preventing common layout crashes.
+Fluxy provides chainable alignment modifiers that can be applied to any widget. This eliminates the need to wrap widgets in `Center` or `Align` manually.
 
-### Comparison
+### 1. `.center()`
+Centers the widget within its parent.
 
-**Standard Flutter (Explicit Wrapping)**
 ```dart
-Row(
-  children: [
-    Text("Title"),
-    Expanded(
-      child: Container(color: Colors.red),
-    ),
-  ],
-)
+Fx.text("Centered Content").center()
 ```
 
-**Fluxy DSL (Late Binding)**
+### 2. `.align()`
+Aligns the widget to a specific position or coordinate.
+
+```dart
+// Semantic alignment
+Fx.icon(Icons.close).align(Alignment.topRight)
+
+// Explicit offset alignment
+Fx.box().wh(40, 40).align(top: 10, right: 10)
+```
+
+### 3. `.expand()`
+A common alignment pattern where the widget takes up all available space.
+
 ```dart
 Fx.row().children([
-  Fx.text("Title"),
-  Fx.box().bg(Colors.red).expanded(),
+  Fx.text("Label"),
+  Fx.input().expand(), // Fills the rest of the row
 ])
 ```
+
+---
+
+## Architectural Note: Layout Intelligence
+Fluxy's **Semantic Parser** translates these modifiers into the correct Flutter widget tree (e.g., wrapping in `Align` or `Positioned` as needed) while ensuring that `ParentData` (like `Stack` or `ListView` context) is preserved correctly.

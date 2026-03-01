@@ -33,21 +33,77 @@ FxSwitcher(
 )
 ```
 
-## API Reference
+---
 
-### FxCheckbox
+## The Master Control Implementation
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `signal` | `Signal<bool>` | required | The reactive boolean state. |
-| `label` | `String?` | `null` | Context label text. |
-| `activeColor` | `Color?` | `primary` | Color when selected. |
-| `size` | `FxCheckboxSize` | `md` | Size token. |
+A professional settings panel demonstrating reactive switches and conditional logic.
 
-### FxSwitcher
+```dart
+class SettingsGroup extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final notifications = flux(true);
+    final soundEffects = flux(false);
+    final developerMode = flux(false);
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `signal` | `Signal<bool>` | required | The reactive boolean state. |
-| `activeColor` | `Color?` | `success` | Color when switched on. |
-| `inactiveColor` | `Color?` | `grey` | Track color when switched off. |
+    return Fx.box(
+      child: Fx.col(
+        gap: 16,
+        children: [
+          // 1. Primary Toggle
+          Fx.row(
+            main: MainAxisAlignment.spaceBetween,
+            children: [
+              Fx.col(
+                cross: CrossAxisAlignment.start,
+                children: [
+                  Fx.text("Push Notifications").font.md().bold(),
+                  Fx.text("Receive real-time system alerts").font.xs().muted(),
+                ],
+              ),
+              Fx.switcher(signal: notifications, activeColor: Colors.blue),
+            ],
+          ),
+
+          const Divider(),
+
+          // 2. Conditional Control
+          Fx(() => Fx.row(
+            main: MainAxisAlignment.spaceBetween,
+            children: [
+              Fx.text("Sound Effects").muted(!notifications.value),
+              Fx.switcher(
+                signal: soundEffects, 
+                activeColor: Colors.blue,
+                enabled: notifications.value, // Integrated disabled state
+              ),
+            ],
+          )),
+
+          const Divider(),
+
+          // 3. Checkbox Option
+          Fx.row(
+            children: [
+              Fx.checkbox(signal: developerMode),
+              Fx.text("Enable Kernel Debug Mode").font.sm().ml(12),
+            ],
+          ).onTap(() => developerMode.toggle()), // Easy toggle API
+          
+          Fx(() => developerMode.value 
+            ? Fx.text("WARNING: Debug mode exposes internal registers.").danger().font.xs().mt(8)
+            : const SizedBox.shrink()
+          ),
+        ],
+      )
+    )
+    .p(24)
+    .bg(Colors.white)
+    .rounded(16)
+    .border(1, Colors.slate100);
+  }
+}
+```
+
+Fluxy's boolean controls are optimized for high-density forms, providing immediate visual feedback and ensuring that state changes are synchronized across the entire application's signal registry.

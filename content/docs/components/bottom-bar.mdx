@@ -30,19 +30,41 @@ FxBottomBar(
 | `onTap` | `ValueChanged<int>?` | `null` | Optional callback when tab is selected. |
 | `style` | `FxStyle?` | `null` | Custom styling for the bar container. |
 
-## Customization
+---
 
-The bottom bar can be styled using standard Fluxy styles.
+## The Master Navigation Implementation
+
+A modern, glassmorphic bottom navigation bar with integrated notification badges.
 
 ```dart
-FxBottomBar(
-  style: FxStyle(
-    backgroundColor: Colors.white,
-    boxShadow: [BoxShadow(blurRadius: 10)],
-  ),
-  items: [
-    FxBottomBarItem(icon: Icons.home, label: "Home"),
-    FxBottomBarItem(icon: Icons.search, label: "Explore"),
-  ],
-)
+class AppShellNavigation extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final activeTab = flux(0);
+    final notificationCount = flux(3);
+
+    return Fx.bottomBar(
+      selectedIndex: activeTab,
+      onTap: (i) => activeTab.value = i,
+      style: FxStyle(
+        bg: Colors.white.withOpacity(0.8),
+        blur: 20, // Glassmorphic effect
+        border: Border(top: BorderSide(color: Colors.slate200, width: 1)),
+        p: 12,
+      ),
+      items: [
+        FxBottomBarItem(icon: Icons.grid_view_rounded, label: "Home"),
+        FxBottomBarItem(
+          icon: Icons.chat_bubble_outline_rounded, 
+          label: "Messages",
+          // Integrated badge for navigation items
+          badge: Fx.badge(label: notificationCount.value.toString(), color: Colors.red),
+        ),
+        FxBottomBarItem(icon: Icons.account_circle_outlined, label: "Profile"),
+      ],
+    );
+  }
+}
 ```
+
+Fluxy's navigation system utilizes high-performance physics-based animations for selection indicators, providing a premium "liquid" feel that is characteristic of high-end industrial applications.

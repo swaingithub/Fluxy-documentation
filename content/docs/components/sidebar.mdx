@@ -1,0 +1,95 @@
+---
+title: Fx.sidebar
+description: Industrial-grade sidebar navigation component.
+---
+
+# Fx.sidebar
+
+`Fx.sidebar` is a high-level layout primitive designed for desktop applications. It provides a vertical navigation shell with integrated support for headers, scrollable lists, and footer actions.
+
+## Basic Usage
+
+```dart
+Fx.sidebar(
+  header: Fx.text("Admin Panel").bold().p(24),
+  items: [
+    _sidebarLink(Icons.dashboard, "Dashboard"),
+    _sidebarLink(Icons.analytics, "Analytics"),
+    _sidebarLink(Icons.settings, "Settings"),
+  ],
+  footer: Fx.text("v1.1.0").muted().p(16),
+)
+```
+
+## Key Features
+
+### 1. Unified Structure
+The sidebar is divided into three distinct sections: `header`, `items` (which are automatically wrapped in an `Fx.list`), and a `footer`.
+
+### 2. Standard Width
+Defaults to **280px**, providing ample space for labels and icons while maintaining a professional desktop feel.
+
+### 3. Integrated Scrolling
+The `items` section is automatically scrollable using `Fx.list`, ensuring that long navigation menus don't overflow the screen.
+
+## API Reference
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `items` | `List<Widget>` | required | The main navigation links. |
+| `header` | `Widget?` | `null` | Optional top section (logo/branding). |
+| `footer` | `Widget?` | `null` | Optional bottom section (user/version). |
+| `width` | `double` | `280` | The fixed horizontal width. |
+| `style` | `FxStyle` | `none` | Custom container styling. |
+
+---
+
+## The Master Sidebar Implementation
+
+A reactive sidebar that changes styles based on the active route and user role.
+
+```dart
+class DesktopNavigation extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Fx.sidebar(
+      width: 300,
+      header: Fx.col(
+        children: [
+          Fx.image("assets/brand.png").w(120),
+          Fx.gap(10),
+          Fx.text("Enterprise Console").font.xs().bold().muted(),
+        ],
+      ).p(32),
+      items: [
+        _navItem(Icons.grid_view_rounded, "Overview", active: true),
+        _navItem(Icons.layers_outlined, "Modular Packages"),
+        _navItem(Icons.shield_outlined, "Security Vault"),
+        _navItem(Icons.hub_outlined, "Node Network"),
+      ],
+      footer: Fx.row(
+        children: [
+          CircleAvatar(radius: 12),
+          Fx.text("admin@fluxy.dev").ml(10).font.xs(),
+          Spacer(),
+          Icon(Icons.logout, size: 16),
+        ],
+      ).p(24).bg(Colors.slate50),
+      style: FxStyle(
+        backgroundColor: Colors.white,
+        border: Border(right: BorderSide(color: Colors.slate200)),
+      ),
+    );
+  }
+
+  Widget _navItem(IconData icon, String label, {bool active = false}) {
+    return Fx.row(
+      gap: 12,
+      children: [
+        Icon(icon, color: active ? Colors.blue : Colors.slate600, size: 20),
+        Fx.text(label).color(active ? Colors.blue : Colors.slate800).bold(active),
+      ],
+    ).p(12, 24).bg(active ? Colors.blue.withOpacity(0.05) : Colors.transparent).rounded(8).m(4, 16);
+  }
+}
+```

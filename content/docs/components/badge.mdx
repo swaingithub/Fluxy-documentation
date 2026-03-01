@@ -1,0 +1,123 @@
+---
+title: FxBadge
+description: A premium notification and status overlay component designed to provide visual alerts on any widget without breaking layout flow.
+---
+
+# FxBadge
+
+`FxBadge` is a high-integrity overlay system. Unlike a simple `Stack`, it uses Fluxy's structural recursion to ensure it remains correctly positioned even when wrapped in complex modifiers like `.padding()` or `.margin()`.
+
+## Usage
+
+```dart
+Fx.badge(
+  child: Icon(Icons.notifications_outlined),
+  label: "5",
+  color: Colors.red,
+)
+```
+
+## Variants
+
+Fluxy badges can be used as simple dots or complex labels.
+
+### 1. Status Dot
+Ideal for "online" status indicators or unread counts.
+```dart
+Fx.badge(
+  child: Fx.avatar(url: '...'),
+  label: "", // Empty label creates a dot
+  color: Colors.green,
+)
+```
+
+### 2. Numeric Counters
+Built-in support for dynamic counts.
+```dart
+Fx(() => Fx.badge(
+  child: Icon(Icons.shopping_cart),
+  label: cartCount.value.toString(),
+  color: Colors.blue,
+))
+```
+
+## Advanced Customization
+
+### Positioning
+Use the `offset` parameter to fine-tune the badge location relative to the top-right corner.
+
+```dart
+Fx.badge(
+  label: "PRO",
+  offset: Offset(8, -8),
+  color: Colors.amber,
+  child: Fx.container(...)
+)
+```
+
+### Custom Styling
+You can apply Fluxy atomic styles directly to the badge itself using the `style` parameter.
+
+```dart
+Fx.badge(
+  label: "HOT",
+  style: FxStyle(
+    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+    borderRadius: BorderRadius.circular(4), // Custom square-ish badge
+  ),
+  child: myImage,
+)
+```
+
+## API Reference
+
+### Properties
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `child` | `Widget` | required | The base widget being badged. |
+| `label` | `String` | required | The text to display inside the badge. |
+| `color` | `Color` | `primary` | Background color of the badge. |
+| `textColor` | `Color` | `white` | Label text color. |
+| `offset` | `Offset` | `Offset.zero` | Positional nudge. |
+| `show` | `bool` | `true` | Visibility toggle. |
+
+---
+
+## The Master Badge Implementation
+
+A professional notification center item with animated counts and conditional visibility.
+
+```dart
+class NotificationIcon extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final unreadCount = flux(12);
+
+    return Fx.button("").none.onTap(() => unreadCount.value = 0).child(
+      Fx(() => Fx.badge(
+        show: unreadCount.value > 0,
+        label: unreadCount.value > 99 ? "99+" : unreadCount.value.toString(),
+        color: Colors.deepOrange,
+        style: FxStyle(
+          border: Border.all(color: Colors.white, width: 2), // Ring effect
+          shadowMd: true,
+        ),
+        child: Fx.box(
+          child: Icon(Icons.mail_rounded, color: Colors.slate700, size: 28),
+        )
+        .bg(Colors.slate100)
+        .p(12)
+        .circle(),
+      )
+      .animate(
+        // The badge itself can be animated when the count changes
+        scale: unreadCount.value > 0 ? 1.0 : 0.0,
+        duration: 300.ms,
+      )),
+    );
+  }
+}
+```
+
+By leveraging `FxBadge`, you avoid the "Stack Drift" common in standard Flutter applications, ensuring your notifications are always exactly where they should be.

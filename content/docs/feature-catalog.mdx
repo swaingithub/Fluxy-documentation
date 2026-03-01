@@ -7,6 +7,9 @@ description: Complete exhaustive encyclopedia of every Fluxy feature, component,
 
 This is the Ultimate Index of Fluxy. Every single tool in the framework is listed here with its purpose and where to find detailed documentation.
 
+> **Searching for Flutter equivalents?**
+> If you are looking for things like `Container`, `Stack`, or `Provider`, check out the **[Flutter to Fluxy Dictionary](/docs/flutter-to-fluxy)** for a quick syntax mapping.
+
 ---
 
 ## 1. State & Reactivity (Fluxy Core)
@@ -16,12 +19,12 @@ The fundamental building blocks for your application's logic.
 | :--- | :--- | :--- | :--- |
 | **`flux(initial)`** | Signal | Define a reactive state unit. | [State Basics](/docs/fundamentals/state-management) |
 | **`persist: true`** | Modifier | Automatically save/load signal state to storage. | [Persistence](/docs/fundamentals/state-management#persistence) |
-| **`computed(() => ...)`** | Signal | Derived state that cached and updates automatically. | [Reactivity](/docs/fundamentals/reactive-engine) |
+| **`computed(() => ...)`** | Signal | Derived state that cached and updates automatically. | [Reactivity](/docs/fundamentals/reactivity) |
 | **`FluxEffect(() => ...)`**| Effect | Run side-effects (logging, API calls) when state changes. | [Effects](/docs/fundamentals/core-concepts#effects) |
 | **`batch(() => ...)`** | Utility | Group multiple state updates into one UI frame. | [Performance](/docs/fundamentals/performance) |
 | **`fluxSelector(obj, key)`**| Signal | Observe a specific property of a complex object. | [Selectors](/docs/fundamentals/state-management#selectors) |
 | **`fluxWorker(() => ...)`**| Utility | Run heavy logic in background micro-tasks. | [Workers](/docs/fundamentals/architecture) |
-| **`fluxField(label)`** | Signal | Specialized signal for form inputs with validation. | [Forms](/docs/forms) |
+| **`fluxField(label)`** | Signal | Specialized signal for form inputs with validation. | [Forms](/docs/forms/form) |
 | **`fluxList([])`** | Collection| Reactive list with specialized update methods. | [Advanced Control](/docs/fundamentals/advanced-control#reactive-lists) |
 | **`fluxHistory(val)`**| Collection| State with built-in Undo/Redo capability. | [Advanced Control](/docs/fundamentals/advanced-control#state-history-undo--redo) |
 | **`.tr` / `.trText()`**| Signal | Reactive internationalization extension. | [i18n Guide](/docs/fundamentals/i18n) |
@@ -34,16 +37,16 @@ The chainable modifiers and premium components for the visual layer of your app.
 
 | Feature | Purpose | Documentation |
 | :--- | :--- | :--- |
-| **`Fx.text("...")`** | Semantic typography with `.bold()`, `.h1()`, `.muted()`. | [Typography](/docs/style#typography) |
-| **`Fx.box()`** | Flexible container with `.bg()`, `.rounded()`, `.shadow()`. | [Containers](/docs/layout) |
-| **`Fx.col() / Fx.row()`**| Layout flexboxes with `.gap()` and `.align()`. | [Flex Layout](/docs/layout#flex) |
-| **`Fx.layout()`** | Multi-device switcher (Mobile/Tablet/Desktop). | [Responsive](/docs/layout#responsive) |
-| **`Fx.reveal()`** | Staggered entrance animations for content. | [Animations](/docs/style#animations) |
-| **`Fx.badge()`** | Standard reactive notification badge. | [Components](/docs/components/feedback) |
-| **`Fx.icon()`** | Simplified icon handler with reactive color/size. | [Icons](/docs/style#icons) |
-| **`Fx.loader()`** | Global industrial loading indicators. | [Feedback](/docs/components/feedback) |
-| **`Fx.toast`** | `success()`, `error()`, `info()` global alerts. | [Feedback](/docs/components/feedback#toast) |
-| **`Fx.field()`** | Self-binding input field (No controllers needed). | [Forms](/docs/forms) |
+| **`Fx.text("...")`** | Semantic typography with `.bold()`, `.h1()`, `.muted()`. | [Typography](/docs/components/text) |
+| **`Fx.box()`** | Flexible container with `.bg()`, `.rounded()`, `.shadow()`. | [Containers](/docs/components/box) |
+| **`Fx.col() / Fx.row()`**| Layout flexboxes with `.gap()` and `.align()`. | [Flex Layout](/docs/components/row-col-stack) |
+| **`Fx.layout()`** | Multi-device switcher (Mobile/Tablet/Desktop). | [Responsive](/docs/components/layout) |
+| **`Fx.reveal()`** | Staggered entrance animations for content. | [Animations](/docs/style/motion) |
+| **`Fx.badge()`** | Standard reactive notification badge. | [Components](/docs/feedback/badge) |
+| **`Fx.icon()`** | Simplified icon handler with reactive color/size. | [Icons](/docs/style/core-primitives#icons) |
+| **`Fx.loader()`** | Global industrial loading indicators. | [Feedback](/docs/feedback/loader) |
+| **`Fx.toast`** | `success()`, `error()`, `info()` global alerts. | [Feedback](/docs/feedback/toast) |
+| **`Fx.field()`** | Self-binding input field (No controllers needed). | [Forms](/docs/forms/input) |
 
 ---
 
@@ -85,7 +88,7 @@ Advanced modules you can add as your app grows.
 | **`fluxy_haptics`** | Sensory tactile feedback. | [Haptics](/docs/plugins/haptics) |
 | **`fluxy_device`** | Hardware & App Meta info. | [Device](/docs/plugins/device) |
 | **`fluxy_logger`** | Semantic audit trails. | [Logger](/docs/plugins/logger) |
-| **`fluxy_biometric`**| FaceID / Fingerprint. | [Biometric](/docs/plugins/biometric) |
+| **`fluxy_biometric`**| FaceID / Fingerprint. | [Biometric](/docs/plugins/biometrics) |
 
 ---
 

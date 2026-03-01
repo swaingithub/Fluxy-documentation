@@ -54,12 +54,72 @@ Fx.grid.gallery(
 )
 ```
 
-## API Reference
+---
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `children` | `List<Widget>` | required | Grid items. |
-| `gap` | `double` | `0` | Spacing between items. |
-| `minItemWidth` | `double` | `null` | (Auto only) Min width before wrapping. |
-| `style` | `FxStyle?` | `null` | Base grid style (esp. `gridCols`). |
-| `responsive` | `FxResponsiveStyle?` | `null` | Responsive overrides. |
+## The Master Grid Implementation
+
+A professional, responsive dashboard grid that adapts from a single-column list on mobile to a multi-column workspace on desktop.
+
+```dart
+class DashboardWorkspace extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Fx.grid.auto(
+      minItemWidth: 280, // Smart wrapping for consistency
+      gap: 20,
+      children: [
+        // 1. Large Statistics Card
+        _buildStatCard("Total Revenue", "$124,500", Icons.payments, Colors.green),
+        
+        // 2. Performance Card
+        _buildStatCard("App Stability", "99.98%", Icons.health_and_safety, Colors.blue),
+        
+        // 3. User Growth
+        _buildStatCard("New Users", "+1.2k", Icons.trending_up, Colors.purple),
+
+        // 4. Incident Report (Interactive)
+        Fx.box(
+          child: Fx.col(
+            children: [
+              Fx.text("Kernel Incidents").font.md().bold(),
+              Fx.text("0 detected in last 24h").muted().font.xs(),
+              Spacer(),
+              Fx.button("View Audit").outline.fullWidth().sizeSm(),
+            ],
+          )
+        )
+        .p(20)
+        .bg(Colors.white)
+        .rounded(16)
+        .border(1, Colors.slate100)
+        .h(160),
+      ],
+    ).p(24).bg(Colors.slate50).expanded();
+  }
+
+  Widget _buildStatCard(String title, String val, IconData icon, Color color) {
+    return Fx.box(
+      child: Fx.row(
+        children: [
+          Fx.box(child: Icon(icon, color: color)).circle().bg(color.withOpacity(0.1)).p(12),
+          Fx.gap(16),
+          Fx.col(
+            cross: CrossAxisAlignment.start,
+            children: [
+              Fx.text(title).muted().font.xs(),
+              Fx.text(val).font.xl().bold(),
+            ],
+          ),
+        ],
+      )
+    )
+    .p(24)
+    .bg(Colors.white)
+    .rounded(16)
+    .shadowSm()
+    .onTap(() => print("$title Tapped"));
+  }
+}
+```
+
+Fluxy grids are powered by advanced layout solvers that handle fractional pixel alignment and cross-axis stretching automatically, ensuring a pixel-perfect result on every device.

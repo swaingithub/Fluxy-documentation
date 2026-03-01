@@ -26,12 +26,96 @@ Automatically handles the transition between mobile (drawer) and desktop (sideba
 ### Stacking Context
 Operates as a high-level stacking context, ensuring that modals and overlays triggered from within the dashboard appear correctly above all other content.
 
-## API Reference
+---
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `sidebar` | `Widget` | required | Left navigation panel. |
-| `navbar` | `Widget` | required | Top header bar. |
-| `body` | `Widget` | required | Main content area. |
-| `sidebarWidth` | `double` | `280` | Width of the sidebar. |
-| `breakpoint` | `double` | `1024` | Width to switch to mobile drawer. |
+## The Master Dashboard Implementation
+
+A complete industrial-grade administration shell with multi-layer navigation, status header, and reactive workspace.
+
+```dart
+class IndustrialAdminPanel extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Fx.dashboard(
+      sidebarWidth: 300,
+      breakpoint: 1200, // Switch to mobile mode on smaller tablets
+      
+      // 1. Sidebar Definition
+      sidebar: Fx.box(
+        child: Fx.col(
+          children: [
+            // Brand Logo
+            Fx.row(
+              children: [
+                Icon(Icons.hub_rounded, color: Colors.blue, size: 32),
+                Fx.text("Fluxy Console").font.lg().bold().ml(12),
+              ],
+            ).p(24),
+            
+            Fx.gap(20),
+            
+            // Navigation Links
+            _sidebarLink(Icons.speed, "Performance", active: true),
+            _sidebarLink(Icons.security, "Security Audit"),
+            _sidebarLink(Icons.cloud_sync, "Real-time Sync"),
+            _sidebarLink(Icons.settings_suggest, "Kernel Config"),
+            
+            Spacer(),
+            
+            // Account Section
+            Fx.row(
+              children: [
+                Fx.avatar(fallback: "Admin"),
+                Fx.col(
+                  children: [
+                    Fx.text("System Admin").font.sm().bold(),
+                    Fx.text("Level 4 Clearance").font.xs().muted(),
+                  ],
+                ).ml(12),
+              ],
+            ).p(24).bg(Colors.slate50),
+          ],
+        )
+      ).bg(Colors.white).border(0, 1, 0, 0, Colors.slate200),
+
+      // 2. Navbar Definition
+      navbar: Fx.row(
+        main: MainAxisAlignment.spaceBetween,
+        children: [
+          Fx.text("System Overview").font.lg().bold(),
+          Fx.row(
+            gap: 16,
+            children: [
+              Fx.badge(label: "3", child: Icon(Icons.notifications_none)).onTap(() {}),
+              Fx.button("DEPLOY").primary.sizeSm(),
+            ],
+          ),
+        ],
+      ).p(16, 24).bg(Colors.white).border(0, 0, 1, 0, Colors.slate100),
+
+      // 3. Body Content
+      body: Fx.scroll(
+        child: Fx.col(
+          gap: 24,
+          children: [
+            _buildMetricsOverview(),
+            Fx.text("Recent System Logs").font.md().bold(),
+            _buildAuditTable(),
+          ],
+        ).p(32),
+      ),
+    );
+  }
+
+  Widget _sidebarLink(IconData icon, String label, {bool active = false}) {
+    return Fx.row(
+      children: [
+        Icon(icon, color: active ? Colors.blue : Colors.slate600, size: 20),
+        Fx.text(label).font.sm().bold(active).color(active ? Colors.blue : Colors.slate800).ml(12),
+      ],
+    ).p(12, 24).bg(active ? Colors.blue.withOpacity(0.05) : Colors.transparent).rounded(8).m(4, 16);
+  }
+}
+```
+
+By using `Fx.dashboard`, you offload the complex orchestration of responsive sidebars and viewports to the Fluxy kernel, allowing you to focus purely on business logic and data visualization.

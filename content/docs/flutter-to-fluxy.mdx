@@ -1,0 +1,131 @@
+---
+title: Flutter to Fluxy Dictionary
+description: A quick mapping guide for developers moving from standard Flutter syntax to Fluxy's atomic DSL.
+---
+
+# Flutter to Fluxy Dictionary
+
+If you are coming from standard Flutter, you might be looking for familiar widgets like `Container`, `Column`, or `Padding`. Fluxy provides semantic shorthands for these to reduce boilerplate and improve readability.
+
+Use this dictionary to find the Fluxy equivalent of common Flutter components and jump to their **In-depth Documentation**.
+
+---
+
+## 1. Core Layout & UI
+
+| Flutter Widget | Fluxy Syntax | Why use Fluxy? | Details |
+| :--- | :--- | :--- | :--- |
+| **`Container`** | **`Fx.box()`** | Atomic chaining for colors, borders, and shadows without `BoxDecoration`. | [View Docs](/docs/components/box) |
+| **`Padding`** | **`.p(16)`** | Direct modifier on any widget. No more nesting hell. | [View Docs](/docs/style/ui-dsl) |
+| **`Column`** | **`Fx.col()`** | Integrated **`gap`** property and intuitive alignment modifiers. | [View Docs](/docs/components/row-col-stack) |
+| **`Row`** | **`Fx.row()`** | Integrated **`gap`** and standard flex behavior. | [View Docs](/docs/components/row-col-stack) |
+| **`Stack`** | **`Fx.stack()`** | Cleaner layering with automated alignment helpers. | [View Docs](/docs/components/row-col-stack) |
+| **`SizedBox`** | **`Fx.gap(16)`** | Use `Fx.gap` for spacing and `.wh(w, h)` for fixed dimensions. | [View Docs](/docs/components/row-col-stack) |
+| **`Center`** | **`.center()`** / **`Fx.center()`**| A simple modifier available on all `Fx` components. | [View Docs](/docs/layout/alignment#1-center) |
+| **`Expanded`** | **`.expand()`** / **`Fx.expand()`**| Chainable modifier to fill available space in flex layouts. | [View Docs](/docs/components/row-col-stack) |
+| **`Opacity`** | **`.opacity(0.5)`** | Smooth, chainable visual modifier. | [View Docs](/docs/style/ui-dsl#visual-modifiers) |
+| **`SafeArea`** | **`Fx.safe()`** / **`.safe()`** | Handles notches and system bars with one call. | [View Docs](/docs/layout/layout-spacing#safe-area-management) |
+| **`InkWell` / `GestureDetector`**| **`.onTap(() => ...)`**| Add interactivity to *any* widget without wrapping. | [View Docs](/docs/style/ui-dsl#interactions--animations) |
+| **`Hero`** | **`Fx.hero()`** | Standard Hero transitions with simplified tagging. | [View Docs](/docs/style/motion#hero-transitions-fxhero) |
+
+---
+
+## 2. Text & Typography
+
+| Flutter Style | Fluxy Modifier | Description | Details |
+| :--- | :--- | :--- | :--- |
+| `TextStyle(fontWeight: FontWeight.bold)` | **`.bold()`** | Quick bold toggle. | [View Docs](/docs/components/text) |
+| `TextStyle(fontSize: 24)` | **`.font(24)`** / **`.h1()`** | Size tokens or direct values. | [View Docs](/docs/components/text) |
+| `TextStyle(color: Colors.grey)` | **`.muted()`** / **`.color()`**| Automatic semantic coloring. | [View Docs](/docs/components/text) |
+| `TextAlign.center` | **`.alignCenter()`** | Text alignment modifier. | [View Docs](/docs/components/text) |
+| `maxLines: 2` | **`.maxLines(2)`** | Direct overflow control. | [View Docs](/docs/components/text) |
+
+---
+
+## 3. Lists, Grids & Scrolling
+
+| Flutter Widget | Fluxy Syntax | Advantage | Details |
+| :--- | :--- | :--- | :--- |
+| **`SingleChildScrollView`**| **`Fx.scroll()`** | Simplified scroll container with better defaults. | [View Docs](/docs/components/layout) |
+| **`ListView.builder`** | **`Fx.list()`** | Automated virtualization and reactive item binding. | [View Docs](/docs/components/list) |
+| **`GridView`** | **`Fx.grid()`** | Responsive layouts (1, 2, 4 cols) in one line. | [View Docs](/docs/components/grid) |
+| **`RefreshIndicator`** | **`Fx.refresh()`** | Premium pull-to-refresh with industrial styling. | [View Docs](/docs/components/layout#advanced-scrolling) |
+| **`CustomScrollView`** | **`Fx.viewport()`** | Atomic viewport management using slivers. | [View Docs](/docs/components/layout#advanced-scrolling) |
+| **`SliverToBoxAdapter`**| **`Fx.sliver()`** | Automatically converts any widget into a sliver. | [View Docs](/docs/components/layout#advanced-scrolling) |
+| **`Wrap`** | **`Fx.wrap()`** | Semantic wrapping for chips and tags with gaps. | [View Docs](/docs/components/row-col-stack) |
+
+---
+
+## 4. State & Logic
+
+| Flutter / Provider Concept | Fluxy Equivalent | Description | Details |
+| :--- | :--- | :--- | :--- |
+| **`setState(() => ...)`** | **`.value = ...`** | Updating a signal automatically triggers local UI refresh. | [View Docs](/docs/fundamentals/reactivity) |
+| **`ValueNotifier`** | **`flux(initialValue)`** | The core reactive primitive of Fluxy. | [View Docs](/docs/fundamentals/reactivity) |
+| **`Provider.of<T>(context)`**| **`Fluxy.find<T>()`** | Global or scoped dependency injection. | [View Docs](/docs/fundamentals/dependency-injection) |
+| **`FutureBuilder`** | **`fluxAsync(() => ...)`** | Handling async data with elegant loading/error states. | [View Docs](/docs/fundamentals/reactivity) |
+| **`Navigator.push`** | **`Fx.to(page)`** | Type-safe, boilerplate-free navigation. | [View Docs](/docs/ecosystem/routing) |
+| **`undo / redo`** | **`fluxHistory()`** | State collection with built-in time travel. | [View Docs](/docs/fundamentals/advanced-control) |
+
+---
+
+## 5. Feedback & Hardening
+
+| Flutter Component | Fluxy Syntax | Description | Details |
+| :--- | :--- | :--- | :--- |
+| **`ScaffoldMessenger (SnackBar)`**| **`Fx.toast`** | `Fx.toast.success("Done!")` from anywhere. | [View Docs](/docs/feedback/toast) |
+| **`showDialog`** | **`Fx.dialog()`** | Semantic, styled overlay boxes. | [View Docs](/docs/feedback/dialog) |
+| **`CircularProgressIndicator`**| **`Fx.loader()`** | High-performance industrial loading animations. | [View Docs](/docs/feedback/loader) |
+| **`Shimmer` (v3 plugin)** | **`Fx.shimmer()`** | Native-backed kinetic loading skeletons. | [View Docs](/docs/components/shimmer) |
+| **`Error Boundary`** | **`FluxyErrorBoundary`**| Stability Kernel protection for widget crashes. | [View Docs](/docs/production/hardening) |
+| **`Feature Toggles`** | **`Fx.feature()`** | Remotely enable/disable UI sections. | [View Docs](/docs/production/hardening) |
+
+---
+
+## 6. Advanced Layout Shelfs
+
+Fluxy provides high-level "Shelfs" that replace 100s of lines of boilerplate for common app architectures.
+
+| Standard Flutter | Fluxy Shelf | Purpose | Details |
+| :--- | :--- | :--- | :--- |
+| Manual Sidebar + Appbar | **`Fx.dashboard()`** | Complete Admin shell with mobile/desktop parity. | [View Docs](/docs/components/dashboard) |
+| Custom Nav Bar Row | **`Fx.navbar()`** | Type-safe navigation header with action registry. | [View Docs](/docs/components/navbar) |
+| Vertical List + Header | **`Fx.sidebar()`** | Industrial-grade sidebar with auto-scrolling items. | [View Docs](/docs/components/sidebar) |
+| Responsive Value Logic | **`Fx.on(context)`** | Clean `mobile: child, desktop: child` switcher. | [View Docs](/docs/layout/responsive-design#fxon-utility) |
+
+---
+
+## The Power of Chaining
+
+In standard Flutter, you might write:
+
+```dart
+Padding(
+  padding: EdgeInsets.all(8.0),
+  child: Container(
+    width: 100,
+    height: 100,
+    decoration: BoxDecoration(
+      color: Colors.blue,
+      borderRadius: BorderRadius.circular(12),
+    ),
+    child: Center(
+      child: Text("Fluxy"),
+    ),
+  ),
+)
+```
+
+In **Fluxy**, you just type what you mean:
+
+```dart
+Fx.text("Fluxy")
+  .center()
+  .box
+  .wh(100, 100)
+  .bg(Colors.blue)
+  .rounded(12)
+  .p(8)
+```
+
+Fluxy's **Semantic Parser** translates these chains into an optimized, flat Flutter widget tree, giving you better performance and much cleaner code.

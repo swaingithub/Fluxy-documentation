@@ -39,10 +39,83 @@ FxButton("Submit", onTap: () {
 });
 ```
 
-## API Reference
+---
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `child` | `Widget` | required | The scrollable or layout widget containing inputs. |
-| `dismissKeyboardOnTap` | `bool` | `true` | Hides keyboard on outside tap. |
-| `autovalidate` | `bool` | `false` | Enables live validation feedback. |
+## The Master Form Implementation
+
+A complete industrial data entry form with sectioning, multi-field validation, and keyboard optimization.
+
+```dart
+class IndustrialRegistrationForm extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // 1. Defined Scoped Form Registry
+    final form = fluxForm({
+      "full_name": fluxField("").required().min(3),
+      "department": fluxField<String?>(null).required(),
+      "security_clearance": flux(false),
+    });
+
+    return Fx.form(
+      child: Fx.scroll(
+        child: Fx.col(
+          gap: 24,
+          children: [
+            // Header Image
+            Fx.img("assets/auth_banner.png").h(140).cover().rounded(16),
+            
+            Fx.text("Personnel Enrollment").font.xl().bold(),
+            
+            // Section: Basic Info
+            Fx.box(
+              child: Fx.col(
+                gap: 16,
+                children: [
+                   Fx.input(
+                    signal: form["full_name"],
+                    label: "Full Legal Name",
+                  ),
+                  Fx.dropdown<String>(
+                    signal: form["department"],
+                    items: ["Engineering", "Security", "Operations"],
+                    placeholder: "Select Department",
+                  ),
+                ],
+              )
+            ).p(20).bg(Colors.slate50).rounded(16),
+
+            // Section: Policy
+            Fx.row(
+              children: [
+                Fx.checkbox(signal: form["security_clearance"]),
+                Fx.text("Acknowledge Level-2 Access Protocols").font.xs().ml(12),
+              ],
+            ),
+            
+            Fx.gap(12),
+
+            // Submission
+            Fx.button("SUBMIT REGISTRATION")
+              .primary
+              .fullWidth()
+              .sizeLg()
+              .onTap(() {
+                if (form.validate()) {
+                    if (form["security_clearance"].value != true) {
+                        Fx.toast.error("Security clearance must be acknowledged");
+                        return;
+                    }
+                    Fx.toast.success("Registration Sent to Kernel");
+                } else {
+                    Fx.toast.warning("Please correct highlighted errors");
+                }
+              }),
+          ],
+        ).p(32),
+      ),
+    );
+  }
+}
+```
+
+Fluxy's form engine automatically manages focus nodes and scroll-into-view behavior, ensuring that validation errors are never hidden behind the keyboard and the user experience remains friction-less on mobile devices.

@@ -51,17 +51,61 @@ FxTableColumn(
 | `style` | `FxStyle?` | `null` | Custom table container style. |
 | `headerStyle` | `FxStyle?` | `null` | Custom header row style. |
 
-## Modifiers
+---
 
-The table supports standard `FxStyle` properties for padding, borders, and shadows.
+## The Master Table Implementation
+
+An industrial audit log table with striped rows, status badges, and interactive actions.
 
 ```dart
-FxTable<User>(
-  style: FxStyle(
-    padding: 20,
-    backgroundColor: Colors.white,
-    borderRadius: BorderRadius.circular(12),
-    boxShadow: [BoxShadow(blurRadius: 10)],
-  ),
-)
+class LogMonitorTable extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final logs = [
+      AppLog(id: "L-101", module: "AUTH", msg: "Login Success", level: "info"),
+      AppLog(id: "L-102", module: "DATA", msg: "Sync Interrupted", level: "warning"),
+      AppLog(id: "L-103", module: "KERN", msg: "OOM Near-Miss", level: "danger"),
+    ];
+
+    return Fx.table<AppLog>(
+      data: logs,
+      striped: true,
+      onRowTap: (log) => Fx.toast.info("Inspecting ${log.id}"),
+      columns: [
+        FxTableColumn(
+          header: "Module",
+          cellBuilder: (log) => Fx.text(log.module).bold().font.xs(),
+        ),
+        FxTableColumn(
+          header: "Message",
+          cellBuilder: (log) => Fx.text(log.msg).font.sm(),
+        ),
+        FxTableColumn(
+          header: "Level",
+          cellBuilder: (log) {
+            final color = log.level == 'danger' ? Colors.red : 
+                         log.level == 'warning' ? Colors.orange : Colors.blue;
+            return Fx.badge(label: log.level.toUpperCase(), color: color);
+          },
+        ),
+        FxTableColumn(
+          header: "Control",
+          cellBuilder: (log) => Fx.button("Audit").outline.sizeXs().onTap(() {}),
+        ),
+      ],
+      style: FxStyle(
+        bg: Colors.white,
+        rounded: 16,
+        border: Border.all(color: Colors.slate100),
+        shadowSm: true,
+      ),
+      headerStyle: FxStyle(
+        bg: Colors.slate50,
+        p: 16,
+      ),
+    );
+  }
+}
 ```
+
+Fluxy tables use a specialized virtualization engine that allows them to render thousands of rows with complex widgetry while maintaining a constant 60 FPS scroll performance.

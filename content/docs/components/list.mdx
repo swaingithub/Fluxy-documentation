@@ -1,0 +1,122 @@
+---
+title: Fx.list (ListBox)
+description: A high-performance, reactive list wrapper with automated virtualization and gap management.
+---
+
+# Fx.list (ListBox)
+
+`Fx.list` (internally `ListBox`) is Fluxy's primary collection renderer. It wraps Flutter's `ListView` but adds integrated reactive binding, automated gap injection, and simplified styling.
+
+## Basic Usage
+
+For static lists or simple reactive updates:
+
+```dart
+Fx.list(
+  gap: 12,
+  children: [
+    Fx.text("Item 1"),
+    Fx.text("Item 2"),
+    Fx.text("Item 3"),
+  ],
+)
+```
+
+## Builder Mode (Virtualization)
+
+For large datasets, use the builder pattern to ensure only visible items are rendered.
+
+```dart
+final users = flux<List<User>>([...]);
+
+Fx.list(
+  itemCount: users.value.length,
+  itemBuilder: (context, index) {
+    final user = users.value[index];
+    return UserTile(user: user);
+  },
+  gap: 8,
+)
+```
+
+## Key Features
+
+### 1. Zero-Boilerplate Gaps
+Unlike standard `ListView`, `Fx.list` applies gaps only *between* items. You don't need to manually check `if (index != last)` or use `ListView.separated`.
+
+### 2. Reactive Binding
+When used inside an `Fx()` builder, the list automatically responds to changes in the underlying signal.
+
+### 3. Integrated Tap Support
+Add a global tap handler to the list container without wrapping it in additional widgets.
+
+```dart
+Fx.list(
+  onTap: () => print("List clicked"),
+  children: [...],
+)
+```
+
+## API Reference
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `List<Widget>?` | `null` | Static list of children. |
+| `itemCount` | `int?` | `null` | Number of items for builder mode. |
+| `itemBuilder` | `IndexedWidgetBuilder?` | `null` | Item renderer for builder mode. |
+| `gap` | `double` | `0` | Spacing between items. |
+| `scrollDirection` | `Axis` | `Axis.vertical` | Scroll axis. |
+| `shrinkWrap` | `bool` | `false` | Whether the list should take minimum space. |
+| `physics` | `ScrollPhysics?` | `null` | Scroll physics. |
+
+---
+
+## The Master List Implementation
+
+An industrial "Activity Feed" using `Fx.list` with staggered entrance animations and complex list tiles.
+
+```dart
+class ActivityFeed extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final activities = flux([
+      Activity(title: "Kernel Update", time: "2m ago", type: "system"),
+      Activity(title: "New User: Sarah", time: "15m ago", type: "user"),
+      Activity(title: "Security Audit", time: "1h ago", type: "security"),
+    ]);
+
+    return Fx.list(
+      gap: 16,
+      children: activities.value.map((act) => 
+        Fx.row(
+          gap: 12,
+          children: [
+            _buildTypeIcon(act.type),
+            Fx.col(
+              cross: CrossAxisAlignment.start,
+              children: [
+                Fx.text(act.title).bold(),
+                Fx.text(act.time).muted().font.xs(),
+              ],
+            ).expand(),
+          ],
+        )
+        .p(16)
+        .bg(Colors.white)
+        .rounded(12)
+        .shadowSm()
+      ).toList(),
+    )
+    .animate(duration: 400.ms)
+    .reveal(); // Premium staggered entry
+  }
+
+  Widget _buildTypeIcon(String type) {
+    final color = type == 'security' ? Colors.red : Colors.blue;
+    return Fx.box(child: Icon(Icons.circle, size: 8, color: color))
+           .p(8).bg(color.withOpacity(0.1)).circle();
+  }
+}
+```
+
+Fluxy's `Fx.list` ensures that even the most complex reactive feeds remain stutter-free and easy to maintain.

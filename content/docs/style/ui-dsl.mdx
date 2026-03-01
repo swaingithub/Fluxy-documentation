@@ -114,6 +114,45 @@ Fx.text("Flash Sale!")
   ;
 ```
 
+## Visual Modifiers
+
+Fluxy provides industrial-grade visual modifiers that allow you to manipulate the appearance of any widget without deep nesting of `Opacity`, `BackdropFilter`, or `Clip` widgets.
+
+### Transparency & Contrast
+- **`.opacity(v)`**: Sets the transparency (0.0 to 1.0).
+- **`.grayscale()`**: Converts the widget to black and white.
+- **`.brightness(v)` / `.contrast(v)`**: Adjusts visual levels.
+
+```dart
+Fx.image("product.jpg")
+  .opacity(0.8)
+  .grayscale()
+```
+
+### Blur & Glassmorphism
+- **`.blur(v)`**: Applies a Gaussian blur to the widget content.
+- **`.glass()`**: A shortcut for the popular "Frosted Glass" effect.
+
+```dart
+Fx.box(child: Fx.text("Glass Card"))
+  .glass(intensity: 10, color: Colors.white.withOpacity(0.1))
+  .rounded(20)
+```
+
+### Clipping & Shapes
+- **`.clip()`**: Clips children to the border radius. Essential for boxes with images.
+- **`.circle()`**: Force-clips the widget into a circular shape.
+- **`.mask(path)`**: Applies a custom SVG or Path mask.
+
+```dart
+Fx.img("profile.jpg")
+  .square(80)
+  .circle() // Instant avatar shape
+  .border(2, Colors.white)
+```
+
+---
+
 ## Conditional Rendering
 
 ### Declarative Conditionals (New in 0.1.6)

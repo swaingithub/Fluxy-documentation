@@ -81,8 +81,53 @@ Fx.responsiveImage(
 )
 ```
 
-## Best Practices
-1. **Use Shimmers**: Always provide a loading state for network images to prevent layout shifts.
-2. **Compress Files**: When using `file://` sources from the camera, ensure you use the `resolution` parameter in the camera module to avoid loading 20MB images into memory.
-3. **Circle Crop**: Use the `.circle()` modifier for profile photos instead of manual border radius for perfect centering.
+---
+
+## The Master Image Implementation
+
+Building a high-performance, interactive gallery item with loading shimmers, error recovery, and hover filtering.
+
+```dart
+class GalleryItem extends StatelessWidget {
+  final String imageUrl;
+
+  GalleryItem({required this.imageUrl});
+
+  @override
+  Widget build(BuildContext context) {
+    final isHovered = flux(false);
+
+    return Fx.box(
+      child: Fx(() => Fx.img(imageUrl)
+        .w(double.infinity)
+        .h(300)
+        .fit(BoxFit.cover)
+        .loading(Fx.loader.shimmer(height: 300)) // Native shimmer
+        .error(Fx.col(
+            main: MainAxisAlignment.center,
+            children: [
+                Icon(Icons.image_not_supported, size: 40, color: Colors.grey),
+                Fx.text("Failed to load").muted().mt(8),
+            ],
+        ))
+        .animate(
+          blur: isHovered.value ? 5.0 : 0.0,
+          grayscale: isHovered.value ? 1 : 0,
+          duration: 400.ms,
+        )
+      )
+    )
+    .rounded(24)
+    .clip() // Ensures image doesn't bleed out of rounded corners
+    .onHover((v) => isHovered.value = v)
+    .onTap(() => Fx.toast.info("Image Selected"))
+    .animate(
+        scale: isHovered.value ? 1.05 : 1.0,
+        duration: 300.ms,
+    );
+  }
+}
+```
+
+Fluxy's image engine is designed for speed and reliability, ensuring that even complex visual effects like real-time bluring and scaling do not drop frames on lower-end devices.
 

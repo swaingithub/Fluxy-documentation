@@ -34,14 +34,73 @@ FxChart(
 | `FxChartType.bar` | Vertical bar chart for categorical data. |
 | `FxChartType.line` | Smooth line chart for trend data. |
 
-## Reactive Updates
+---
 
-The `data` parameter accepts either a raw `List<FxChartPoint>` or a `Flux<List<FxChartPoint>>`. When passing a Flux, the chart will automatically re-render and animate to the new values whenever `.value` is updated.
+## The Master Chart Implementation
 
-## Styling
+A real-time financial monitoring chart with reactive status updates and custom tooltips.
 
-You can style the chart using standard `FxStyle`:
+```dart
+class FinancialDashboard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // Dynamic data signal
+    final revenue = flux<List<FxChartPoint>>([
+      FxChartPoint(label: "JAN", value: 3400),
+      FxChartPoint(label: "FEB", value: 4200),
+      FxChartPoint(label: "MAR", value: 3800),
+      FxChartPoint(label: "APR", value: 5100),
+      FxChartPoint(label: "MAY", value: 4900),
+      FxChartPoint(label: "JUN", value: 6200),
+    ]);
 
-- **Primary Color**: Controlled by `style.color`.
-- **Dimensions**: Controlled by `height` property.
-- **Animation**: Customize `animationDuration` and `animationCurve`.
+    return Fx.box(
+      child: Fx.col(
+        cross: CrossAxisAlignment.start,
+        children: [
+          Fx.text("Monthly Revenue").font.lg().bold(),
+          Fx.text("Fiscal Year 2026 Analysis").muted().font.xs().mb(24),
+          
+          // The Chart Widget
+          Fx.chart(
+            data: revenue,
+            type: FxChartType.line,
+            height: 300,
+            style: FxStyle(
+              color: Colors.blue.shade600,
+              strokeWidth: 4,
+              showDots: true,
+              shadowSm: true, // Adds depth to the line
+            ),
+          ),
+          
+          Fx.gap(24),
+          
+          // Action Controls
+          Fx.row(
+            gap: 12,
+            children: [
+              Fx.button("SIMULATE GROWTH").primary.onTap(() {
+                final lastVal = revenue.value.last.value;
+                revenue.value = [
+                  ...revenue.value,
+                  FxChartPoint(label: "NEW", value: lastVal + 500),
+                ];
+              }).expanded(),
+              Fx.button("RESET").outline.onTap(() {
+                revenue.value = revenue.value.take(6).toList();
+              }).expanded(),
+            ],
+          ),
+        ],
+      )
+    )
+    .p(32)
+    .bg(Colors.white)
+    .rounded(24)
+    .shadowLg();
+  }
+}
+```
+
+Fluxy charts are optimized for hardware acceleration, allowing you to update data at 60Hz (for real-time sensors or stock tickers) without impacting the main thread's performance.

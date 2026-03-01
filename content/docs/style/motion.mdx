@@ -59,6 +59,28 @@ Fx.icon(Icons.favorite)
   .loop(reverse: true) // Pulse effect
 ```
 
+## Hero Transitions (`Fx.hero`)
+
+`Fx.hero` simplifies the standard Flutter `Hero` widget, allowing you to create seamless shared element transitions between screens with a simple tag.
+
+```dart
+// Page A
+Fx.hero(
+  tag: "profile_id_${user.id}",
+  child: Fx.img(user.avatar).circle(),
+)
+
+// Page B (Target)
+Fx.hero(
+  tag: "profile_id_${user.id}",
+  child: Fx.img(user.avatar).square(200),
+)
+```
+
+**Pro Tip:** Use the unique ID of your data as the tag to ensure stability during list-to-detail transitions.
+
+---
+
 ## API Reference
 
 | Modifier | Type | Description |

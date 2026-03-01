@@ -115,3 +115,40 @@ class DashboardShell extends StatelessWidget {
 
 Fluxy's `Fx.layout` automatically listens to device orientation and size changes, triggering atomic rebuilds only where necessary.
 
+---
+
+## Advanced Scrolling
+
+Fluxy provides industrial-grade scrolling primitives that solve common `RenderBox` vs `RenderSliver` conflicts and boilerplate.
+
+### Fx.refresh
+A premium pull-to-refresh wrapper that integrated with platform-specific haptics and styling.
+
+```dart
+Fx.refresh(
+  onRefresh: () async => await controller.sync(),
+  child: Fx.list(children: items),
+)
+```
+
+### Fx.viewport & Fx.sliver
+`Fx.viewport` provides an atomic CustomScrollView implementation. `Fx.sliver` is an intelligent wrapper that automatically converts any standard widget into a `SliverToBoxAdapter` if it's placed inside a viewport, preventing the classic "Sliver expected" crash.
+
+```dart
+Fx.viewport(
+  slivers: [
+    Fx.sliver(HeaderWidget()), // Auto-wraps in SliverToBoxAdapter
+    SliverList(delegate: ...),
+  ],
+)
+```
+
+### Fx.scrollCenter
+Simplifies the "Centered Form" pattern common in login screens. It handles the `SingleChildScrollView` + `Center` + `ConstrainedBox` boilerplate correctly, ensuring content is centered on large screens and scrollable on small ones.
+
+```dart
+Fx.scrollCenter(
+  child: LoginForm(),
+)
+```
+

@@ -39,7 +39,7 @@ Fx(() => Fx.text("Count is: ${count.value}"))
 
 ## Advanced Features
 
-### 1. Built-in Persistence
+## Persistence
 
 Fluxy v1.0.0 includes built-in state persistence with encryption:
 
@@ -51,7 +51,7 @@ final session = flux<User?>(null, key: 'auth_session', persist: true);
 Fx(() => Fx.text("Welcome, ${session.value?.name ?? 'Guest'}"))
 ```
 
-### 2. `fluxSelector` (Targeted Rebuilds)
+## Selectors
 
 Solves the "Riverpod Rebuild" problem by allowing you to listen to tiny parts of large objects.
 

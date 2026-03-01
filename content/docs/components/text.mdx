@@ -1,0 +1,150 @@
+---
+title: FxText
+description: The primary typography component in Fluxy, offering a fluent API for font sizing, weight, alignment, and semantic styling.
+---
+
+# FxText
+
+`FxText` replaces the standard `Text` widget with a more expressive, chainable API. It integrates directly with the Fluxy Design System's typography tokens.
+
+## Usage
+
+```dart
+Fx.text("Industrial Framework")
+  .font.xl2()
+  .bold()
+  .color(Colors.blue)
+  .center()
+```
+
+## Typography Modifiers
+
+Instead of using `TextStyle`, you use fluent proxies like `.font`.
+
+| Modifier | Description | Example |
+|----------|-------------|---------|
+| **Sizing** | Preset sizes from `xs` to `xl6`. | `.font.lg()`, `.font.xl3()` |
+| **Weight** | Bold, medium, semi-bold, etc. | `.bold()`, `.semiBold()`, `.light()` |
+| **Decoration**| Underline, line-through, italic. | `.italic()`, `.underline()` |
+| **Alignment** | Text alignment helpers. | `.center()`, `.right()`, `.justify()` |
+| **Spacing** | Letter and line spacing. | `.letterSpacing(2)`, `.lineHeight(1.5)` |
+
+## Semantic Helpers
+
+Fluxy includes semantic shorthands for common UI labels.
+
+```dart
+Fx.text("Subtitle").muted()   // Lowers opacity and font size
+Fx.text("Required").danger()  // Sets color to brand danger red
+Fx.text("Success").success()  // Sets color to brand success green
+```
+
+## Advanced Styling
+
+### 1. Gradients & Shaders
+```dart
+Fx.text("PREMIUM")
+  .font.xl5()
+  .bold()
+  .gradient([Colors.blue, Colors.purple])
+```
+
+### 3. Responsive Typography
+```dart
+Fx.text("Header")
+  .font(
+    mobile: 18,
+    tablet: 24,
+    desktop: 32
+  )
+```
+
+## API Reference
+
+### Properties
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `data` | `String` | required | The text to display. |
+| `style` | `FxStyle?` | `null` | Custom atomic style override. |
+| `maxLines` | `int?` | `null` | Max lines before truncating. |
+| `overflow` | `TextOverflow` | `clip` | How to handle text overflow. |
+
+### Font Sizes (Tokens)
+
+| Token | Size | Equivalent |
+|-------|------|------------|
+| `xs`  | 12   | Caption |
+| `sm`  | 14   | Body Small |
+| `md`  | 16   | Body (Default) |
+| `lg`  | 18   | Body Large |
+| `xl`  | 20   | H6 |
+| `xl2` | 24   | H5 |
+| `xl3` | 30   | H4 |
+| `xl4` | 36   | H3 |
+| `xl5` | 48   | H2 |
+| `xl6` | 60   | H1 |
+
+---
+
+## The Master Typography Implementation
+
+Creating a professional article header with orchestrated typography and semantic spacing.
+
+```dart
+class ArticleHeader extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Fx.col(
+      cross: CrossAxisAlignment.start,
+      children: [
+        // Category Label
+        Fx.row(
+          children: [
+            Fx.box().size(8, 8).bg(Colors.blue).circle(),
+            Fx.text("ENGINEERING REPORT")
+              .font.xs()
+              .semiBold()
+              .letterSpacing(2)
+              .color(Colors.blue)
+              .ml(8),
+          ],
+        ),
+        
+        Fx.gap(12),
+        
+        // Main Headline
+        Fx.text("Scaling Fluxy Connectivity to 10k Concurrent Sockets")
+          .font.xl4()
+          .bold()
+          .lineHeight(1.2),
+          
+        Fx.gap(8),
+        
+        // Sub-headline (Muted)
+        Fx.text("An in-depth analysis of how the Managed Runtime handles massive real-time data ingestion without frame drops.")
+          .font.md()
+          .muted()
+          .lineHeight(1.5),
+          
+        Fx.gap(24),
+        
+        // Author Attribution
+        Fx.row(
+          children: [
+            Fx.avatar(url: "https://api.dicebear.com/7.x/avataaars/svg?seed=Fluxy"),
+            Fx.col(
+              children: [
+                Fx.text("Sarah Jenkins").font.sm().bold(),
+                Fx.text("Principal Framework Architect").font.xs().muted(),
+              ],
+            ).ml(12),
+          ],
+        ),
+      ],
+    ).p(32).bg(Colors.slate50);
+  }
+}
+```
+
+Fluxy's typography system ensures that your text is not just content, but a strictly-designed part of your application's visual hierarchy.

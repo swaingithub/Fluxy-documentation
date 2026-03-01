@@ -1,0 +1,120 @@
+---
+title: Row, Col & Stack
+description: Advanced semantic containers for horizontal, vertical, and layered layouts with integrated gap management.
+---
+
+# Row, Col & Stack
+
+Fluxy provides high-level wrappers for Flutter's `Row`, `Column`, and `Stack` with integrated support for gaps, alignment shorthands, and recursive styling.
+
+## Fx.row & Fx.col
+
+The most common layout primitives. Unlike standard Flutter Rows/Cols, these support the `gap` property natively.
+
+### Usage
+
+```dart
+Fx.row(
+  gap: 16,
+  children: [
+    Fx.box().wh(40, 40).bg(Colors.blue),
+    Fx.box().wh(40, 40).bg(Colors.red),
+  ],
+)
+```
+
+### Alignment Shorthands
+
+| Modifier | Description | Shorthand |
+|----------|-------------|-----------|
+| `main` | Main Axis Alignment | `.main(MainAxisAlignment.center)` |
+| `cross`| Cross Axis Alignment | `.cross(CrossAxisAlignment.start)` |
+| `center()` | Centers on both axes | `.center()` |
+| `spread()` | Space Between | `.spread()` |
+
+## Fx.stack
+
+Used for layering widgets on top of each other.
+
+```dart
+Fx.stack(
+  children: [
+    Fx.image("background.jpg").cover(),
+    Fx.box().bg(Colors.black54), // Overlay
+    Fx.text("Header").center(),
+  ],
+)
+```
+
+## Advanced Composition
+
+You can chain any atomic modifier (padding, background, border) directly to these containers.
+
+```dart
+Fx.col(
+  gap: 20,
+  children: [ ... ]
+)
+.p(32)
+.bg(Colors.slate50)
+.rounded(24)
+.border(1, Colors.slate200)
+```
+
+## Performance Note
+
+Fluxy's layout containers use a **Lazy Gap Injection** mechanism. Gaps are only rendered between children, avoiding redundant spacing at the start or end of the list, which is more efficient than manual `SizedBox` insertions.
+
+---
+
+## The Master Flex Implementation
+
+A professional "Product Metric" component using nested Rows and Columns with precise alignment and spacing.
+
+```dart
+class MetricTile extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Fx.row(
+      main: MainAxisAlignment.spaceBetween,
+      children: [
+        // 1. Identification Cluster
+        Fx.row(
+          gap: 12,
+          children: [
+            Fx.box(child: Icon(Icons.analytics, color: Colors.blue))
+              .p(10).bg(Colors.blue.withOpacity(0.1)).circle(),
+            Fx.col(
+              cross: CrossAxisAlignment.start,
+              children: [
+                Fx.text("Core Throughput").bold().font.md(),
+                Fx.text("Kernel Engine v1.1").muted().font.xs(),
+              ],
+            ),
+          ],
+        ),
+
+        // 2. Data Cluster
+        Fx.col(
+          cross: CrossAxisAlignment.end,
+          children: [
+            Fx.row(
+              children: [
+                Icon(Icons.arrow_upward, color: Colors.green, size: 14),
+                Fx.text("14.2%").color(Colors.green).bold().font.sm(),
+              ],
+            ),
+            Fx.text("842 req/s").font.lg().bold(),
+          ],
+        ),
+      ],
+    )
+    .p(20)
+    .bg(Colors.white)
+    .rounded(16)
+    .shadowSm();
+  }
+}
+```
+
+Fluxy's semantic containers ensure that your layout logic is readable, maintainable, and highly performant across all platforms.

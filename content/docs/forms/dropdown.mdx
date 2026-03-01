@@ -66,8 +66,85 @@ FxDropdown(
 | `itemBuilder` | `Widget Function(T)?` | `null` | Custom widget builder for dropdown items. |
 | `responsive` | `FxResponsiveStyle?` | `null` | Responsive style overrides. |
 
-## Implementation Notes
+---
 
-- **Atomic Binding**: While `value` is supported, we strongly recommend `signal` for automatic UI updates.
-- **Scrolling**: The overlay correctly follows the trigger even inside scroll views.
-- **Constraints**: Menu width defaults to trigger width but can be customized via `dropdownStyle`.
+## The Master Dropdown Implementation
+
+A complex multi-select user selector with custom avatars and reactive state management.
+
+```dart
+class TeamSelector extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final team = [
+      User(name: "Aiden", role: "DevOps", avatar: "A"),
+      User(name: "Bianca", role: "Frontend", avatar: "B"),
+      User(name: "Charlie", role: "Backend", avatar: "C"),
+    ];
+
+    final selectedMember = flux<User?>(null);
+
+    return Fx.box(
+      child: Fx.col(
+        cross: CrossAxisAlignment.start,
+        children: [
+          Fx.text("Assign Task To").font.sm().bold().mb(12),
+          
+          // Advanced Dropdown with custom item builder
+          Fx.dropdown<User>(
+            signal: selectedMember,
+            items: team,
+            placeholder: "Select lead architect...",
+            
+            // Custom item display logic
+            itemBuilder: (user) => Fx.row(
+              gap: 12,
+              children: [
+                Fx.avatar(fallback: user.avatar).sizeSm(),
+                Fx.col(
+                  cross: CrossAxisAlignment.start,
+                  children: [
+                    Fx.text(user.name).font.sm().bold(),
+                    Fx.text(user.role).font.xs().muted(),
+                  ],
+                ),
+              ],
+            ).p(8),
+
+            // Style the trigger
+            style: FxStyle(
+              bg: Colors.white,
+              rounded: 12,
+              border: Border.all(color: Colors.slate200),
+              p: 16,
+            ),
+            
+            // Style the overlay menu
+            dropdownStyle: FxStyle(
+              bg: Colors.white,
+              rounded: 16,
+              shadowLg: true,
+              border: Border.all(color: Colors.slate100),
+            ),
+          ),
+          
+          Fx.gap(20),
+          
+          // Reactive Preview
+          Fx(() => selectedMember.value == null 
+            ? const SizedBox.shrink()
+            : Fx.text("Selected: ${selectedMember.value!.name}")
+                .font.xs().bold().color(Colors.blue)
+                .animate(fadeIn: true, slideUp: 10)
+          ),
+        ],
+      )
+    )
+    .p(32)
+    .bg(Colors.slate50)
+    .rounded(24);
+  }
+}
+```
+
+Fluxy's dropdown system uses a high-performance overlay layer that bypasses standard Flutter z-index issues, ensuring that your selectors are always accessible even in dense industrial UIs.

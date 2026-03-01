@@ -1,0 +1,89 @@
+---
+title: Fx.navbar
+description: A responsive navigation header with action registry.
+---
+
+# Fx.navbar
+
+`Fx.navbar` is a high-level layout primitive for creating consistent application headers. It handles spacing, alignment, and responsiveness out of the box.
+
+## Basic Usage
+
+```dart
+Fx.navbar(
+  logo: Fx.image("assets/logo.png").w(40),
+  actions: [
+    Fx.button("Home").link(),
+    Fx.button("Pricing").link(),
+    Fx.button("Login").primary(),
+  ],
+)
+```
+
+## Key Features
+
+### 1. Automatic Spacing
+The navbar uses `MainAxisAlignment.spaceBetween` internally to separate your brand/logo from the navigation actions.
+
+### 2. Standard Height
+By default, the navbar is set to an industrial standard height of **64px**, but this is fully customizable.
+
+### 3. Style Integration
+You can apply any `FxStyle` to the navbar, including backgrounds, borders, and shadows.
+
+```dart
+Fx.navbar(
+  logo: BrandLogo(),
+  actions: [...],
+  style: FxStyle(
+    backgroundColor: Colors.white,
+    border: Border(bottom: BorderSide(color: Colors.slate100)),
+    shadowSm: true,
+  ),
+)
+```
+
+## API Reference
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `logo` | `Widget` | required | The brand/identity widget (left side). |
+| `actions` | `List<Widget>` | required | Navigation links or buttons (right side). |
+| `height` | `double?` | `64` | The vertical height of the navbar. |
+| `style` | `FxStyle` | `none` | Custom container styling. |
+
+---
+
+## The Master Navbar Implementation
+
+A professional website header with a blurred glass background and responsive padding.
+
+```dart
+class AppHeader extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Fx.navbar(
+      logo: Fx.row(
+        gap: 8,
+        children: [
+          Icon(Icons.bolt, color: Colors.blue),
+          Fx.text("Fluxy SDK").bold().font.lg(),
+        ],
+      ),
+      actions: [
+        "Features".btn().link(),
+        "Pricing".btn().link(),
+        "Documentation".btn().link(),
+        Fx.gap(12),
+        Fx.button("Sign In").outline(),
+        Fx.button("Get Started").primary(),
+      ],
+      style: FxStyle(
+        blur: 10,
+        backgroundColor: Colors.white.withOpacity(0.8),
+        padding: const EdgeInsets.symmetric(horizontal: 40),
+      ),
+    );
+  }
+}
+```

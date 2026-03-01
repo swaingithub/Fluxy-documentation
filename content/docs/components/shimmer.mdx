@@ -33,11 +33,56 @@ Inherits styling from `FxStyle`.
 - **borderRadius**: Controls rounded corners (Default: 8).
 - **width/height**: Dimensions of the shimmering block.
 
-## Integration
+---
 
-Typically used with `.loading()` modifier on async widgets or `FxImage`.
+## The Master Shimmer Implementation
+
+Creating a complex "Skeleton Screen" for a profile feed using compositional shimmers.
 
 ```dart
-Fx.text("Loaded!")
-  .loading(isLoading.value) // Shows shimmer if true
+class ProfileSkeleton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Fx.box(
+      child: Fx.col(
+        children: [
+          // Header Row
+          Fx.row(
+            children: [
+              Fx.shimmer().wh(60, 60).circle(), // Avatar Placeholder
+              Fx.gap(16),
+              Fx.col(
+                cross: CrossAxisAlignment.start,
+                children: [
+                  Fx.shimmer().w(120).h(16).rounded(4), // Name Placeholder
+                  Fx.gap(8),
+                  Fx.shimmer().w(80).h(12).rounded(4), // Handle Placeholder
+                ],
+              ),
+            ],
+          ),
+          
+          Fx.gap(24),
+          
+          // Content Blocks
+          Fx.shimmer().w(double.infinity).h(14).rounded(4),
+          Fx.gap(10),
+          Fx.shimmer().w(double.infinity).h(14).rounded(4),
+          Fx.gap(10),
+          Fx.shimmer().w(200).h(14).rounded(4),
+          
+          Fx.gap(24),
+          
+          // Large Hero Image Placeholder
+          Fx.shimmer().w(double.infinity).h(200).rounded(16),
+        ],
+      )
+    )
+    .p(24)
+    .bg(Colors.white)
+    .rounded(24);
+  }
+}
 ```
+
+Fluxy shimmers use a native-backed shader implementation that ensures zero CPU overhead for the animation, maintaining perfect UI fluidity even during heavy network activity.

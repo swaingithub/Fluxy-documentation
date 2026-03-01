@@ -53,17 +53,62 @@ Fluxy.to("/some-path", scope: "Home")
 | `tabs` | `List<FxTabItem>` | required | List of tabs with their routes. |
 | `bottomBarBuilder` | `Widget Function(int, List<FxTabItem>, ValueChanged<int>)?` | `null` | Custom bottom bar builder. |
 
-## Custom Bottom Bar
+---
 
-You can replace the default bottom bar with your own implementation.
+## The Master Tab Implementation
+
+A professional industrial dashboard shell with primary navigation nodes and managed routing.
 
 ```dart
-FxTabScaffold(
-  bottomBarBuilder: (index, items, onTap) {
-    return MyCustomNavBar(
-      selectedIndex: index,
-      onTap: onTap,
+class IndustrialAppShell extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final activeIndex = flux(0);
+
+    return Fx.tabScaffold(
+      currentIndex: activeIndex,
+      tabs: [
+        // Tab 1: Operational Monitoring
+        FxTabItem(
+          label: "Dashboard",
+          icon: Icons.dashboard_customize_rounded,
+          initialRoute: "/dashboard",
+          routes: [
+            FxRoute(path: "/dashboard", builder: (ctx) => DashboardMainView()),
+            FxRoute(path: "/alerts", builder: (ctx) => ActiveAlertsView()),
+          ],
+        ),
+
+        // Tab 2: Resource Inventory
+        FxTabItem(
+          label: "Inventory",
+          icon: Icons.inventory_2_outlined,
+          initialRoute: "/resources",
+          routes: [
+            FxRoute(path: "/resources", builder: (ctx) => ResourceListView()),
+            FxRoute(path: "/detail/:id", builder: (ctx) => ResourceDetailView()),
+          ],
+        ),
+
+        // Tab 3: System Analytics
+        FxTabItem(
+          label: "Metrics",
+          icon: Icons.bar_chart_rounded,
+          initialRoute: "/observability",
+          routes: [
+            FxRoute(path: "/observability", builder: (ctx) => XRayView()),
+          ],
+        ),
+      ],
+      // Custom styling for the primary shell
+      bottomBarBuilder: (idx, items, onTap) => Fx.bottomBar(
+        selectedIndex: flux(idx),
+        onTap: onTap,
+        items: items.map((t) => FxBottomBarItem(icon: t.icon, label: t.label)).toList(),
+      ),
     );
-  },
-)
+  }
+}
 ```
+
+Fluxy's tab-scaffold system uses optimized `IndexedStack` management with recursive state preservation, ensuring that heavy views are kept in memory without causing layout stutter during transitions.

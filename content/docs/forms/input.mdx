@@ -41,14 +41,68 @@ If the `signal` has validation rules (like `.required()` or `.email()`), the inp
 | `onChanged` | `ValueChanged<String>?` | `null` | Callback for manual updates. |
 | `style` | `FxStyle?` | `null` | Custom atomic styling. |
 
-## Variants
+---
 
-### FxPassword
-A specialized input for passwords that includes a built-in visibility toggle.
+## The Master Input Implementation
+
+A professional login form slice with reactive validation, animated visibility toggles, and industrial styling.
 
 ```dart
-FxPassword(
-  signal: passwordField,
-  placeholder: "Password",
-)
+class LoginCredentials extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // 1. Define Reactive Fields with Validation
+    final email = fluxField("").required("Email is mandatory").email("Invalid format");
+    final password = fluxField("").required().min(8, "Minimum 8 characters");
+
+    return Fx.col(
+      gap: 16,
+      children: [
+        // 2. Styled Email Input
+        Fx.input(
+          signal: email,
+          placeholder: "work@company.com",
+          label: "Email Address",
+          prefixIcon: Icon(Icons.email_outlined, size: 20),
+          style: FxStyle(
+            bg: Colors.slate50,
+            rounded: 12,
+            border: Border.all(color: Colors.slate200),
+          ),
+        ),
+
+        // 3. Password Input with Built-in Toggle
+        Fx.password(
+          signal: password,
+          placeholder: "Enter secret key",
+          label: "Password",
+          prefixIcon: Icon(Icons.lock_outline, size: 20),
+          style: FxStyle(
+            bg: Colors.slate50,
+            rounded: 12,
+            border: Border.all(color: Colors.slate200),
+          ),
+        ),
+
+        Fx.gap(8),
+
+        // 4. Reactive Submit Button
+        Fx.button("AUTHENTICATE")
+          .primary
+          .fullWidth()
+          .sizeLg()
+          .onTap(() async {
+            // Trigger framework-wide validation
+            if (email.validate() && password.validate()) {
+              Fx.toast.info("Validating with Kernel...");
+              await Future.delayed(2.seconds);
+              Fx.toast.success("Identity Verified");
+            }
+          }),
+      ],
+    ).p(24).bg(Colors.white).rounded(24).shadowMd();
+  }
+}
 ```
+
+Fluxy's input system is deeply integrated with the `FluxyStabilityKernel™`, ensuring that text editing remains responsive even during heavy background synchronization or state hydration.

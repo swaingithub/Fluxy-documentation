@@ -1,0 +1,101 @@
+---
+title: Migrating to v1.1.0
+description: Complete guide for upgrading from v1.0.1 to v1.1.0 with the Stability Kernel and Real-Time Modules.
+---
+
+# Migrating to v1.1.0
+
+Fluxy v1.1.0 is a milestone release focusing on **Industrial Stability** and **Real-Time Connectivity**. This version introduces the Fluxy Stability Kernel™, X-Ray Observability, and a suite of new real-time modules.
+
+## New Core Systems
+
+### 1. Fluxy Stability Kernel™
+A low-level engine that intercepts layout violations and render errors before they crash the application.
+- **Auto-Repair**: Automatically fixes unbounded constraints and infinite size errors in production.
+- **Render Guard**: Prevents red screens by rendering fallback UI when a component crashes during paint.
+- **Strict Mode**: Optional development mode to throw exceptions for early bug detection.
+
+### 2. X-Ray Observability
+Real-time monitoring of your application's internal state:
+- Signal churn audits
+- Rebuild counts and performance bottlenecks
+- Dependency lifecycle tracking
+
+### 3. Level-2 Security Vault
+Enhanced encryption layer for mission-critical data, providing an extra tier of protection above standard storage.
+
+## New Real-Time Modules
+
+v1.1.0 introduces specialized modules for modern, connected applications:
+- **`fluxy_sync`**: Automatic data synchronization across devices.
+- **`fluxy_websocket`**: Managed WebSocket connections with auto-reconnect.
+- **`fluxy_presence`**: Real-time user presence and status tracking.
+- **`fluxy_geofence`**: Background location monitoring and geofencing.
+
+## Migration Steps
+
+### Step 1: Update Dependencies
+
+Update your `pubspec.yaml` to use v1.1.0:
+
+```yaml
+dependencies:
+  fluxy: ^1.1.0
+  # Add new real-time modules if needed
+  fluxy_sync: ^1.0.0
+  fluxy_websocket: ^1.0.0
+```
+
+### Step 2: Initialize Stability Kernel
+
+The Stability Kernel is enabled by default in relaxed mode. To enable **Strict Mode** during development:
+
+```dart
+void main() async {
+  await Fluxy.init();
+  
+  // Optional: Enable strict mode to catch layout errors early
+  if (kDebugMode) {
+    FluxyLayoutGuard.strictMode = true;
+  }
+  
+  Fluxy.autoRegister();
+  runApp(const MyApp());
+}
+```
+
+### Step 3: Implement Render Guards
+
+Wrap complex or risky UI components in `FluxyRenderGuard` to prevent app-wide crashes:
+
+```dart
+FluxyRenderGuard(
+  fallback: const ErrorWidget(), // Optional
+  child: MyComplexWidget(),
+)
+```
+
+### Step 4: Update Scrollable Layouts
+
+Fluxy v1.1.0 changes the default `MainAxisSize` for `Fx.row` and `Fx.col` to `MainAxisSize.min` to prevent accidental infinite expansions. If your layout relies on these taking up all available space, add `.expand()` or set `mainAxisSize: MainAxisSize.max`.
+
+## Breaking Changes
+
+### 1. Default Column/Row Sizing
+`Fx.col` and `Fx.row` now default to `MainAxisSize.min`. 
+**Action**: If your UI suddenly shrinks, add `.expand()` to the container or specify `MainAxisSize.max`.
+
+### 2. Strict Layout Validation
+The Stability Kernel may log warnings for layouts that were technically "working" but violated Flutter's constraint rules.
+**Action**: Review console logs for `[SafeUI]` warnings and fix the underlying layout issues.
+
+## Performance & Optimization
+- **Startup Time**: 15% improvement in engine boot time.
+- **Signal Performance**: 20% faster reactive updates in the Fluxy State System.
+- **Memory**: Optimized resource manager for hardware-intensive features.
+
+## Need Help?
+
+- Review the [Safe UI & Stability](../layout/safe-ui) documentation.
+- Check the [WebSocket Module](../ecosystem/websocket) guide.
+- Join our community for implementation support.

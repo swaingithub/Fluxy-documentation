@@ -43,7 +43,7 @@ export default function LandingPage() {
               Fluxy
             </span>
             <div className="hidden sm:flex px-2 py-0.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-[10px] font-bold tracking-widest text-indigo-400 ml-2">
-              v1.0.1
+              v1.1.0
             </div>
           </div>
           
@@ -81,7 +81,7 @@ export default function LandingPage() {
           >
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-md text-xs font-medium text-indigo-300 mb-8 hover:bg-white/10 transition-colors cursor-default">
               <Sparkles size={12} className="text-indigo-400" />
-              <span className="text-white/80">Fluxy v1.0.1 is now available</span>
+              <span className="text-white/80">Fluxy v1.1.0 is now available with Stability Kernel™</span>
             </div>
 
             <h1 className="text-6xl md:text-8xl font-bold tracking-tighter leading-[1] mb-8 bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-white/40 drop-shadow-2xl">
@@ -142,6 +142,22 @@ export default function LandingPage() {
               desc="Tailwind-like logic for Flutter widgets."
               icon={<Box className="text-purple-400" size={24} />}
               gradient="from-purple-500/20 to-pink-500/5"
+            />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+             <BentoCard 
+              title="Stability Kernel™"
+              desc="Auto-repair for layout overflows and render crashes."
+              icon={<Smartphone className="text-rose-400" size={24} />}
+              gradient="from-rose-500/20 to-red-500/5"
+              className="md:col-span-1"
+            />
+             <BentoCard 
+              title="Real-Time Modules"
+              desc="Sync, WebSocket, and Presence for connected apps."
+              icon={<Zap className="text-white" size={24} />}
+              gradient="from-indigo-500/20 to-blue-800/5"
+              className="md:col-span-1"
             />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">

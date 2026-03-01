@@ -1,11 +1,10 @@
----
 title: Installation
-description: Learn how to set up Fluxy v1.0.0 with modular architecture in your Flutter project.
+description: Learn how to set up Fluxy v1.1.0 with modular architecture in your Flutter project.
 ---
 
 # Installation
 
-Fluxy v1.0.0 introduces a revolutionary modular architecture. Install only the packages you need for your specific use case.
+Fluxy v1.1.0 introduces a revolutionary modular architecture and Stability Kernel. Install only the packages you need for your specific use case.
 
 ## 1. Install Core Framework
 
@@ -52,14 +51,14 @@ dependencies:
   fluxy: ^1.0.0
 ```
 
-### Modular Packages (v1.0.0)
+### Modular Packages (v1.1.0)
 
-With v1.0.0, Fluxy introduces a modular architecture. Add only the packages you need:
+With v1.1.0, Fluxy continues its modular evolution. Add only the packages you need:
 
 ```yaml
 dependencies:
   # Core Framework
-  fluxy: ^1.0.0
+  fluxy: ^1.1.0
   
   # Add modules as needed
   fluxy_forms: ^1.0.0        # Forms and validation
@@ -67,17 +66,14 @@ dependencies:
   fluxy_auth: ^1.0.0         # Authentication and biometrics
   fluxy_notifications: ^1.0.0 # Push notifications
   fluxy_storage: ^1.0.0      # Data persistence
+  fluxy_websocket: ^1.0.0    # Real-time WebSocket
 ```
 
-### Migration from v0.2.6
+### Migration from v1.0.1 or v1.0.0
 
-If you're upgrading from v0.2.6, you'll need to:
+If you're upgrading to v1.1.0, check the migration guide for breaking changes and new features:
 
-1. Update your `pubspec.yaml` to use modular packages
-2. Add the specific packages you need
-3. Update import statements if using modular features
-
-**[Read Migration Guide](https://github.com/swaingithub/fluxy/blob/main/MIGRATION_GUIDE.md)**
+**[Read Migration Guide](/docs/migration/migration-1-1-0)**
 
 ## Basic Setup
 

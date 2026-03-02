@@ -12,7 +12,7 @@ Fluxy's reactivity is built on three main primitives: **Flux**, **FluxComputed**
 `flux` creates a **mutable signal**. Flux units are containers for values that can change over time.
 
 ```dart
-final count = flux(0);
+final count = flux(0, label: "Counter"); // Best practice: add labels
 
 // Set value
 count.value = 5;
@@ -22,6 +22,10 @@ print(count.value);
 ```
 
 When you read a signal inside a reactive context (like an `effect` or a `Fx` widget builder), that context automatically subscribes to the signal.
+
+> [!TIP]
+> **Use Labels for Debugging:** Giving your flux a `label` is highly recommended. Not only does it make the signal easily readable in the **[Fluxy DevTools](/docs/ecosystem/devtools)**, but labels are also **required** if you want to capture the value of the flux in a DevTools **State Snapshot**.
+
 
 ## FluxComputed
 
@@ -98,3 +102,85 @@ FxDropdown<String>(
 ### Automatic Cleanup
 Effects and subscriptions created within a widget's lifecycle are automatically disposed of when the widget is destroyed, preventing memory leaks.
 
+---
+
+## The Master Reactive Data Flow Implementation
+
+This example demonstrates how `flux`, `fluxComputed`, `fluxEffect`, and Two-Way Binding come together to create a complex, reactive feature without a single `setState`, `TextEditingController`, or `StatefulWidget`.
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:fluxy/fluxy.dart';
+
+// 1. Define the reactive state (The "Store")
+class CheckoutState {
+  static final cartValue = flux(150.0, label: "Cart_Total");
+  static final discountCode = flux("", label: "Checkout_PromoCode");
+  
+  // 2. Computed values automatically recalculate when dependencies change
+  static final discountAmount = fluxComputed(() {
+    final code = discountCode.value.toUpperCase();
+    if (code == "SUMMER20") return 20.0;
+    if (code == "FLUX50") return 50.0;
+    return 0.0;
+  }, label: "Checkout_Discount");
+  
+  static final finalTotal = fluxComputed(() {
+    // Both cartValue and discountAmount are dependencies
+    return cartValue.value - discountAmount.value;
+  }, label: "Checkout_FinalTotal");
+  
+  static final isValidPromo = fluxComputed(() {
+    return discountAmount.value > 0;
+  });
+}
+
+class CheckoutScreen extends StatelessWidget {
+  const CheckoutScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // 3. Setup side effects mapping to analytics or logging
+    fluxEffect(() {
+       // This runs immediately, and then every time discountCode changes
+       if (CheckoutState.isValidPromo.value) {
+         Fx.toast.success("Promo Applied: \$${CheckoutState.discountAmount.value} off!");
+         // AnalyticsService.track("promo_applied", CheckoutState.discountCode.value);
+       }
+    });
+
+    return Fx.scaffold(
+      appBar: Fx.appBar(title: "Secure Checkout"),
+      // 4. Wrap with Fx() to automatically react to signal reads
+      body: Fx(() => Fx.col(
+        gap: 24,
+        children: [
+          // Basic Read
+          Fx.text("Subtotal: \$${CheckoutState.cartValue.value}").h3(),
+          
+          // 5. Two-Way Binding directly to the signal
+          Fx.input(
+            label: "Promo Code",
+            value: CheckoutState.discountCode, // No controller needed!
+          ),
+          
+          if (CheckoutState.isValidPromo.value)
+            Fx.text("Discount Applied: -\$${CheckoutState.discountAmount.value}")
+              .color(Colors.green)
+              .bold(),
+              
+          // Computed Read
+          Fx.text("Total: \$${CheckoutState.finalTotal.value}").h1(),
+          
+          Fx.button("Complete Order")
+            .primary()
+            .onTap(() => Fx.toast.success("Order Placed!"))
+            .wFlexible(), // Expand to fill width
+        ],
+      ).p(24)),
+    );
+  }
+}
+```
+
+Notice how clean the `CheckoutScreen` is. There is no `StatefulWidget`, no `build` method clutter, and no manual controller disposal. Fluxy handles the entire reactive dependency graph completely "hands-free".

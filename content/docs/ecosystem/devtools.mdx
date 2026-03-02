@@ -43,6 +43,18 @@ A real-time ticker showing every flux update across the system.
 - **Timeline Controls**: Search, pause/resume, and clear functionality.
 - **Trace Origins**: Identify exactly when and where state changes occurred.
 
+### 6. State Snapshots (Time Travel)
+Capture the exact state of your application at any point in time and restore it instantly with a single tap.
+- **Save State**: Take a snapshot of all active signals in the app.
+- **Time Travel Restore**: Instantly revert your application state to any previous snapshot for rapid bug reproduction.
+
+> [!IMPORTANT]
+> **Labels Matter!** For a `flux` to be eligible for Snapshot Capturing and to appear clearly in the timeline, you **must** assign it a `label`:
+> ```dart
+> final counter = flux(0, label: "CounterState"); // ✅ Captured by Snapshots
+> final hidden = flux(0); // ❌ Ignored by Snapshots
+> ```
+
 ## Self-Contained Performance
 
 As of v0.2.1, the Inspector is fully **context-independent**. It no longer requires a `ScaffoldMessenger`, `Overlay`, or `MaterialLocalizations` in your app tree to function, making it safe to use even in minimal app configurations.
@@ -66,3 +78,54 @@ This pipeline captures:
 - Flutter framework exceptions (Widget errors).
 - Asynchronous errors (Future/Stream failures).
 - Platform-level exceptions.
+
+---
+
+## The Master DevTools Implementation
+
+To get the most out of the Fluxy Inspector, including the time-traveling State Snapshots, you should consistently label your fluxes and set up your entry point to conditionally wrap the app in debug mode.
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:fluxy/fluxy.dart';
+
+// 1. Properly Labeled State (Essential for Snapshots)
+class AppState {
+  static final themeMode = flux<ThemeMode>(ThemeMode.light, label: "App_ThemeMode");
+  static final currentUser = flux<String?>("Guest", label: "App_CurrentUser");
+  static final notifications = fluxList<String>([], label: "App_Notifications");
+}
+
+void main() async {
+  // 2. Initialize Fluxy Kernel
+  await Fluxy.init();
+  
+  // 3. Register global error sink
+  Fx.onError((error, stack) {
+    Fluxy.log("CRASH_HANDLER", "ERROR", error.toString());
+  });
+
+  // 4. Wrap with Fluxy.debug in development
+  const isProd = bool.fromEnvironment('dart.vm.product');
+  
+  runApp(
+    isProd 
+      ? const MainApp() 
+      : Fluxy.debug(child: const MainApp())
+  );
+}
+
+class MainApp extends StatelessWidget {
+  const MainApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return FluxyApp(
+       title: "DevTools Demo",
+       // ... other app configs
+    );
+  }
+}
+```
+
+When running in debug mode, the Fluxy Inspector FAB will float over your app. Because `themeMode`, `currentUser`, and `notifications` all have a `label`, you can click "Capture Snapshot", interact with your app to change these values, and then restore the entire state matrix exactly back to where it was for instant bug reproduction.

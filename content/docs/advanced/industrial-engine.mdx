@@ -14,7 +14,7 @@ To improve compatibility for developers transitioning from standard Flutter, `Fx
 | Flutter Property | Fluxy Equivalent | Description |
 | :--- | :--- | :--- |
 | `mainAxisAlignment` | `justify` | Controls child distribution along the main axis. |
-| `crossAxisAlignment` | `items` | Controls child alignment along the cross axis. |
+| `crossAxisAlignment` | `alignItems` | Controls child alignment along the cross axis. |
 
 ### Example Usage
 ```dart
@@ -28,7 +28,7 @@ Fx.row(
 // Using Fluxy semantic shorthands (recommended)
 Fx.row(
   justify: MainAxisAlignment.spaceBetween,
-  items: CrossAxisAlignment.center,
+  alignItems: CrossAxisAlignment.center,
   children: [...],
 )
 ```
@@ -123,7 +123,7 @@ class IndustrialDashboard extends StatelessWidget {
               alignItems: CrossAxisAlignment.center,
             ),
             child: Fx.col(
-              items: CrossAxisAlignment.center,
+              alignItems: CrossAxisAlignment.center,
               children: [
                 Fx.icon(Icons.settings_input_component, color: Colors.white, size: 48),
                 Fx.text("System Control").font.xl().bold().color(Colors.white),

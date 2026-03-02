@@ -5,7 +5,7 @@ description: Install Fluxy and create your first project in minutes.
 
 # Quick Start
 
-Get started with Fluxy **v1.1.0** modular architecture in just a few commands.
+Get started with Fluxy **v1.2.0** industrial architecture in just a few commands.
 
 ## Installation
 
@@ -23,9 +23,9 @@ Initialize a new Fluxy project structure. This command sets up the official `cor
 fluxy init my_awesome_app
 ```
 
-## Adding Modules (v1.1.0)
+## Adding Modules (v1.2.0)
 
-Fluxy v1.1.0 is modular. Add only the features you need using the `module` command:
+Fluxy v1.2.0 is modular. Add only the features you need using the `module` command:
 
 ```bash
 # Core framework is always included
@@ -50,7 +50,7 @@ dart pub global activate melos
 fluxy melos bootstrap
 ```
 
-## Your First App (v1.1.0)
+## Your First App (v1.2.0)
 
 A professional Fluxy application with modular architecture requires initialization. Here is a minimal `main.dart` setup:
 
@@ -71,12 +71,12 @@ void main() async {
   
   runApp(
     FluxyApp(
-      title: "Hello Fluxy v1.1.0",
+      title: "Hello Fluxy v1.2.0",
       initialRoute: FxRoute(
         path: "/",
         builder: (context, args) => Fx.center(
           child: Fx.col([
-            Fx.text("Hello Fluxy v1.1.0!")
+            Fx.text("Hello Fluxy v1.2.0!")
               .font.xxl()
               .font.bold()
               .color(Fx.primary)
@@ -100,7 +100,7 @@ void main() async {
 
 ## Using Modular Features
 
-With v1.1.0, you can use modular features like this:
+With v1.2.0, you can use modular features like this:
 
 ```dart
 // Using authentication module
@@ -128,26 +128,26 @@ Future<void> takePhoto() async {
 }
 ```
 
-## Package Structure (v1.1.0)
+## Package Structure (v1.2.0)
 
 Your `pubspec.yaml` will look like this:
 
 ```yaml
 dependencies:
   # Core Framework
-  fluxy: ^1.1.0
+  fluxy: ^1.2.0
   
   # Modular Packages (add as needed)
-  fluxy_auth: ^1.1.0         # Authentication & biometrics
-  fluxy_camera: ^1.1.0       # Camera functionality
-  fluxy_notifications: ^1.1.0 # Push notifications
-  fluxy_storage: ^1.1.0      # Data persistence
-  fluxy_forms: ^1.1.0        # Forms and validation
-  fluxy_analytics: ^1.1.0    # Analytics and tracking
+  fluxy_auth: ^1.2.0         # Authentication & biometrics
+  fluxy_camera: ^1.2.0       # Camera functionality
+  fluxy_notifications: ^1.2.0 # Push notifications
+  fluxy_storage: ^1.2.0      # Data persistence
+  fluxy_forms: ^1.2.0        # Forms and validation
+  fluxy_analytics: ^1.2.0    # Analytics and tracking
   # ... and 13 more modules
 ```
 
-## Benefits of v1.1.0
+## Benefits of v1.2.0
 
 - **Smaller Core**: Focused & lightweight foundation
 - **Flexible Dependencies**: Add only features you use

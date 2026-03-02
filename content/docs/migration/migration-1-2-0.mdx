@@ -1,0 +1,88 @@
+---
+title: Migration v1.2.0
+description: Upgrading to the Industrial Engine and enhanced developer safety suite.
+---
+
+# Migration to Fluxy v1.2.0
+
+Fluxy v1.2.0 is a **100% backward compatible** release. This version shifts the burden of layout "guardrails" from the developer to the core engine, significantly improving the stability of mission-critical applications.
+
+## 1. Upgrade Instructions
+
+Update your `pubspec.yaml` to the latest version:
+
+```yaml
+dependencies:
+  fluxy: ^1.2.0
+```
+
+There are no breaking changes in existing APIs. All alignment and expansion logic remains compatible with previous versions.
+
+## 2. Opt-in: Dynamic Route Provider
+
+To enable instant Hot Reload Support for new routes, transition from the static `setRoutes` method to the dynamic `setRoutesProvider`.
+
+### Before (Static)
+```dart
+void main() {
+  FluxyRouter.setRoutes([
+    FxRoute(path: '/', builder: (p, a) => HomeView()),
+    // Adding routes here required a Hard Restart
+  ]);
+  runApp(MyApp());
+}
+```
+
+### After (Dynamic Provider)
+```dart
+void main() {
+  // Evaluation happens on every navigation request
+  FluxyRouter.setRoutesProvider(() => [
+    FxRoute(path: '/', builder: (p, a) => HomeView()),
+    FxRoute(path: '/profile', builder: (p, a) => ProfileView()),
+  ]);
+  runApp(MyApp());
+}
+```
+
+## 3. Industrial-Grade Alignment Aliases
+
+This release bridges the gap between Fluxy's semantic DSL and standard Flutter property naming. Both styles are now natively supported in `Fx.row` and `Fx.col`.
+
+| Flutter Style | Fluxy Style | Result |
+| :--- | :--- | :--- |
+| `mainAxisAlignment` | `justify` | Controls flex distribution |
+| `crossAxisAlignment` | `items` | Controls flex alignment |
+
+You can now use either style to avoid lint errors or to accommodate various developer backgrounds.
+
+## 4. Stability Engine: ParentData Protection
+
+The `FxSafeExpansion` engine now automatically intercepts the common "ParentDataWidget Error."
+
+- **Original Behavior**: Using `.flex()` or `.expanded()` outside of a Row/Column would crash the app (Red Screen).
+- **New Behavior**: Fluxy detects the illegal context, logs a diagnostic warning, and prevents the crash. 
+
+No migration is required for this feature; it is automatically active for all widgets using `.flex()` or `.expanded()`.
+
+## 5. Reactivity Audit System
+
+Fluxy v1.2.0 introduces a **Debug-Only Audit System** that monitors your widget `build()` cycles.
+
+If a signal (Flux) is read inside a `build()` method but is missing an `Fx()` wrapper, the framework will generate a professional diagnostic report in the console. This ensures your application logic is reactive and correctly managed.
+
+### Sample Audit Report
+```text
+┌──────────────────────────────────────────────────────────┐
+│ [Sys] [SIGNAL] REACTIVITY ALERT: Missing Fx() Wrapper    │
+├──────────────────────────────────────────────────────────┤
+│ Flux "user_settings" was read during a Widget build,     │
+│ but no reactive builder (Fx) was tracking it.            │
+└──────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Conclusion
+
+Fluxy v1.2.0 is a stability-first update designed for high-fidelity industrial applications. It simplifies the development workflow while providing a massive safety net against common layout and reactivity errors.

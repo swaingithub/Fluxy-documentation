@@ -1,0 +1,180 @@
+---
+title: Industrial Engine Enhancements
+description: Detailed documentation of the latest stability, layout, and developer experience upgrades in the Fluxy framework.
+---
+
+# Industrial Engine Enhancements
+
+Fluxy has been upgraded with a suite of "Industrial-Grade" features designed to eliminate common development friction, prevent layout crashes, and significantly improve the hot-reload developer experience. These updates move the burden of "layout guardrails" from the developer's mind directly into the framework's core engine.
+
+## 1. Unified Alignment Aliases
+
+To improve compatibility for developers transitioning from standard Flutter, `Fx.row` and `Fx.col` now support both Fluxy's clean semantic naming and standard Flutter property names. Both styles are interchangeable and can be used within the same project.
+
+| Flutter Property | Fluxy Equivalent | Description |
+| :--- | :--- | :--- |
+| `mainAxisAlignment` | `justify` | Controls child distribution along the main axis. |
+| `crossAxisAlignment` | `items` | Controls child alignment along the cross axis. |
+
+### Example Usage
+```dart
+// Using standard Flutter properties (now supported)
+Fx.row(
+  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  crossAxisAlignment: CrossAxisAlignment.center,
+  children: [...],
+)
+
+// Using Fluxy semantic shorthands (recommended)
+Fx.row(
+  justify: MainAxisAlignment.spaceBetween,
+  items: CrossAxisAlignment.center,
+  children: [...],
+)
+```
+
+## 2. Smart Alignment Inference
+
+Fluxy's `Box` widget now automatically translates flex-style alignment properties into standard container alignments. This eliminates the need manually wrap single children in `Center` or `Align` widgets.
+
+When you define `justifyContent` and `alignItems` on an `Fx.box`, the engine automatically infers the correct `AlignmentGeometry` for the child content.
+
+### Automatic Centering Example
+```dart
+// Content is automatically centered inside the 200px box
+Fx.box(
+  style: FxStyle(
+    height: 200,
+    backgroundColor: Colors.blue.shade50,
+    justifyContent: MainAxisAlignment.center,
+    alignItems: CrossAxisAlignment.center,
+  ),
+  child: Fx.text("Automatically Centered Content"),
+)
+```
+
+## 3. Industrial Layout Guard: ParentData Protection
+
+One of the most common Flutter crashes (`ParentDataWidget` error) occurs when using `Expanded` or `Flexible` outside of a `Row` or `Column`. Fluxy's `FxSafeExpansion` now intercepts these illegal placements.
+
+The `.flex()` and `.expanded()` modifiers are now context-aware. If they are used outside of an `Fx.row` or `Fx.col`, the engine will:
+1. Log a diagnostic "Audit" message to the console in Debug mode.
+2. Gracefully bypass the expansion to prevent an app crash.
+3. Render the child normally within the layout constraints.
+
+## 4. Lazy Route Provider for Hot-Reload
+
+Adding new routes during development previously required a "Hard Restart" because the routing table was static. Fluxy now supports a dynamic `RoutesProvider` that re-evaluates available paths on every navigation request.
+
+### Implementation
+```dart
+void main() {
+  // Use setRoutesProvider instead of setRoutes for instant hot-reload
+  FluxyRouter.setRoutesProvider(() => [
+    FxRoute(path: '/', builder: (p, a) => const HomeView()),
+    FxRoute(path: '/profile', builder: (p, a) => const ProfileView()),
+    // New routes added here appear instantly after Hot Reload
+  ]);
+  
+  runApp(const MyApp());
+}
+```
+
+## 5. Reactivity Tracker & Audit System
+
+To help developers master Fluxy's signal-based state management, the engine now includes a "Reactivity Tracker." This system monitors signal reads during the widget build cycle.
+
+If a signal (Flux) is accessed within a `build()` method but is not wrapped in an `Fx(() => ...)` reactive builder, Fluxy will generate a high-fidelity console alert in Debug mode.
+
+### Sample Diagnostic Alert
+```text
+┌──────────────────────────────────────────────────────────┐
+│ [Sys] [SIGNAL] REACTIVITY ALERT: Missing Fx() Wrapper    │
+├──────────────────────────────────────────────────────────┤
+│ Flux "user_balance" was read during a Widget build,      │
+│ but no reactive builder (Fx) was tracking it.            │
+│                                                          │
+│ FIX: Wrap your UI code in Fx(() => ...) to make it live. │
+└──────────────────────────────────────────────────────────┘
+```
+
+## Comprehensive Industrial Dashboard Example
+
+The following example demonstrates how these features combine to create a robust, responsive, and crash-proof industrial interface.
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:fluxy/fluxy.dart';
+
+class IndustrialDashboard extends StatelessWidget {
+  final count = flux(0, label: 'Count');
+
+  @override
+  Widget build(BuildContext context) {
+    return Fx.scaffold(
+      body: Fx.scroll(
+        children: [
+          // 1. Smart Centered Box (No manual Center wrapper needed)
+          Fx.box(
+            style: FxStyle(
+              height: 300,
+              backgroundColor: Colors.indigo.shade900,
+              justifyContent: MainAxisAlignment.center,
+              alignItems: CrossAxisAlignment.center,
+            ),
+            child: Fx.col(
+              items: CrossAxisAlignment.center,
+              children: [
+                Fx.icon(Icons.settings_input_component, color: Colors.white, size: 48),
+                Fx.text("System Control").font.xl().bold().color(Colors.white),
+              ],
+            ),
+          ),
+
+          // 2. Responsive Web-Style Flex Row
+          Fx.row(
+            responsive: true,
+            gap: 16,
+            padding: const EdgeInsets.all(20),
+            children: [
+              // Fixed-size control
+              Fx.box(
+                style: FxStyle(width: 120, height: 80, backgroundColor: Colors.grey.shade200),
+                child: Fx.text("Primary").center(),
+              ),
+
+              // Flexible scaling item using Web-Style property
+              Fx.box(
+                style: FxStyle(
+                  flex: 1, 
+                  height: 80, 
+                  backgroundColor: Colors.blue.shade100,
+                  justifyContent: MainAxisAlignment.center,
+                ),
+                child: Fx.text("Dynamic Scaling Area").textCenter(),
+              ),
+            ],
+          ),
+
+          // 3. Reactive Section with Audit Safety
+          Fx.box(
+            padding: const EdgeInsets.all(20),
+            child: Fx.col(
+              gap: 12,
+              children: [
+                // If you forget this Fx() wrapper, Fluxy will alert you in console
+                Fx(() => Fx.text("Active Processes: ${count.value}").font.lg().bold()),
+                
+                Fx.primaryButton(
+                  "Trigger Audit", 
+                  onTap: () => count.value++,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+```

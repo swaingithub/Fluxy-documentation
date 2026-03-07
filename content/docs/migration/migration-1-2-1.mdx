@@ -1,0 +1,80 @@
+---
+title: Migration v1.2.1
+description: Upgrading to the Elite Motion system and Full-Width Glass Dock navigation.
+---
+
+# Migration to Fluxy v1.2.1
+
+Fluxy v1.2.1 is a **design-focused** update that introduces the **Elite UI System**. This release is 100% backward compatible and primarily focuses on high-end motion primitives and edge-to-edge navigation.
+
+## 1. Upgrade Instructions
+
+Update your `pubspec.yaml` to the latest version:
+
+```yaml
+dependencies:
+  fluxy: ^1.2.1
+```
+
+If you are using existing plugins, keep them at their current stable version (`1.1.0`) as they remain fully compatible with the 1.2.1 core:
+
+```yaml
+dependencies:
+  fluxy: ^1.2.1
+  fluxy_camera: ^1.1.0
+  fluxy_auth: ^1.1.0
+  # ... other plugins
+```
+
+## 2. Elite Bottom Bar (Migration)
+
+The `FxBottomBar` has been redesigned from a floating pill to a **Full-Width Glass Dock**.
+
+### Auto-Migration
+Your existing implementation will automatically update to the new design:
+- **Full Width**: It now spans from edge to edge by default.
+- **Stacked Labels**: Icons and Text are now always visible (Icon on top, Text below).
+- **Glassmorphism**: Enhanced blur and transparency effects are applied automatically.
+
+### Reverting to Floating (Optional)
+If your design specifically requires the previous "Floating Island" look, wrap the `FxBottomBar` in a `Padding` widget:
+
+```dart
+// To restore the v1.2.0 "Floating" look
+Padding(
+  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+  child: FxBottomBar(
+    // ... items
+  ),
+)
+```
+
+## 3. New: fluxy_animations
+
+v1.2.1 officially launches the `fluxy_animations` package with Elite-Tier primitives.
+
+```yaml
+dependencies:
+  fluxy: ^1.2.1
+  fluxy_animations: ^1.2.1
+```
+
+### New Motion Components:
+- **FxMeshGradient**: Fluid, organic background movement.
+- **FxAnimatedBorder**: A glowing neon "light trail" that travels around containers.
+- **FxSpotlight**: Interactive cinematic masking.
+- **FxGooey**: Metaball-based merging physics.
+- **FxConfetti**: High-performance interaction celebrations.
+
+## 4. UI Distribution Logic
+
+Internal distribution for `FxBottomBar` now uses an `Expanded` flex-base. 
+
+- **Benefit**: This ensures that even with 5+ items, each item gets exactly equal screen real-estate (20% each), preventing text overlapping and layout shifting.
+- **Custom Icons**: Support for `iconWidget` and `activeIconWidget` has been improved to allow high-fidelity custom SVG or Lottie animations within the dock.
+
+---
+
+## Conclusion
+
+Fluxy v1.2.1 represents the "Elite Era" of Fluxy design. By upgrading, your application instantly adopts the premium styling used by the world's most modern SaaS and mobile platforms with zero code changes required.

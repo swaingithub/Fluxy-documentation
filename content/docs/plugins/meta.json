@@ -18,6 +18,7 @@
     "sync",
     "presence",
     "bridge",
-    "geo"
+    "geo",
+    "animations"
   ]
 }

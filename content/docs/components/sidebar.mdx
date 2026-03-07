@@ -1,114 +1,101 @@
 ---
-title: Fx.sidebar
+title: FxSidebar
 description: Industrial-grade sidebar navigation component.
 ---
 
-# Fx.sidebar
+# FxSidebar
 
-`Fx.sidebar` is a high-level layout primitive designed for desktop applications. It provides a vertical navigation shell with integrated support for headers, scrollable lists, and footer actions.
+`FxSidebar` is a high-level layout component designed for professional navigation. It provides a vertical navigation shell with integrated support for headers, themed items, active states, and footer actions.
 
 ## Basic Usage
 
 ```dart
-Fx.sidebar(
+FxSidebar(
+  currentIndex: _index.value,
+  onTap: (i) => _index.value = i,
   header: Fx.text("Admin Panel").bold().p(24),
-  items: [
-    _sidebarLink(Icons.dashboard, "Dashboard"),
-    _sidebarLink(Icons.analytics, "Analytics"),
-    _sidebarLink(Icons.settings, "Settings"),
+  items: const [
+    FxSidebarItem(icon: Icons.dashboard, label: "Dashboard"),
+    FxSidebarItem(icon: Icons.analytics, label: "Analytics"),
+    FxSidebarItem(icon: Icons.settings, label: "Settings"),
   ],
-  footer: Fx.text("v1.2.0").muted().p(16),
+  footer: Fx.text("v2.0.0").muted().p(16),
 )
 ```
 
 ## Key Features
 
 ### 1. Unified Structure
-The sidebar is divided into three distinct sections: `header`, `items` (which are automatically wrapped in an `Fx.list`), and a `footer`.
+The sidebar is divided into three distinct sections: `header`, `items` (which are automatically scrollable), and a `footer`.
 
-### 2. Standard Width
-Defaults to **280px**, providing ample space for labels and icons while maintaining a professional desktop feel.
+### 2. Standalone Flexibility
+Unlike previous versions, `FxSidebar` is now a standalone widget. You can use it inside a Flutter `Drawer`, a `Row`, or any custom layout without needing a specialized parent.
 
-### 3. Integrated Scrolling
-The `items` section is automatically scrollable using `Fx.list`, ensuring that long navigation menus don't overflow the screen.
+### 3. Integrated Theming
+Automatically listens to `FxTheme.isDarkMode` to calculate optimal contrast for icons and text.
 
 ## API Reference
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
-| `items` | `List<Widget>` | required | The main navigation links. |
+| `items` | `List<FxSidebarItem>` | required | The main navigation links. |
+| `currentIndex` | `int?` | `null` | The active item index. |
+| `onTap` | `ValueChanged<int>?` | `null` | Tab selection callback. |
 | `header` | `Widget?` | `null` | Optional top section (logo/branding). |
 | `footer` | `Widget?` | `null` | Optional bottom section (user/version). |
 | `width` | `double` | `280` | The fixed horizontal width. |
-| `style` | `FxStyle` | `none` | Custom container styling. |
-
-## Fx.drawer
-
-When building for mobile, use `Fx.drawer` instead of `Fx.sidebar` to create an off-canvas navigation menu.
-
-```dart
-Fx.drawer(
-  width: 304, // Material 3 standard desktop/tablet drawer width
-  backgroundColor: Colors.white,
-  child: Fx.col(
-    children: [
-      DrawerHeaderWidget(),
-      NavigationList(),
-    ],
-  ),
-)
-```
-
-**Pro Tip**: You can integrate `Fx.drawer` into standard Flutter `Scaffold` or Fluxy's `Fx.scaffold` via the `drawer:` parameter. `Fx.dashboard` handles the drawer/sidebar switching automatically for you.
+| `activeColor` | `Color?` | `Fx.primary` | Color for the active item. |
+| `backgroundColor` | `Color?` | dynamic | Background color (reacts to theme if null). |
 
 ---
 
 ## The Master Sidebar Implementation
 
-A reactive sidebar that changes styles based on the active route and user role.
+A reactive sidebar with custom headers and premium enterprise styling.
 
 ```dart
 class DesktopNavigation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Fx.sidebar(
+    return FxSidebar(
       width: 300,
       header: Fx.col(
         children: [
-          Fx.image("assets/brand.png").w(120),
+          Fx.icon(Icons.bubble_chart_rounded, size: 32, color: Fx.primary),
           Fx.gap(10),
-          Fx.text("Enterprise Console").font.xs().bold().muted(),
+          Fx.text("Enterprise Console").font.sm().bold(),
         ],
       ).p(32),
+      currentIndex: appCurrentIndex.value,
+      onTap: (i) => appCurrentIndex.value = i,
       items: [
-        _navItem(Icons.grid_view_rounded, "Overview", active: true),
-        _navItem(Icons.layers_outlined, "Modular Packages"),
-        _navItem(Icons.shield_outlined, "Security Vault"),
-        _navItem(Icons.hub_outlined, "Node Network"),
+        const FxSidebarItem(icon: Icons.grid_view_rounded, label: "Overview"),
+        FxSidebarItem(
+          icon: Icons.layers_outlined, 
+          label: "Modular Packages",
+          trailing: Fx.badge(label: "New"),
+        ),
+        const FxSidebarItem(icon: Icons.shield_outlined, label: "Security Vault"),
       ],
       footer: Fx.row(
         children: [
-          CircleAvatar(radius: 12),
+          const FxAvatar(fallback: "JS"),
           Fx.text("admin@fluxy.dev").ml(10).font.xs(),
-          Spacer(),
-          Icon(Icons.logout, size: 16),
+          const Spacer(),
+          const Icon(Icons.logout, size: 16),
         ],
-      ).p(24).bg(Colors.slate50),
-      style: FxStyle(
-        backgroundColor: Colors.white,
-        border: Border(right: BorderSide(color: Colors.slate200)),
-      ),
+      ).p(24),
     );
   }
+}
 
-  Widget _navItem(IconData icon, String label, {bool active = false}) {
-    return Fx.row(
-      gap: 12,
-      children: [
-        Icon(icon, color: active ? Colors.blue : Colors.slate600, size: 20),
-        Fx.text(label).color(active ? Colors.blue : Colors.slate800).bold(active),
-      ],
-    ).p(12, 24).bg(active ? Colors.blue.withOpacity(0.05) : Colors.transparent).rounded(8).m(4, 16);
-  }
+## Haptic Feedback (Optional)
+
+Fluxy components are modular and do not include mandatory haptic feedback. If you have the `fluxy_haptics` plugin installed, you can easily add tactile response to the `onTap` callback:
+
+```dart
+onTap: (index) {
+  Fx.haptic?.light(); // Optional tactile pulse
+  _currentIndex.value = index;
 }
 ```

@@ -1,0 +1,239 @@
+---
+title: fluxy_animations
+description: High-performance, declarative animations for the Fluxy UI Framework.
+---
+
+# Fluxy Animations Plugin
+
+The `fluxy_animations` plugin provides a suite of high-level motion primitives designed to make your interfaces feel fluid, premium, and alive.
+
+## Installation
+
+Add the plugin to your `pubspec.yaml`:
+
+```yaml
+dependencies:
+  fluxy_animations:
+    path: packages/fluxy_animations
+```
+
+Register the plugin during app initialization:
+
+```dart
+void main() {
+  Fluxy.initialize(
+    plugins: [
+      FluxyAnimationsPlugin(),
+    ],
+  );
+  runApp(const MyApp());
+}
+```
+
+## FxMagnetic (Interactive Physics)
+
+Create widgets that feel "magnetic." They will stick to the user's touch/cursor and snap back with elite spring physics. This provides a high-end, organic feel that standard Flutter buttons lack.
+
+```dart
+FxMagnetic(
+  reach: 150,
+  intensity: 0.5,
+  child: Fx.box(
+    style: FxStyle(padding: EdgeInsets.all(20), backgroundColor: Fx.primary),
+    child: Fx.text("Magnetic Button").white().bold(),
+  ),
+)
+```
+
+## FxChoreography (Timeline Motion)
+
+Choreograph complex animation sequences (Scale -> Rotate -> Fade) in a single declarative block. Perfect for elaborate success states or landing page sequences.
+
+```dart
+FxChoreography(
+  repeat: true,
+  steps: [
+    FxStep(
+      duration: 400.ms,
+      scale: Tween(begin: 1.0, end: 1.2),
+      curve: Curves.elasticOut,
+    ),
+    FxStep(
+      duration: 300.ms,
+      rotate: Tween(begin: 0.0, end: 0.5), // Radians
+    ),
+    FxStep(
+      duration: 500.ms,
+      fade: Tween(begin: 1.0, end: 0.0),
+    ),
+  ],
+  child: Fx.icon(Icons.star, size: 40, color: Colors.amber),
+)
+```
+
+## FxBoing
+
+A "pop" effect for interactive elements. It scales the widget down slightly when pressed and springs back when released, providing instant tactile feedback.
+
+```dart
+FxBoing(
+  scale: 0.95,
+  onTap: () => print("Boing tapped!"),
+  child: Fx.button("Interactive Motion").primary(),
+)
+```
+
+## FxPulsar
+
+Create an ambient "breathing" animation for status indicators or primary calls to action.
+
+```dart
+FxPulsar(
+  scale: 1.1,
+  child: Fx.icon(Icons.notifications_active, color: Fx.error),
+)
+```
+
+## FxEntrance
+
+A multi-property entrance animation that combines fading, sliding, and spring scaling for a high-end "liquid" feel.
+
+```dart
+FxEntrance(
+  delay: Duration(milliseconds: 200),
+  slideOffset: Offset(0, 50),
+  scale: 0.8,
+  child: _buildFeaturedCard(),
+)
+```
+
+## FxWave (Organic Liquid Fill)
+
+Create realistic wave dynamics for progress bars or profile avatars.
+
+```dart
+FxWave(
+  progress: 0.6, // 60%
+  color: Colors.blue.withOpacity(0.5),
+  waveHeight: 10,
+  // Add clipBehavior to parent box for circular clips
+  child: Center(child: Text("60%")),
+)
+```
+
+## FxLiquidButton (Metaball Morphing)
+
+A high-end interaction where the button physically "splits" or "morphs" like a liquid drop when tapped.
+
+```dart
+FxLiquidButton(
+  onTap: () => print("Launched!"),
+  child: Fx.box(
+    style: FxStyle(padding: EdgeInsets.all(16), backgroundColor: Fx.primary),
+    child: Fx.text("Launch").white().bold(),
+  ),
+)
+```
+
+## FxStaggeredReveal
+
+Create staggered entry animations for lists or groups of widgets with zero boilerplate.
+
+```dart
+FxStaggeredReveal(
+  interval: const Duration(milliseconds: 100),
+  children: [
+    Fx.text("Welcome back,").font.lg().bold(),
+    Fx.text("Here is your snapshot for today."),
+    _buildActivityCard(),
+    _buildStatsGrid(),
+  ],
+)
+```
+
+### Properties (FxEntrance)
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `child` | `Widget` | required | The widget to animate. |
+| `delay` | `Duration` | `zero` | Delay before the animation starts. |
+| `duration` | `Duration` | `600ms` | Total duration of the animation. |
+| `slideOffset` | `Offset` | `(0, 20)` | The starting position offset. |
+| `scale` | `double` | `0.9` | The starting scale factor. |
+
+## FxLiquidShimmer
+
+A high-performance shimmer effect for skeleton loading states.
+
+```dart
+FxLiquidShimmer(
+  enabled: isLoading.value,
+  child: Fx.row(
+    children: [
+      Fx.box(width: 40, height: 40).rounded(20).bg(Colors.grey[300]!),
+      Fx.col(
+        children: [
+          Fx.box(width: 120, height: 12).bg(Colors.grey[300]!),
+          Fx.gap(8),
+          Fx.box(width: 80, height: 10).bg(Colors.grey[300]!),
+        ],
+      ).ml(12),
+    ],
+  ).p(16),
+)
+```
+
+### Properties
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `child` | `Widget` | required | The widget to apply the shimmer to. |
+| `enabled` | `bool` | `true` | Toggle the shimmer effect. |
+
+## FxSpotlight (Cinematic Masking)
+
+A movie-screen reveal effect that follows the cursor. Perfect for landing pages or high-end product showcases.
+
+```dart
+FxSpotlight(
+  radius: 120,
+  overlayColor: Colors.black87,
+  child: MyComplexWidget(),
+)
+```
+
+## FxGooey (Metaball Liquid Merge)
+
+A premium "gooey" effect where objects physically melt into each other as they move.
+
+```dart
+FxGooey(
+  intensity: 25,
+  children: [
+    CircleBlob(color: Fx.primary),
+    CircleBlob(color: Colors.purple),
+  ],
+)
+```
+
+## FxConfetti (Celebrate Interaction)
+
+High-performance celebratory organic particles.
+
+```dart
+FxConfetti(
+  count: 30,
+  child: Fx.button(label: "Celebrate!", onTap: () {}),
+)
+```
+
+## Best Practices
+
+### 1. Subtle Motion
+Avoid over-animating. Use `FxReveal` for primary page content and `FxShimmer` only during initial data fetches.
+
+### 2. Performance
+Fluxy Animations use hardware-accelerated transforms. However, try to keep the number of simultaneous shimmers low for optimal frame rates on lower-end devices.
+
+### 3. User Preference
+Always respect the user's "Reduced Motion" system settings if building for accessibility.

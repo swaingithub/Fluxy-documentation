@@ -1,22 +1,22 @@
 ---
-title: Fx.bottomNav (BottomBar)
+title: FxBottomBar
 description: A pill-style, animated navigation bar for primary app shell navigation.
 ---
 
-# Fx.bottomNav (BottomBar)
+# FxBottomBar
 
-`Fx.bottomNav` is a navigation component designed for primary app shells. It features physics-based selection tracking and smooth transitions using the `FxBottomBar` engine.
+`FxBottomBar` is a navigation component designed for primary app shells. It features physics-based selection tracking, smooth animations, and automatic theme adaptation.
 
 ## Usage
 
 ```dart
-Fx.bottomNav(
+FxBottomBar(
   currentIndex: currentTab.value,
   onTap: (index) => currentTab.value = index,
-  items: [
-    BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-    BottomNavigationBarItem(icon: Icon(Icons.search), label: "Search"),
-    BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
+  items: const [
+    FxBottomBarItem(icon: Icons.home, label: "Home"),
+    FxBottomBarItem(icon: Icons.search, label: "Search"),
+    FxBottomBarItem(icon: Icons.person, label: "Profile"),
   ],
 )
 ```
@@ -26,42 +26,49 @@ Fx.bottomNav(
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
 | `currentIndex` | `int` | required | The active tab index. |
-| `items` | `List<BottomNavigationBarItem>` | required | List of navigation items. |
+| `items` | `List<FxBottomBarItem>` | required | List of navigation items. |
 | `onTap` | `ValueChanged<int>` | required | Callback when tab is selected. |
+| `activeColor` | `Color?` | `Fx.primary` | Color for the active state indicator. |
 | `containerStyle` | `FxStyle?` | `null` | Custom styling for the bar container. |
 
 ---
 
 ## The Master Navigation Implementation
 
-A modern, glassmorphic bottom navigation bar with integrated notification badges.
+A modern, pill-style bottom navigation bar with theme-aware colors and smooth scaling.
 
 ```dart
 class AppShellNavigation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final activeTab = flux(0);
-    final notificationCount = flux(3);
-
-    return Fx(() => Fx.bottomNav(
+    return Fx(() => FxBottomBar(
       currentIndex: activeTab.value,
       onTap: (i) => activeTab.value = i,
+      activeColor: Fx.primary,
       containerStyle: FxStyle(
-        bg: Colors.white.withOpacity(0.8),
-        blur: 20, // Glassmorphic effect
-        border: Border(top: BorderSide(color: Colors.slate200, width: 1)),
-        p: 12,
+        backgroundColor: FxTheme.isDarkMode ? Color(0xFF1E293B) : Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       ),
-      items: [
-        BottomNavigationBarItem(icon: Icon(Icons.grid_view_rounded), label: "Home"),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.chat_bubble_outline_rounded),
-          label: "Messages",
-        ),
-        BottomNavigationBarItem(icon: Icon(Icons.account_circle_outlined), label: "Profile"),
+      items: const [
+        FxBottomBarItem(icon: Icons.grid_view_rounded, label: "Home"),
+        FxBottomBarItem(icon: Icons.shopping_bag_rounded, label: "Shop"),
+        FxBottomBarItem(icon: Icons.person_rounded, label: "Profile"),
       ],
     ));
   }
 }
+```
 
-Fluxy's navigation system utilizes high-performance physics-based animations for selection indicators, providing a premium "liquid" feel that is characteristic of high-end industrial applications.
+Fluxy's navigation system utilizes physics-based animations for selection indicators, providing a premium feel. It automatically handles text truncation and overflow prevention on small screens.
+
+## Haptic Feedback (Optional)
+
+To keep the core library lightweight, haptic feedback is optional. You can integrate it using `Fx.haptic` within the `onTap` callback:
+
+```dart
+onTap: (index) {
+  Fx.haptic?.medium(); 
+  activeTab.value = index;
+}
+```

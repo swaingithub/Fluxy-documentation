@@ -37,7 +37,7 @@ lib/
 
 ### 1. Business Logic (.controller.dart)
 **Rule:** If it is a flux() signal or a Future that changes state, it belongs in a Controller.
-- **Tools to use:** flux(), computed(), batch().
+- **Tools to use:** `flux()`, `fluxComputed()`, `batch()`.
 - **Relationship:** Controllers are usually singletons registered via Fluxy.register().
 
 ### 2. UI & Design (.view.dart)

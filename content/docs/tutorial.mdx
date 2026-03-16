@@ -1,0 +1,244 @@
+---
+title: "Tutorial: First App"
+description: Build a complete, production-ready Task Manager using Fluxy in 10 minutes. 
+---
+
+# Tutorial: Your First Fluxy App
+
+One of the best ways to learn a new framework is to build something tangible. In this tutorial, we will build a **Task Manager application** from scratch. 
+
+By the end of this guide, you will understand how Fluxy handles **UI Styling**, **State Management**, and **File Architecture**.
+
+## 1. Setup the Project
+
+First, generate a new Fluxy application. This will create the standard `core` and `features` folder structure.
+
+```bash
+fluxy init task_manager
+cd task_manager
+```
+
+Open `lib/main.dart` and replace it with the entry point of your app:
+
+```dart title="lib/main.dart"
+import 'package:flutter/material.dart';
+import 'package:fluxy/fluxy.dart';
+
+import 'features/tasks/tasks.view.dart';
+
+void main() async {
+  // Initialize the Fluxy Engine (Routing, DI, State)
+  await Fluxy.init();
+  
+  runApp(
+    FluxyApp(
+      title: "Task Manager",
+      // Set the default theme to our custom styling engine
+      theme: FxTheme.light(),
+      initialRoute: FxRoute(
+        path: "/",
+        builder: (context, args) => TasksView(),
+      ),
+    ),
+  );
+}
+```
+
+---
+
+## 2. Define the Data Model
+
+Create a file for our `Task` model. In a real app, this would live in `lib/core/models/task.model.dart`.
+
+```dart title="lib/core/models/task.model.dart"
+class Task {
+  final String id;
+  final String title;
+  bool isCompleted;
+
+  Task({
+    required this.id,
+    required this.title,
+    this.isCompleted = false,
+  });
+}
+```
+
+---
+
+## 3. Build the Controller (Logic Layer)
+
+In Fluxy, **Logic never lives in the UI**. We use `FluxController` to manage our state. This makes our app infinitely testable and prevents the UI from becoming unreadable.
+
+Create a new controller in `lib/features/tasks/tasks.controller.dart`.
+
+```dart title="lib/features/tasks/tasks.controller.dart"
+import 'package:fluxy/fluxy.dart';
+import '../../core/models/task.model.dart';
+
+class TasksController extends FluxController {
+  // 1. Reactive State: A list of tasks
+  final tasks = fluxList<Task>([]);
+  
+  // 2. Reactive State: The text input field value
+  final taskInput = flux('');
+
+  // 3. Computed State: Automatically updates when tasks change
+  late final completedCount = fluxComputed(() {
+    return tasks.where((t) => t.isCompleted).length;
+  });
+
+  // Action: Add a new task
+  void addTask() {
+    if (taskInput.value.trim().isEmpty) {
+      Fx.toast.error("Task description cannot be empty!");
+      return;
+    }
+
+    tasks.add(Task(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      title: taskInput.value,
+    ));
+    
+    // Clear the input and show a success message
+    taskInput.value = '';
+    Fx.toast.success("Task added");
+  }
+
+  // Action: Toggle completion status
+  void toggleTask(String id) {
+    final index = tasks.indexWhere((t) => t.id == id);
+    if (index != -1) {
+      // Trigger a direct modification that updates the UI
+      tasks.update(index, (task) {
+        task.isCompleted = !task.isCompleted;
+        return task;
+      });
+    }
+  }
+
+  // Action: Delete task
+  void deleteTask(String id) {
+    tasks.removeWhere((t) => t.id == id);
+    Fx.toast.info("Task deleted");
+  }
+}
+```
+
+> **Why is this powerful?** We didn't import `flutter/material.dart` anywhere! There is no `BuildContext` or `setState`. The controller is pure Dart logic. 
+
+---
+
+## 4. Build the View (UI Layer)
+
+Now, let's build the visual interface. Instead of wrestling with standard Flutter layout widgets (Containers, Paddings, Expanded constraints), we will use Fluxy's built-in **Tailwind CSS string parser (`.tw`)** to build our UI rapidly.
+
+Create the view in `lib/features/tasks/tasks.view.dart`.
+
+```dart title="lib/features/tasks/tasks.view.dart"
+import 'package:flutter/material.dart';
+import 'package:fluxy/fluxy.dart';
+
+import 'tasks.controller.dart';
+
+class TasksView extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // 1. Inject the Controller. Fluxy automatically manages its memory lifecycle!
+    final logic = use<TasksController>();
+
+    return Fx.scaffold(
+      // Top Navigation Bar
+      appBar: Fx.appBar(
+        title: Fx.text("My Tasks").tw('font-bold text-slate-800'),
+        // Reactive counter in the header
+        actions: [
+          Fx(() => Fx.text("${logic.completedCount.value} / ${logic.tasks.length} Completed")
+            .tw('text-sm text-slate-500 mr-4 mt-4')
+          )
+        ],
+      ),
+      
+      // Main Body Layout
+      body: Fx.col(
+        children: [
+          // Header Section
+          Fx.text("What needs to be done?").tw('text-2xl font-black text-slate-900 mb-6'),
+
+          // Input Field & Add Button
+          Fx.row(
+            children: [
+              // Reactive text field bound to our controller
+              Fx.field(logic.taskInput)
+                .placeholder("E.g., Buy groceries...")
+                .tw('flex-1 border-gray-200 rounded-xl px-4 py-3 bg-white shadow-sm'),
+                
+              Fx.gap(12),
+              
+              // Add task action
+              Fx.btn("Add")
+                .tw('bg-blue-600 text-white font-bold rounded-xl px-6 py-3 shadow-md hover:bg-blue-700')
+                .onTap(logic.addTask),
+            ],
+          ).tw('w-full mb-8'),
+
+          // Reactive Task List
+          Fx(() {
+            if (logic.tasks.isEmpty) {
+              return Fx.box(
+                child: Fx.text("You're all caught up!").tw('text-gray-400 font-medium text-center')
+              ).tw('w-full py-12 border-2 border-dashed border-gray-200 rounded-2xl');
+            }
+
+            // Map standard Dart objects to Atomic UI rows
+            return Fx.col(
+              gap: 12,
+              children: logic.tasks.map((task) => _buildTaskRow(task, logic)).toList(),
+            ).scrollable().tw('flex-1'); // Safely expands to fulfill the remaining screen height
+          }),
+        ],
+      ).tw('w-full h-full p-6 bg-slate-50'),
+    );
+  }
+
+  // A helper method entirely driven by Tailwind Strings
+  Widget _buildTaskRow(Task task, TasksController logic) {
+    return Fx.row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        // Left side: Checkbox + Title
+        Fx.row(
+          children: [
+            Checkbox(
+              value: task.isCompleted, 
+              onChanged: (v) => logic.toggleTask(task.id),
+              activeColor: Colors.blue,
+            ),
+            Fx.text(task.title).tw(
+              task.isCompleted 
+                ? 'text-lg text-gray-400 line-through' 
+                : 'text-lg text-slate-800 font-medium'
+            ),
+          ]
+        ),
+        
+        // Right side: Delete button
+        const Icon(Icons.delete_outline, color: Colors.redAccent)
+          .btn(onTap: () => logic.deleteTask(task.id))
+          .tw('p-2 hover:bg-red-50 rounded-lg'),
+      ],
+    ).tw('w-full p-2 bg-white rounded-xl shadow-sm border border-gray-100');
+  }
+}
+```
+
+## Reviewing our Achievements
+
+Take a look at what we've accomplished in less than 100 lines of code:
+- **Zero StatefulWidgets**: We bypassed the verbose `StatefulWidget` boilerplate completely. The UI is 100% reactive simply by wrapping elements in `Fx(() => ...)`.
+- **Zero BuildContext Passing**: Notice our logic (`tasks.controller.dart`) calls `Fx.toast.success()` natively without ever touching the UI tree.
+- **Zero Padding/Container Hell**: We built gorgeous, fully responsive rows, columns, buttons, and borders using the `.tw()` macros exactly like we would writing a NextJS/React web app.
+
+You now possess the foundational knowledge of Fluxy! From here, you should:
+- Deep dive into the [Fluxy State System](/docs/fundamentals/state-management) to learn about caching and Isolate workers.
+- Browse the [UI Library Defaults](/docs/components/button) for pre-styled widgets.

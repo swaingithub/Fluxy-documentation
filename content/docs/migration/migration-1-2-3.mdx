@@ -1,0 +1,98 @@
+---
+title: Migration v1.2.3
+description: Upgrading to AI-Optimized Tailwind constraints, the Native Native Logo Engine, and Fluxy Cloud GitHub Actions.
+---
+
+# Migration to Fluxy v1.2.3
+
+Fluxy v1.2.3 is a landmark update designed to transform your application from a simple Flutter project into a **Production-Grade Managed Application Engine**. It heavily emphasizes **AI Generation Compatibility** (Tailwind `.tw` macros), **Automated Branding**, and **Zero-Crash Cloud Deployments**. 
+
+Because this is a non-breaking minor release, upgrading is fully backward-compatible. This guide explains how to adopt the new features.
+
+## 1. Upgrade Instructions
+
+To access the new Engine capabilities, update your `pubspec.yaml` to the `^1.2.3` version:
+
+```yaml
+dependencies:
+  fluxy: ^1.2.3
+  fluxy_animations: ^1.2.1 # Retains its latest API
+```
+
+Run `flutter pub get` after updating.
+
+---
+
+## 2. AI-Optimized Tailwind Parser (`.tw`)
+
+The biggest feature in v1.2.3 is native, string-based Tailwind CSS translation built entirely for AI code generators like Cursor and ChatGPT.
+
+### Adoption Strategy
+You do NOT need to rewrite your existing `Fx.box().p(16).bg(Colors.red)` modifier chains. They remain the gold standard for type-safe compilation. 
+
+However, when prompting AI or building rapid prototypes, you can now use the `.tw()` extension.
+
+```dart
+// v1.2.2 and older (Chained Modifiers - Still Supported & Recommended for logic)
+Fx.text("Welcome")
+  .font.xl2()
+  .bold()
+  .primary
+  .center();
+
+// v1.2.3 (AI Tailwind Generation - Best for rapid AI drops)
+Fx.text("Welcome").tw('text-2xl font-bold text-primary text-center');
+```
+
+**What changed under the hood:**
+The `.tw()` parser intercepts strings and maps them to the exact same internal `FxStyle` engine as the chained modifiers. It introduces **FxSafeExpansion**, which automatically prevents "Unbounded Height/Width" errors if an AI incorrectly generates a `flex-1` constraint inside a scrollable view.
+
+---
+
+## 3. The Native Logo Engine (`fluxy init`)
+
+Previously, when generating a new Fluxy application via the CLI, it used the default Flutter branding. In v1.2.3, this has been entirely replaced.
+
+### For New Projects
+When you run:
+```bash
+fluxy init my_modern_app
+```
+Fluxy will now automatically base64-decode and embed the pristine, polished **Fluxy "F" Application Icon** as the default branding for both iOS and Android. 
+
+### For Existing Projects
+If you want to apply the Fluxy branding to a project created in v1.2.2 or earlier, we provide a new convenience CLI command:
+
+```bash
+# Run this inside your existing Flutter project root
+fluxy brand --apply
+```
+This will forcefully replace the default Flutter icons in `android/app/src/main/res/` and `ios/Runner/Assets.xcassets/` with the premium Fluxy icon suite.
+
+---
+
+## 4. Fluxy Cloud (`fluxy cloud`)
+
+Fluxy v1.2.3 introduces a "DevOps in a Box" philosophy. We want developers focusing on UI and logic, not wrestling with YAML deployment scripts.
+
+### Generating CI/CD Pipelines
+You can now instantly generate robust, production-ready GitHub Actions workflows.
+
+Run the following command at the root of your project:
+```bash
+fluxy cloud init
+```
+
+This will automatically scaffold a `.github/workflows/` directory containing:
+1. **`fluxy_validate.yml`**: Runs on every Pull Request. It executes `flutter analyze`, `flutter test`, and verifies your `fluxy` architecture strictly adheres to feature-first conventions.
+2. **`fluxy_deploy_android.yml`**: A secure pipeline that automatically signs your Android App Bundle (`.aab`) and prepares it for the Google Play Console when you push to the `main` branch.
+3. **`fluxy_deploy_ios.yml`**: Automates Fastlane, provisioning profiles, and TestFlight uploads for the App Store (Requires Mac runner).
+
+**Action Required:**
+After running `fluxy cloud init`, view the generated YAML files. You will need to add your specific `KEYSTORE_BASE64`, `KEY_PASSWORD`, and `APPLE_APP_SPECIFIC_PASSWORD` to your GitHub Repository Secrets for the deployment pipelines to function.
+
+---
+
+## Conclusion
+
+Fluxy v1.2.3 removes the final layers of friction from the development lifecycle. By adopting the `.tw` syntax for AI, the automatic branding tools, and the 1-click cloud deployments, your team can go from `fluxy init` to the App Store faster than ever before.

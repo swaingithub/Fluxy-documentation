@@ -19,7 +19,7 @@ The fundamental building blocks for your application's logic.
 | :--- | :--- | :--- | :--- |
 | **`flux(initial)`** | Signal | Define a reactive state unit. | [State Basics](/docs/fundamentals/state-management) |
 | **`persist: true`** | Modifier | Automatically save/load signal state to storage. | [Persistence](/docs/fundamentals/state-management#persistence) |
-| **`computed(() => ...)`** | Signal | Derived state that cached and updates automatically. | [Reactivity](/docs/fundamentals/reactivity) |
+| **`fluxComputed(() => ...)`** | Signal | Derived state that cached and updates automatically. | [Reactivity](/docs/fundamentals/reactivity) |
 | **`FluxEffect(() => ...)`**| Effect | Run side-effects (logging, API calls) when state changes. | [Effects](/docs/fundamentals/core-concepts#effects) |
 | **`batch(() => ...)`** | Utility | Group multiple state updates into one UI frame. | [Performance](/docs/fundamentals/performance) |
 | **`fluxSelector(obj, key)`**| Signal | Observe a specific property of a complex object. | [Selectors](/docs/fundamentals/state-management#selectors) |

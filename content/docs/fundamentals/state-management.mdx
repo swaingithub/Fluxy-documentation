@@ -256,8 +256,9 @@ Specialized helpers for multi-user scoping and database stream binding.
 ```dart
 class ChatRepository extends FluxyRepository {
   // 1. Scoped Persistence (Prevents data leakage between users)
-  late final messages = flux([], 
-    persistKey: userScope(auth.userId, 'chat_history')
+  late final messages = flux<List<String>>([], 
+    key: userScope(auth.userId, 'chat_history'),
+    persist: true
   );
   
   // 2. Database Subscription (Auto-cleans up on dispose)
@@ -277,9 +278,9 @@ void main() async {
   runApp(MyApp());
 }
 
-// Any flux with persistKey is automatically hydrated
-final theme = flux("dark", persistKey: "app_theme");
-final userPrefs = flux({}, persistKey: "user_preferences");
+// Any flux with `key` and `persist: true` is automatically hydrated
+final theme = flux("dark", key: "app_theme", persist: true);
+final userPrefs = flux<Map<String, dynamic>>({}, key: "user_preferences", persist: true);
 ```
 
 ## Performance Optimizations
@@ -464,7 +465,7 @@ Standardized data layer that handles offline-first orchestration.
 
 ```dart
 class AuthRepository extends FluxRepository {
-  late final session = flux(null, persistKey: 'user_session');
+  late final session = flux<dynamic>(null, key: 'user_session', persist: true);
 
   Future<void> login(String email, String password) async {
     final data = await Fx.http.post('/auth/login', body: {'email': email, 'password': password});

@@ -4,6 +4,7 @@
     "ui-dsl",
     "tokens",
     "theme",
+    "tailwindcss",
     "motion",
     "core-primitives"
   ]

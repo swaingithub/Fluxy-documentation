@@ -1,14 +1,14 @@
 {
   "pages": [
     "index",
-    "why-fluxy",
-    "installation",
     "quick-start",
-    "flutter-to-fluxy",
-    "feature-catalog",
-    "cookbook",
-    "---Core Engine---",
+    "tutorial",
+    "tutorial-offline",
+    "building-with-ai",
+    "---Core & Architecture---",
     "fundamentals",
+    "architecture",
+    "production",
     "---Styling & Layout---",
     "style",
     "layout",
@@ -16,17 +16,10 @@
     "components",
     "forms",
     "feedback",
-    "---Advanced Guides---",
-    "architecture",
-    "advanced",
-    "production",
-    "security-audit",
-    "devtools",
-    "case-studies",
-    "---Fluxy Plugins---",
+    "---Resources---",
+    "cookbook",
+    "feature-catalog",
     "plugins",
-    "---Ecosystem---",
-    "ecosystem",
-    "migration"
+    "ecosystem"
   ]
 }

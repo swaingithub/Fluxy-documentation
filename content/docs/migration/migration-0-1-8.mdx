@@ -125,8 +125,8 @@ void main() async {
   runApp(MyApp());
 }
 
-// Any flux with persistKey is now automatically hydrated
-final theme = flux("dark", persistKey: "app_theme");
+// Any flux with `key` and `persist: true` is now automatically hydrated
+final theme = flux("dark", key: "app_theme", persist: true);
 ```
 
 ## Code Examples
@@ -209,8 +209,9 @@ class ChatRepository {
 // After - with FluxyRepository
 class ChatRepository extends FluxyRepository {
   // Scoped persistence prevents data leakage between users
-  late final messages = flux([], 
-    persistKey: userScope(auth.userId, 'chat_history')
+  late final messages = flux<List<String>>([], 
+    key: userScope(auth.userId, 'chat_history'),
+    persist: true
   );
   
   void init() {

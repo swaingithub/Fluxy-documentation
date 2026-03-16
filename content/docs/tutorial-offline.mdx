@@ -1,0 +1,263 @@
+---
+title: "Tutorial: Offline-First App"
+description: Build a production-grade cryptocurrency dashboard that works offline using FluxyRepository and API Networking out-of-the-box.
+---
+
+# Tutorial: Offline-First Networking
+
+In the previous Task Manager tutorial, we learned how to manage local state and styling. However, real-world apps need to talk to servers, manage loading states, handle network drops, and cache data for offline use.
+
+With standard Flutter, this requires combining `http`, `shared_preferences`, and complex `FutureBuilder` logic. 
+
+With Fluxy, we built the **FluxRepository**—an architectural pattern natively designed for **Offline-First Data Orchestration**. Let's build a Crypto Dashboard that instantly shows cached data while fetching live updates in the background (SWR - Stale While Revalidate).
+
+---
+
+## 1. Setup the Project
+
+If you haven't already, generate a new project. We will create a Feature module called `crypto`.
+
+```bash
+fluxy init crypto_tracker
+cd crypto_tracker
+```
+
+Inside your `lib/features/crypto` folder, we will create three files: the `model`, the `repository`, and the `view`.
+
+---
+
+## 2. The Data Model
+
+Create a simple model to hold our cryptocurrency data.
+
+```dart title="lib/features/crypto/crypto.model.dart"
+class CryptoCoin {
+  final String id;
+  final String symbol;
+  final double currentPrice;
+  final double priceChangePercentage24h;
+
+  CryptoCoin({
+    required this.id,
+    required this.symbol,
+    required this.currentPrice,
+    required this.priceChangePercentage24h,
+  });
+
+  // Factory to parse the API response
+  factory CryptoCoin.fromJson(Map<String, dynamic> json) {
+    return CryptoCoin(
+      id: json['id'],
+      symbol: (json['symbol'] as String).toUpperCase(),
+      currentPrice: (json['current_price'] as num).toDouble(),
+      priceChangePercentage24h: (json['price_change_percentage_24h'] as num?)?.toDouble() ?? 0.0,
+    );
+  }
+
+  // Method to serialize for local storage caching
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'symbol': symbol,
+    'current_price': currentPrice,
+    'price_change_percentage_24h': priceChangePercentage24h,
+  };
+}
+```
+
+---
+
+## 3. The Repository (Data & Networking Layer)
+
+Instead of a standard `FluxController`, we use a `FluxRepository`. Repositories manage the network payload and local caching. Look how elegantly Fluxy handles the **Stale-While-Revalidate** pattern!
+
+Create `crypto.repository.dart`:
+
+```dart title="lib/features/crypto/crypto.repository.dart"
+import 'package:fluxy/fluxy.dart';
+import 'crypto.model.dart';
+
+class CryptoRepository extends FluxRepository {
+  // 1. Reactive State with Persistence
+  // By simply adding `key` and `persist: true`, Fluxy automatically writes/reads this list from disk!
+  final coins = flux<List<CryptoCoin>>([], key: 'crypto_cache', persist: true);
+
+  // 2. Network State Flags
+  final isRefreshing = flux(false);
+  final lastError = flux<String?>(null);
+
+  @override
+  void onInit() {
+    super.onInit();
+    // Auto-fetch data the moment this repository is loaded into memory
+    fetchMarketData();
+  }
+
+  Future<void> fetchMarketData() async {
+    isRefreshing.value = true;
+    lastError.value = null;
+
+    try {
+      // Use the built-in Fx.http client
+      final response = await Fx.http.get(
+        'https://api.coingecko.com/api/v3/coins/markets',
+        query: {
+          'vs_currency': 'usd',
+          'order': 'market_cap_desc',
+          'per_page': '10',
+          'page': '1',
+        },
+      );
+
+      // We use `fluxWorker` to parse the JSON payload on a background Isolate thread.
+      // This guarantees the UI won't freeze if the API returns 10,000 items!
+      final parsedList = await fluxIsolate(() {
+        return (response.data as List)
+            .map((json) => CryptoCoin.fromJson(json))
+            .toList();
+      });
+
+      // Update the reactive list. This implicitly overwrites the offline cache.
+      coins.value = parsedList;
+      
+    } catch (e) {
+      // Notice we don't crash. If offline, `coins` will just show the cached data.
+      lastError.value = 'Failed to fetch live prices. You are viewing cached data.';
+      Fx.toast.error("Network Offline");
+    } finally {
+      isRefreshing.value = false;
+    }
+  }
+}
+```
+
+> **Why is this Magic?**
+> When the app boots, the `crypto_cache` immediately populates the `coins` list from the device's hard drive within `1ms`. The user instantly sees the prices from their last session (the *Stale* data). Meanwhile, `fetchMarketData()` runs in the background. Once the API returns, it updates `coins.value`, flawlessly *Revalidating* the UI with the live prices!
+
+---
+
+## 4. The View (UI Layer)
+
+Finally, let's tie it all together with Fluxy's atomic Tailwind CSS macros (`.tw`) to build a gorgeous dashboard. 
+
+```dart title="lib/features/crypto/crypto.view.dart"
+import 'package:flutter/material.dart';
+import 'package:fluxy/fluxy.dart';
+
+import 'crypto.repository.dart';
+import 'crypto.model.dart';
+
+class CryptoDashboard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // Inject our repository
+    final repo = use<CryptoRepository>();
+
+    return Fx.scaffold(
+      backgroundColor: Colors.slate900,
+      appBar: Fx.appBar(
+        backgroundColor: Colors.transparent,
+        title: Fx.text("Crypto Pulse").tw('font-black text-white text-xl tracking-tight'),
+        actions: [
+          // A refresh button that spins when `isRefreshing` is true
+          Fx(() => Icon(Icons.refresh, color: Colors.white)
+            .btn(onTap: repo.fetchMarketData)
+            .animateSpin(isAnimating: repo.isRefreshing.value)
+            .tw('mr-4')
+          )
+        ],
+      ),
+      
+      body: Fx.col(
+        children: [
+          // Offline Warning Banner
+          Fx(() {
+            if (repo.lastError.value == null) return const SizedBox.shrink();
+            return Fx.row(
+              children: [
+                const Icon(Icons.wifi_off, color: Colors.amber, size: 20),
+                Fx.gap(8),
+                Fx.text(repo.lastError.value!).tw('text-amber-500 font-medium text-sm flex-1'),
+              ]
+            ).tw('w-full bg-amber-500/10 p-4 border-b border-amber-500/20');
+          }),
+
+          // The Data Grid
+          Fx(() {
+            // Loading State (Only if the cache is totally empty and it's the first boot)
+            if (repo.coins.value.isEmpty && repo.isRefreshing.value) {
+              return Fx.loader.shimmer().center().expanded();
+            }
+
+            return Fx.col(
+              gap: 12,
+              children: repo.coins.value.map((coin) => _buildCoinCard(coin)).toList(),
+            ).scrollable().tw('flex-1 p-6');
+          }),
+        ],
+      ).tw('w-full h-full'),
+    );
+  }
+
+  // Individual Coin UI
+  Widget _buildCoinCard(CryptoCoin coin) {
+    final isPositive = coin.priceChangePercentage24h >= 0;
+    
+    return Fx.row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        // Left Side: Symbol and Label
+        Fx.row(
+          children: [
+            // Circular avatar with the first letter
+            Fx.box(
+              child: Fx.text(coin.symbol[0]).tw('text-white font-bold text-lg centerText')
+            ).tw('w-12 h-12 rounded-full bg-indigo-600/20 border border-indigo-500/30 mr-4 flex items-center justify-center'),
+            
+            Fx.col(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Fx.text(coin.symbol).tw('text-white font-bold text-lg'),
+                Fx.text("Market Cap Top 10").tw('text-slate-400 text-xs'),
+              ]
+            ),
+          ]
+        ),
+        
+        // Right Side: Price & Graph numbers
+        Fx.col(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Fx.text("\$${coin.currentPrice.toStringAsFixed(2)}")
+              .tw('text-white font-bold text-lg'),
+            
+            Fx.row(
+              children: [
+                Icon(
+                  isPositive ? Icons.trending_up : Icons.trending_down, 
+                  color: isPositive ? Colors.greenAccent : Colors.redAccent, 
+                  size: 14
+                ),
+                Fx.gap(4),
+                Fx.text("${coin.priceChangePercentage24h.toStringAsFixed(2)}%")
+                  .tw(isPositive ? 'text-greenAccent font-bold text-sm' : 'text-redAccent font-bold text-sm'),
+              ]
+            ),
+          ]
+        ),
+      ],
+    ).tw('w-full bg-slate-800 p-4 rounded-2xl shadow-lg border border-slate-700/50 hover:bg-slate-750 transition-colors');
+  }
+}
+```
+
+## Summary
+
+In standard Flutter, saving an API response to `SharedPreferences` stringifying it to JSON, parsing it on boot, and managing loading states takes **hundreds of lines of imperative code**. 
+
+With Fluxy:
+1. `key: 'crypto_cache'` along with `persist: true` handles 100% of local disk caching.
+2. `Fx.http` handles networking securely.
+3. `fluxIsolate()` seamlessly moves massive JSON parses to background workers, keeping frame rates at exactly 60fps.
+4. The `.tw` styling engine allows you to build a highly modern Dark-Mode SaaS UI in seconds. 
+
+By utilizing the **FluxRepository** pattern shown here, you guarantee your users never stare at a blank white screen, even in a subway tunnel!

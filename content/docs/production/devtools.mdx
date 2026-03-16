@@ -92,7 +92,7 @@ class GameController {
   final playerName = flux('Guest', label: 'player_name');
   
   // Requirement 2: Use Flux Collections for deep data
-  final inventory = fluxList<String>(['Sword'], label: 'player_items');
+  final inventory = flux<List<String>>(['Sword'], label: 'player_items');
 }
 
 class GameScreen extends StatelessWidget {

@@ -76,7 +76,7 @@ A common requirement is to "Queue" data while offline and "Flush" it once the co
 
 ```dart
 class TaskRepository extends FluxRepository {
-  final tasks = fluxList<Task>([], persistKey: 'offline_tasks');
+  final tasks = flux<List<Task>>([], key: 'offline_tasks', persist: true);
 
   @override
   void onInit() {
@@ -84,18 +84,22 @@ class TaskRepository extends FluxRepository {
     
     // Automatically trigger a sync whenever the device joins a network
     fluxEffect(() {
-      if (isOnline.value && tasks.isNotEmpty) {
+      if (isOnline.value && tasks.value.isNotEmpty) {
         _uploadPendingTasks();
       }
     });
   }
 
   Future<void> _uploadPendingTasks() async {
-    Fx.toast.info("Connection Restored. Syncing ${tasks.length} items...");
+    Fx.toast.info("Connection Restored. Syncing ${tasks.value.length} items...");
     
-    for (var task in tasks) {
+    // Copy list to avoid concurrent modification issues during iteration
+    final pending = List<Task>.from(tasks.value);
+    for (var task in pending) {
       final success = await Fx.http.post('/tasks', body: task.toJson());
-      if (success) tasks.remove(task);
+      if (success) {
+        tasks.value = List<Task>.from(tasks.value)..remove(task);
+      }
     }
   }
 }

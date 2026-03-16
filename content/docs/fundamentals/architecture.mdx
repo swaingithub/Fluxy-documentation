@@ -121,8 +121,7 @@ lib/
 ```dart
 // 1. DATA LAYER: catalog.repository.dart
 class CatalogRepository extends FluxRepository {
-  // Offline-first storage automatically managed
-  late final products = flux([], persistKey: 'cached_products');
+  late final products = flux<List<dynamic>>([], key: 'cached_products', persist: true);
 
   Future<void> refresh() async {
     final data = await Fx.http.get('/api/products');

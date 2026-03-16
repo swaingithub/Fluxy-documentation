@@ -79,7 +79,7 @@ Move your data fetching and persistence logic into `FluxRepository`:
 
 ```dart
 class ProductRepository extends FluxRepository {
-  late final products = flux([], persistKey: 'cached_products');
+  late final products = flux<List<dynamic>>([], key: 'cached_products', persist: true);
 
   Future<void> sync() async {
     final data = await Fluxy.http.get('/products');

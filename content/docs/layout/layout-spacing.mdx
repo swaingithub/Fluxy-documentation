@@ -18,7 +18,7 @@ The new API exposes strict `justify`, `items`, and `gap` parameters, mirroring C
 ```dart
 Fx.row(
   justify: MainAxisAlignment.spaceBetween,
-  items: CrossAxisAlignment.center,
+  alignItems: CrossAxisAlignment.center,
   gap: 16, // Built-in gap support
   children: [
     Fx.text("Left"),
@@ -32,7 +32,7 @@ Fx.row(
 ```dart
 Fx.col(
   justify: MainAxisAlignment.center,
-  items: CrossAxisAlignment.stretch,
+  alignItems: CrossAxisAlignment.stretch,
   gap: 8,
   children: [
     Fx.button("Login").fullWidth(),

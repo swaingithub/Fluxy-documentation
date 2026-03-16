@@ -1,0 +1,225 @@
+---
+title: Building with AI
+description: How to leverage AI coding assistants (Cursor, Copilot, ChatGPT) to build Fluxy apps 10x faster.
+---
+
+# Building with AI
+
+Most modern developers use AI coding assistants to build applications. Fluxy was intentionally designed from the ground up to be **AI-Native**. 
+
+Traditional Flutter code involves deep, nested widget trees that confuse AI models, leading to missing parentheses, broken layouts, and hallucinations. Fluxy solves this dependency nightmare.
+
+This guide covers how to maximize your AI's potential when generating Fluxy applications.
+
+## Why Fluxy is Perfect for AI
+
+### 1. The Flat Hierarchy Interface
+AI models struggle with deep nesting. Fluxy's Atomic DSL (`Fx.text("Hello").bold.primary`) flattens the widget tree. An AI can reliably generate a single line of stateful, styled code without losing track of widget hierarchy closures.
+
+### 2. Predictable Naming Conventions
+Fluxy employs an extreme level of standardization.
+- Core classes always start with `Flux` (`FluxController`, `FluxRepository`).
+- UI modifiers always branch off `Fx.` (`Fx.row`, `Fx.button`, `Fx.toast`).
+- Modifiers map directly to standard CSS/Tailwind mental models (e.g., `.p(16)`, `.bg()`, `.rounded`).
+
+This predictability allows LLMs trained on web technologies to effortlessly output correct Fluxy syntax.
+
+### 3. Context-Free Logic
+Traditional Flutter requires passing `BuildContext` everywhere, which trips up AI when generating isolated Service or Controller classes. Fluxy's `Fluxy.to()` and `Fx.toast` don't require context, meaning the AI can write completely uncoupled, functional logic right out of the box.
+
+---
+
+## Prompting Best Practices
+
+When asking ChatGPT, Claude, or Cursor to build a feature, include the following "System Prompt" context for the best results:
+
+```text
+You are an expert Flutter Developer using the Fluxy framework. 
+Follow these rules:
+1. Use `Fx.col`, `Fx.row`, and `Fx.layout` for UI instead of standard Flutter Columns/Rows.
+2. Use Fluxy Atomic DSL modifiers instead of `TextStyle` and `BoxDecoration` (e.g., `Fx.text("Hi").bold.primary`, `Fx.box().bg(Colors.red).rounded`).
+3. For State Management, use `FluxController` and reactive `flux()` variables, wrapped in `Fx(() => ...)` for reactivity.
+4. For Navigation and Toasts, use `Fluxy.to('/route')` and `Fx.toast.success('Done')`, never use BuildContext.
+5. Create UI components using `FxButton` with `.primary` or `.outline` extensions.
+```
+
+### Example: Generating an Auth Screen
+
+**Your Prompt:**
+> Build a production-ready modern Login Screen using Fluxy. It needs:
+> 1. A responsive layout (split screen on desktop with an image on the left, centered card on mobile).
+> 2. Email and Password fields with clear visibility toggles.
+> 3. A "Remember Me" checkbox and a "Forgot Password" text button.
+> 4. A primary login button and a social "Login with Google" outline button.
+> 5. When the user clicks login, set `isLoading` to true, wait 2 seconds, show a success toast, and navigate to '/home'.
+
+**AI Output (Using Fluxy):**
+```dart
+class LoginController extends FluxController {
+  final email = flux('');
+  final password = flux('');
+  final isPasswordVisible = flux(false);
+  final rememberMe = flux(false);
+  final isLoading = flux(false);
+  
+  void togglePassword() => isPasswordVisible.value = !isPasswordVisible.value;
+  void toggleRememberMe() => rememberMe.value = !rememberMe.value;
+
+  Future<void> login() async {
+    if (email.value.isEmpty || password.value.isEmpty) {
+      Fx.toast.error("Please fill in all fields.");
+      return;
+    }
+  
+    isLoading.value = true;
+    // Simulate network request
+    await Future.delayed(const Duration(seconds: 2));
+    isLoading.value = false;
+    
+    Fx.toast.success("Welcome back!");
+    Fluxy.offAll('/home');
+  }
+}
+
+class LoginView extends FluxView<LoginController> {
+  @override
+  Widget build(BuildContext context) {
+    return Fx.scaffold(
+      body: Fx.layout(
+        // Mobile Layout: Centered Card
+        mobile: _buildLoginForm().p(24).center(),
+        // Desktop Layout: Split Screen (Image Left, Form Right)
+        desktop: Fx.row(
+          children: [
+            // Left Hero Section
+            Fx.box()
+              .bg(Fx.primary.withOpacity(0.1))
+              .child(
+                Fx.col(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Fx.text("Fluxy\nEnterprise").font.display().bold.primary.centerText(),
+                    Fx.text("Build faster than ever before.").muted.mt(16),
+                  ]
+                ).center()
+              )
+              .expanded(),
+              
+            // Right Form Section
+            _buildLoginForm().p(64).center().expanded(),
+          ]
+        )
+      )
+    );
+  }
+
+  Widget _buildLoginForm() {
+    return Fx.box()
+      // Card Styling for mobile/desktop harmony
+      .bg(FxTokens.colors.card)
+      .rounded(16)
+      .border(1, FxTokens.colors.border)
+      .shadowSm()
+      .p(32)
+      .constraints(maxWidth: 450)
+      .child(
+        Fx.col(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Fx.text("Welcome Back").font.xl3().bold,
+            Fx.text("Enter your credentials to access your account.").muted.mb(32),
+            
+            // Email Input
+            Fx.text("Email").font.sm().bold.mb(8),
+            Fx.textField(
+              hint: "name@example.com",
+              onChanged: (val) => controller.email.value = val,
+            ).p(14).rounded.border(1, FxTokens.colors.border).mb(20),
+            
+            // Password Input
+            Fx.row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Fx.text("Password").font.sm().bold.mb(8),
+                Fx.button("Forgot password?").text.sizeXs().onTap(() => Fluxy.to('/recover')),
+              ]
+            ),
+            Fx(() => Fx.textField(
+              hint: "••••••••",
+              obscureText: !controller.isPasswordVisible.value,
+              onChanged: (val) => controller.password.value = val,
+            ).p(14).rounded.border(1, FxTokens.colors.border)),
+            
+            // Remember Me
+            Fx.row(
+              children: [
+                Fx(() => Checkbox(
+                  value: controller.rememberMe.value,
+                  onChanged: (v) => controller.toggleRememberMe(),
+                )),
+                Fx.text("Remember me for 30 days").font.sm().muted,
+              ]
+            ).mt(12).mb(24),
+            
+            // Primary Action
+            Fx(() => Fx.button("Sign In")
+              .primary
+              .fullWidth()
+              .sizeLg()
+              .loading(controller.isLoading.value)
+              .onTap(controller.login)
+            ),
+            
+            // Divider
+            Fx.row(
+              children: [
+                Fx.box().height(1).bg(FxTokens.colors.border).expanded(),
+                Fx.text("OR").font.xs().muted.px(16),
+                Fx.box().height(1).bg(FxTokens.colors.border).expanded(),
+              ]
+            ).py(24),
+            
+            // Social Action
+            Fx.button("Continue with Google")
+              .outline
+              .fullWidth()
+              .sizeLg()
+              .withIcon(const Icon(Icons.g_mobiledata, size: 24))
+              .onTap(() => Fx.toast.info("Google Auth not configured")),
+              
+            // Footer
+            Fx.row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Fx.text("Don't have an account?").muted.mr(8),
+                Fx.button("Sign up").text.onTap(() => Fluxy.to('/register')),
+              ]
+            ).mt(32)
+          ],
+        )
+      );
+  }
+}
+```
+
+## Using Cursor IDE
+
+If you are using [Cursor](https://cursor.sh/), we highly recommend creating a `.cursorrules` file at the root of your project.
+
+### The Fluxy `.cursorrules`
+
+Create a `.cursorrules` file and paste the following snippet so Cursor naturally understands how to write Fluxy code without you prompting every time.
+
+```md
+# Fluxy Framework Rules
+
+- Always use the `Fx.` prefix for UI generation.
+- Never use `Container` or `SizedBox`. Use `Fx.box()` for shapes/backgrounds and `.px()`, `.py()`, `.mt()`, `.mb()` modifiers for spacing.
+- Text styling MUST use modifiers: `Fx.text("Hello").bold.color(Colors.red)`. DO NOT use `style: TextStyle(...)`.
+- State must use `final myVar = flux(initialValue);`.
+- UI reactivity is done by wrapping widgets in `Fx(() => ...)`.
+- Navigation and feedback omit `BuildContext` (use `Fluxy.to()`, `Fx.toast.info()`).
+- Always structure files cleanly separating Logic (`FluxController`) and UI (`FluxView`).
+```
+
+By leveraging these tips, an AI assistant can rapidly compose Fluxy screens and controllers 10x faster than traditional Flutter development.

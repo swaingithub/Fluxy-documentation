@@ -1,0 +1,137 @@
+---
+title: Tailwind CSS Integration
+description: How to use Tailwind CSS utility strings natively within Fluxy.
+---
+
+# Tailwind CSS Integration
+
+Fluxy natively supports building applications using **Tailwind CSS**. Through our highly optimized parsing engine, you can use standard string-based Tailwind utilities directly on Flutter widgets to style your application without writing verbose Flutter layout and styling code.
+
+This is especially powerful when pairing Fluxy with AI tools (like Claude, Cursor, or ChatGPT), as these models are already intimately familiar with Tailwind CSS from web development.
+
+## The `.tw()` Extension
+
+Fluxy injects a `.tw('...')` extension on all native Flutter Widgets and Fluxy UI primitives. This parser intercepts Tailwind strings and dynamically applies the equivalent Flutter `TextStyle`, `BoxDecoration`, Padding, Margins, and `Flex` constraints at runtime.
+
+### Basic Usage
+
+Simply append `.tw()` to an `Fx` widget and pass in your utility classes.
+
+```dart
+Fx.text("Hello World").tw('text-blue-500 text-2xl font-bold p-4 bg-gray-100 rounded-lg')
+```
+
+### Supported Tailwind Categories
+
+The Fluxy parser automatically translates a vast majority of the Tailwind ecosystem:
+
+- **Typography:** `text-sm`, `text-xl`, `font-bold`, `tracking-wider`, `text-center`, `text-[color]`.
+- **Spacing:** `p-4`, `m-2`, `px-6`, `py-3`, `mt-8`.
+- **Colors:** Full support for `bg-red-500`, `text-slate-900`, `bg-opacity-50` (Using unified internal design tokens).
+- **Layout & Sizing:** `w-full`, `h-64`, `w-screen`, `h-screen`.
+- **Flexbox Constraints:** `flex-1`, `flex-none`, `flex-grow`.
+- **Borders & Radii:** `rounded-lg`, `rounded-full`, `border-2`, `border-gray-200`.
+- **Shadows:** `shadow-sm`, `shadow-lg`, `shadow-xl`.
+
+---
+
+## AI Layout Safety (Zero-Crash Guarantee)
+
+One of the biggest issues when using AI or string-based layouts in standard Flutter is the infamous `"RenderBox was not laid out"` or unbounded height crashes.
+
+The `.tw()` parser is natively protected by **FxSafeExpansion**. If you apply `flex-1` (which turns into a structural `Expanded` widget), Fluxy automatically sandboxes it. If it is placed inside a strict bounds like a `Scrollable` where `Expanded` would normally crash the application, Fluxy gracefully collapses it without a red screen of death.
+
+---
+
+## Big Example: A Full E-Commerce Product Card
+
+Here is a large, production-ready example of how you can build a highly complex UI using exclusively `Fx` layout primitives and the Tailwind CSS `.tw()` compiler. 
+
+Notice how minimal the Dart codebase is compared to standard Flutter.
+
+```dart
+class ProductCard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Fx.row(
+      children: [
+        // Product Image Section
+        Fx.box(
+          child: Stack(
+            children: [
+              Image.network(
+                'https://example.com/shoes.jpg',
+                fit: BoxFit.cover,
+              ).tw('w-full h-full rounded-l-2xl'),
+              
+              // "New" Badge overlay
+              Positioned(
+                top: 12,
+                left: 12,
+                child: Fx.text("NEW").tw('bg-black text-white text-xs font-bold px-3 py-1 rounded-full'),
+              ),
+            ],
+          )
+        ).tw('flex-none w-48 h-full bg-gray-100 rounded-l-2xl relative'),
+        
+        // Product Details Section
+        Fx.col(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            // Title & Favorite Icon
+            Fx.row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Fx.col(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Fx.text("Running Sneakers").tw('text-2xl font-bold text-slate-900 leading-tight'),
+                    Fx.text("Men's Athletic Shoes").tw('text-sm text-slate-500 mt-1'),
+                  ]
+                ).tw('flex-1'),
+                const Icon(Icons.favorite_border, color: Colors.grey).tw('p-2'),
+              ],
+            ).tw('w-full'),
+            
+            // Rating and Reviews
+            Fx.row(
+              children: [
+                const Icon(Icons.star, color: Colors.amber, size: 16),
+                const Icon(Icons.star, color: Colors.amber, size: 16),
+                const Icon(Icons.star, color: Colors.amber, size: 16),
+                const Icon(Icons.star, color: Colors.amber, size: 16),
+                const Icon(Icons.star_half, color: Colors.amber, size: 16),
+                Fx.text("4.8").tw('text-sm font-bold ml-2'),
+                Fx.text("(124 reviews)").tw('text-sm text-slate-400 ml-1'),
+              ],
+            ).tw('mt-3'),
+
+            // Price & Add to Cart Button
+            Fx.row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Fx.col(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Fx.text("\$129.99").tw('text-3xl font-extrabold text-blue-600'),
+                    Fx.text("Free shipping").tw('text-xs text-green-600 font-medium tracking-wide mt-1'),
+                  ]
+                ),
+                
+                Fx.btn("Add to Cart").tw('bg-slate-900 text-white font-semibold rounded-xl px-6 py-3 shadow-lg hover:bg-slate-800 transition-colors'),
+              ],
+            ).tw('w-full mt-6'),
+          ],
+        ).tw('flex-1 p-6 bg-white rounded-r-2xl'),
+      ],
+    ).tw('w-full h-56 bg-white shadow-xl rounded-2xl border border-slate-100 flex-row');
+  }
+}
+```
+
+### Why this changes Flutter Development:
+1. **Zero Nesting Hell:** Notice the complete lack of `Padding`, `Container`, `Expanded`, `DecoratedBox`, or `TextStyle` widgets.
+2. **AI Compatible:** An LLM can spit out this string-based styling natively without losing track of Flutter brackets.
+3. **Design System Harmony:** `bg-slate-900` naturally maps to Fluxy's internal Design Token system, ensuring cross-platform harmony.

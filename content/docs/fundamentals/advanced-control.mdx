@@ -87,11 +87,11 @@ items.batchUpdate(() {
 
 ## Reactive Derived Collections
 
-You can use `computed()` to filter or transform collections reactively.
+You can use `fluxComputed()` to filter or transform collections reactively.
 
 ```dart
-final highPriorityTasks = computed(() {
-  return tasks.where((t) => t.isUrgent).toList();
+final highPriorityTasks = fluxComputed(() {
+  return tasks.value.where((t) => t.isHighPriority).toList();
 });
 ```
 

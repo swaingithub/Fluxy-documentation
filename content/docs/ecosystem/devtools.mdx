@@ -93,7 +93,7 @@ import 'package:fluxy/fluxy.dart';
 class AppState {
   static final themeMode = flux<ThemeMode>(ThemeMode.light, label: "App_ThemeMode");
   static final currentUser = flux<String?>("Guest", label: "App_CurrentUser");
-  static final notifications = fluxList<String>([], label: "App_Notifications");
+  static final notifications = flux<List<String>>([], label: "App_Notifications");
 }
 
 void main() async {

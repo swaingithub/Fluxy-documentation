@@ -3,6 +3,8 @@
   "pages": [
     "overview",
     "state-routing",
+    "ui-splash",
+    "ui-auth",
     "ui-home",
     "ui-browse",
     "ui-wishlist",

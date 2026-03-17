@@ -1,0 +1,240 @@
+---
+title: Authentication & Onboarding
+description: Secure login and user registration flows.
+---
+
+# Authentication & Onboarding
+
+The Authentication module provides beautiful, secure screens for logging in and registering new users.
+
+### Auth View (`lib/features/auth/auth.view.dart`)
+```dart
+import 'package:flutter/material.dart';
+import 'package:fluxy/fluxy.dart';
+import '../../core/widgets/app_shimmer.dart';
+import 'auth.controller.dart';
+
+class AuthView extends StatelessWidget {
+  final AuthController controller;
+  
+  const AuthView({super.key, required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
+    return Fx(() {
+      final isDark = Theme.of(context).brightness == Brightness.dark;
+      final isSignUp = controller.isSignUpMode.value;
+      final loading = controller.isLoading.value;
+
+      return Fx.scaffold(
+        backgroundColor: isDark ? const Color(0xFF121212) : const Color(0xFFF8FAFC),
+        body: Fx.safeArea(
+          child: Fx.col(
+            alignItems: CrossAxisAlignment.start,
+            children: [
+              // Header
+              Fx.col(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Fx.box()
+                    .w(60).h(60)
+                    .bg(Colors.blueAccent)
+                    .rounded(20)
+                    .shadowMedium()
+                    .center()
+                    .child(const Icon(Icons.shopping_bag_rounded, color: Colors.white, size: 30))
+                    .mb(32),
+
+                  Fx.text(isSignUp ? 'Create Account' : 'Welcome Back')
+                    .font.xl4()
+                    .bold()
+                    .color(isDark ? Colors.white : const Color(0xFF0F172A)),
+                    
+                  Fx.gap(8),
+                  
+                  Fx.text(isSignUp ? 'Sign up to discover premium products.' : 'Sign in to access your premium account.')
+                    .font.md()
+                    .tw('opacity-70')
+                    .color(isDark ? Colors.grey.shade400 : Colors.grey.shade600),
+                ]
+              ).wFull().px(24).pt(40).pb(20),
+
+              // Form
+              Fx.col(
+                children: [
+                  if (isSignUp) ...[
+                    Fx.input(
+                      signal: controller.fullName,
+                      placeholder: 'Full Name',
+                      icon: Icons.person_outline,
+                    ).bg(isDark ? const Color(0xFF1E1E1E) : Colors.white)
+                     .border(color: isDark ? Colors.white12 : Colors.grey.shade200, width: 1.5)
+                     .rounded(20)
+                     .mb(20)
+                     .py(20),
+                  ],
+
+                  Fx.input(
+                    signal: controller.email,
+                    placeholder: 'Email Address',
+                    icon: Icons.email_outlined,
+                  ).bg(isDark ? const Color(0xFF1E1E1E) : Colors.white)
+                   .border(color: isDark ? Colors.white12 : Colors.grey.shade200, width: 1.5)
+                   .rounded(20)
+                   .mb(20)
+                   .py(20),
+
+                  Fx.input(
+                    signal: controller.password,
+                    placeholder: 'Password',
+                    icon: Icons.lock_outline,
+                    obscureText: true,
+                  ).bg(isDark ? const Color(0xFF1E1E1E) : Colors.white)
+                   .border(color: isDark ? Colors.white12 : Colors.grey.shade200, width: 1.5)
+                   .rounded(20)
+                   .mb(8)
+                   .py(20),
+
+                  if (!isSignUp)
+                    Fx.row(
+                      justify: MainAxisAlignment.end,
+                      children: [
+                        Fx.text('Forgot Password?')
+                          .font.sm()
+                          .bold()
+                          .color(Colors.blueAccent)
+                          .pointer()
+                          .onTap(() {})
+                      ]
+                    ).mb(32)
+                  else
+                    Fx.gap(32),
+
+                  // Auth Button
+                  if (loading)
+                    const AppShimmer(
+                      borderRadius: BorderRadius.all(Radius.circular(24)),
+                    ).wFull().h(68)
+                  else
+                    Fx.box()
+                      .wFull()
+                      .py(20)
+                      .rounded(24)
+                      .shadowMedium()
+                      .pointer()
+                      .bg(const Color(0xFF0D0D2B))
+                      .center()
+                      .child(
+                        Fx.text(isSignUp ? 'Sign Up' : 'Sign In').font.xl().bold().color(Colors.white)
+                      )
+                      .onTap(() => controller.handleAuth(context)),
+
+                  Fx.gap(24),
+
+                  // Divider
+                  Fx.row(
+                    children: [
+                      Fx.box().h(1).bg(isDark ? Colors.white12 : Colors.grey.shade300).expanded(),
+                      Fx.text(' OR ').font.sm().bold().color(Colors.grey.shade500).px(12),
+                      Fx.box().h(1).bg(isDark ? Colors.white12 : Colors.grey.shade300).expanded(),
+                    ]
+                  ).mb(24),
+
+                  // OAuth Buttons
+                  Fx.row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _buildSocialButton(Icons.g_mobiledata_rounded, Colors.redAccent, isDark),
+                      Fx.gap(16),
+                      _buildSocialButton(Icons.apple, isDark ? Colors.white : Colors.black, isDark),
+                      Fx.gap(16),
+                      _buildSocialButton(Icons.facebook, Colors.blue, isDark),
+                    ]
+                  ).mb(32),
+
+                  // Toggle mode
+                  Fx.row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Fx.text(isSignUp ? 'Already have an account? ' : 'Don\'t have an account? ')
+                        .font.md()
+                        .color(isDark ? Colors.grey.shade400 : Colors.grey.shade600),
+                      Fx.text(isSignUp ? 'Sign In' : 'Sign Up')
+                        .font.md()
+                        .bold()
+                        .color(Colors.blueAccent)
+                        .pointer()
+                        .onTap(controller.toggleMode),
+                    ]
+                  )
+                ],
+              ).px(24).scrollable().expanded(),
+            ],
+          ).hFull(),
+        ),
+      );
+    });
+  }
+
+  Widget _buildSocialButton(IconData icon, Color color, bool isDark) {
+    return Fx.box()
+      .w(64).h(64)
+      .rounded(20)
+      .bg(isDark ? const Color(0xFF1E1E1E) : Colors.white)
+      .border(color: isDark ? Colors.white12 : Colors.grey.shade200, width: 1.5)
+      .shadowSmall()
+      .center()
+      .pointer()
+      .child(Icon(icon, color: color, size: 36))
+      .onTap(() {});
+  }
+}
+
+```
+
+### Auth Controller (`lib/features/auth/auth.controller.dart`)
+```dart
+import 'package:flutter/material.dart';
+import 'package:fluxy/fluxy.dart';
+
+class AuthController extends FluxController {
+  final email = flux<String>("");
+  final fullName = flux<String>("");
+  final password = flux<String>("");
+  final isLoading = flux<bool>(false);
+  final isSignUpMode = flux<bool>(false);
+
+  Future<void> handleAuth(BuildContext context) async {
+    if (email.value.isEmpty || password.value.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter all fields.'), backgroundColor: Colors.redAccent)
+      );
+      return;
+    }
+
+    isLoading.value = true;
+    
+    // Simulate auth network request
+    await Future.delayed(const Duration(seconds: 2));
+    
+    isLoading.value = false;
+    
+    // Auth successful -> go to home
+    Fluxy.offAll('/home');
+  }
+
+  void toggleMode() {
+    isSignUpMode.value = !isSignUpMode.value;
+  }
+}
+
+```
+
+### 📱 Visual Examples
+
+<div className="flex flex-wrap justify-center gap-8 my-8 p-8 bg-gray-50/50 dark:bg-zinc-900/50 rounded-3xl border border-gray-200 dark:border-zinc-800/50">
+  <img src="/ecommerce-screenshots/screenshot-16.png" alt="Sign In Screen" className="rounded-[2.5rem] border-[8px] border-gray-900 dark:border-zinc-800 shadow-2xl hover:shadow-cyan-500/20 hover:-translate-y-2 transition-all duration-500 w-[280px] h-auto object-cover" />
+  <img src="/ecommerce-screenshots/screenshot-30.png" alt="Sign In Dark" className="rounded-[2.5rem] border-[8px] border-gray-900 dark:border-zinc-800 shadow-2xl hover:shadow-cyan-500/20 hover:-translate-y-2 transition-all duration-500 w-[280px] h-auto object-cover" />
+  <img src="/ecommerce-screenshots/screenshot-17.png" alt="Sign Up Screen" className="rounded-[2.5rem] border-[8px] border-gray-900 dark:border-zinc-800 shadow-2xl hover:shadow-cyan-500/20 hover:-translate-y-2 transition-all duration-500 w-[280px] h-auto object-cover" />
+  <img src="/ecommerce-screenshots/screenshot-31.png" alt="Sign Up Dark" className="rounded-[2.5rem] border-[8px] border-gray-900 dark:border-zinc-800 shadow-2xl hover:shadow-cyan-500/20 hover:-translate-y-2 transition-all duration-500 w-[280px] h-auto object-cover" />
+</div>

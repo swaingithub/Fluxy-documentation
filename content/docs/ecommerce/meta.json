@@ -1,0 +1,12 @@
+{
+  "title": "E-Commerce Example",
+  "pages": [
+    "overview",
+    "state-routing",
+    "ui-home",
+    "ui-browse",
+    "ui-wishlist",
+    "ui-checkout",
+    "ui-profile"
+  ]
+}

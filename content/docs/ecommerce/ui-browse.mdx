@@ -1,0 +1,72 @@
+---
+title: Browse Screen
+description: Category browsing and product filtering.
+---
+
+# Browse Screen
+
+
+The Browse screen allows users to quickly filter categories natively built using `FxGrid` layouts.
+
+### Browse View Component (`lib/features/browse/browse.view.dart`)
+```dart
+import 'package:flutter/material.dart';
+import 'package:fluxy/fluxy.dart';
+import '../../features/home/home.controller.dart';
+
+class BrowseView extends StatelessWidget {
+  final HomeController controller;
+  const BrowseView({super.key, required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
+    return Fx(() => Fx.scaffold(
+      backgroundColor: Colors.transparent,
+      appBar: Fx.appBar(
+        title: 'Browse',
+        backgroundColor: Colors.transparent,
+        foregroundColor: controller.text,
+        elevation: 0,
+        centerTitle: false,
+      ),
+      body: Builder(
+        builder: (context) {
+          return Fx.col(
+            alignItems: CrossAxisAlignment.start,
+            children: [
+              Fx.text('All Categories').tw('text-2xl font-bold px-6 py-4').color(controller.text),
+              FxGrid(
+                columns: 2,
+                gap: 16,
+                childAspectRatio: 1.5,
+                shrinkWrap: true,
+                physics: const BouncingScrollPhysics(),
+                children: controller.categories.where((c) => c != 'All').map((c) {
+                  return Fx.box()
+                    .tw('rounded-2xl shadow-sm flex items-center justify-center')
+                    .bg(controller.surface)
+                    .pointer()
+                    .child(Fx.text(c).tw('text-xl font-bold').color(controller.text))
+                    .onTap(() {
+                      controller.selectedCategory.value = c;
+                      controller.currentNavIndex.value = 0;
+                    });
+                }).toList(),
+              ).tw('px-6 pb-6'),
+            ],
+          ).scrollable();
+        }
+      ),
+    ));
+  }
+}
+
+```
+
+
+### 📱 Visual Examples
+
+<div className="flex flex-wrap justify-center gap-8 my-8 p-8 bg-gray-50/50 dark:bg-zinc-900/50 rounded-3xl border border-gray-200 dark:border-zinc-800/50">
+  <img src="/ecommerce-screenshots/screenshot-3.png" alt="Browse Categories" className="rounded-[2.5rem] border-[8px] border-gray-900 dark:border-zinc-800 shadow-2xl hover:shadow-cyan-500/20 hover:-translate-y-2 transition-all duration-500 w-[280px] h-auto object-cover" />
+</div>
+

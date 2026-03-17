@@ -1,0 +1,70 @@
+---
+title: Wishlist Screen
+description: Managing user saved products.
+---
+
+# Wishlist Screen
+
+
+The Wishlist component handles persisted user favorites. It flawlessly manages empty states and gracefully transitions via reactive arrays.
+
+### Wishlist View Component (`lib/features/wishlist/wishlist.view.dart`)
+```dart
+import 'package:flutter/material.dart';
+import 'package:fluxy/fluxy.dart';
+import '../../features/home/home.controller.dart';
+
+class WishlistView extends StatelessWidget {
+  final HomeController controller;
+  final Widget Function(Product, HomeController) buildProductCard;
+
+  const WishlistView({
+    super.key, 
+    required this.controller,
+    required this.buildProductCard,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    var crossAxisCount = MediaQuery.of(context).size.width > 800 ? 4 : 2;
+    return Fx(() => Fx.scaffold(
+      backgroundColor: Colors.transparent,
+      appBar: Fx.appBar(
+        title: 'My Wishlist',
+        backgroundColor: Colors.transparent,
+        foregroundColor: controller.text,
+        elevation: 0,
+        centerTitle: false,
+      ),
+      body: Builder(
+        builder: (context) {
+          return Fx(() {
+            var wishlistProducts = controller.products.value.where((p) => controller.wishlist.value.contains(p.id)).toList();
+            if (wishlistProducts.isEmpty) {
+              return Fx.text('Your wishlist is empty.').tw('text-lg text-center py-10').color(controller.textMuted).center();
+            }
+            return FxGrid(
+              columns: crossAxisCount,
+              gap: 24,
+              childAspectRatio: 0.62,
+              shrinkWrap: true,
+              physics: const BouncingScrollPhysics(),
+              children: wishlistProducts.map((p) => buildProductCard(p, controller)).toList(),
+            ).tw('px-6 pb-4').scrollable();
+          });
+        }
+      ),
+    ));
+  }
+}
+
+```
+
+
+### 📱 Visual Examples
+
+<div className="flex flex-wrap justify-center gap-8 my-8 p-8 bg-gray-50/50 dark:bg-zinc-900/50 rounded-3xl border border-gray-200 dark:border-zinc-800/50">
+  <img src="/ecommerce-screenshots/screenshot-9.png" alt="Wishlist Items" className="rounded-[2.5rem] border-[8px] border-gray-900 dark:border-zinc-800 shadow-2xl hover:shadow-cyan-500/20 hover:-translate-y-2 transition-all duration-500 w-[280px] h-auto object-cover" />
+  <img src="/ecommerce-screenshots/screenshot-4.png" alt="Wishlist Empty" className="rounded-[2.5rem] border-[8px] border-gray-900 dark:border-zinc-800 shadow-2xl hover:shadow-cyan-500/20 hover:-translate-y-2 transition-all duration-500 w-[280px] h-auto object-cover" />
+</div>
+

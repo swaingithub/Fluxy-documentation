@@ -1,0 +1,111 @@
+---
+title: "Feature: Home"
+description: Source code for the Home feature, including the cinematic hero and trending products.
+---
+
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+
+# Home Feature Source
+
+The Home feature demonstrates high-fidelity web design using `FxWeb.hero` and the **Supreme Video Modal**.
+
+<Tabs items={['home.view.dart', 'home.controller.dart', 'home.routes.dart']}>
+<Tab value="home.view.dart">
+```dart title="lib/features/home/home.view.dart"
+import 'package:flutter/material.dart';
+import 'package:fluxy/fluxy.dart';
+import 'home.controller.dart';
+import '../shared/web_layout.dart';
+
+class HomeView extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final controller = Fluxy.find<HomeController>();
+
+    return WebLayout(
+      child: Fx.scroll(
+        child: FxWeb.container(
+          maxWidth: 1200,
+          child: Fx.col(
+            children: [
+              Fx.gap(100),
+              _buildHeroSection(context),
+              Fx.gap(100),
+              _buildTrendingSection(context, controller),
+              // ... footer
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeroSection(BuildContext context) {
+    return FxWeb.hero(
+      title: Fx.text('Define Your Framework.').tw('text-6xl font-black'),
+      subtitle: Fx.text('Discover premium minimalist aesthetics.').tw('text-xl text-slate-500'),
+      media: Fx.box(
+        onTap: () => _showVideo(context),
+        child: Fx.image('assets/hero.jpg', height: 550, radius: 32),
+      ),
+    );
+  }
+
+  void _showVideo(BuildContext context) {
+    Fx.modal(
+      context,
+      child: Fx.video(
+        url: 'https://example.com/video.mp4',
+        autoPlay: true,
+        showControls: true,
+      ),
+    );
+  }
+}
+```
+</Tab>
+<Tab value="home.controller.dart">
+```dart title="lib/features/home/home.controller.dart"
+import 'package:fluxy/fluxy.dart';
+
+class HomeController extends FluxController {
+  final isCartOpen = flux(false);
+  final isMobileMenuOpen = flux(false);
+  final cartItems = flux(<Map<String, dynamic>>[]);
+  final products = flux(<Map<String, dynamic>>[]);
+  final isLoading = flux(true);
+
+  @override
+  void onInit() async {
+    super.onInit();
+    // Fetch products...
+    isLoading.value = false;
+  }
+  
+  void addToCart(Map<String, dynamic> product) {
+    cartItems.value = [...cartItems.value, product];
+    Fx.toast.success('${product['name']} added to cart');
+  }
+
+  void toggleCart() => isCartOpen.value = !isCartOpen.value;
+  void toggleMobileMenu() => isMobileMenuOpen.value = !isMobileMenuOpen.value;
+}
+```
+</Tab>
+<Tab value="home.routes.dart">
+```dart title="lib/features/home/home.routes.dart"
+import 'package:fluxy/fluxy.dart';
+import 'home.view.dart';
+import 'home.controller.dart';
+
+final homeRoutes = [
+  FxRoute(
+    path: '/',
+    builder: (context, args) => const HomeView(),
+    binding: () => Fluxy.put(HomeController()),
+  ),
+];
+```
+</Tab>
+</Tabs>

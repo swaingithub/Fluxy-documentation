@@ -1,0 +1,73 @@
+---
+title: Source Code Overview
+description: The entry point and configuration for the Fluxy Webstore template.
+---
+
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+
+# Project Entry & Config
+
+The Webstore template uses a modular architecture where the `main.dart` file serves as the industrial coordinator for all feature routes and global state.
+
+<Tabs items={['main.dart', 'pubspec.yaml']}>
+<Tab value="main.dart">
+```dart title="lib/main.dart"
+import 'package:flutter/material.dart';
+import 'package:fluxy/fluxy.dart';
+import 'core/theme/app_theme.dart';
+import 'core/registry/fluxy_registry.dart';
+import 'features/home/home.routes.dart';
+import 'features/shop/shop.routes.dart';
+
+void main() async {
+  // 1. Initialize Framework & Stability Policy
+  await Fluxy.init(strictMode: false);
+
+  // 2. Boot Modular Plugins & Routes
+  registerFluxyPlugins();
+  Fluxy.autoRegister();
+
+  runApp(
+    Fluxy.debug(
+      child: FluxyApp(
+        title: 'Fluxy Webstore',
+        theme: AppTheme.light,
+        initialRoute: homeRoutes.first.path,
+        routes: [
+           ...homeRoutes,
+           ...shopRoutes,
+           // ... other feature routes
+        ],
+      ),
+    ),
+  );
+}
+```
+</Tab>
+<Tab value="pubspec.yaml">
+```yaml title="pubspec.yaml"
+name: webstore
+description: A premium Fluxy web application template.
+version: 1.2.3
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  fluxy: ^1.2.3
+  fluxy_animations: ^1.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  fluxy_lints: ^1.0.0
+```
+</Tab>
+</Tabs>
+
+<Callout type="info">
+The `strictMode: false` setting in `Fluxy.init` enables the **Stability Kernel™** to automatically repair layout violations in production environments.
+</Callout>

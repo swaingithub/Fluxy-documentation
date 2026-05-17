@@ -1,0 +1,76 @@
+---
+title: Migration v1.3.0
+description: Supreme Web Evolution - Transitioning your application for industrial-grade web execution.
+---
+
+# Migration to Fluxy v1.3.0
+
+Fluxy v1.3.0 brings the **Supreme Web Evolution**, optimizing Fluxy to be a world-class framework for the browser. This update is **100% backward compatible** for your mobile implementations, meaning you can upgrade safely without breaking your existing codebase.
+
+## Web Migration (Opt-in)
+
+If you are deploying to the web, we highly recommend adopting the new `FxWeb` primitives. These primitives are specifically engineered for better browser performance, resolving common layout constraints, and providing a native web feel.
+
+### 1. Shift to Web Layouts
+Instead of using standard Flutter containers and manually handling breakpoints, wrap your web sections in `FxWeb.container()`. This prevents infinite width/height assertions that are common in browser environments when mixing flex layouts and scroll views.
+
+**Before (Standard Flutter/Mobile approach):**
+```dart
+Fx.col(
+  children: [
+    // Content...
+  ]
+)
+```
+
+**After (Web Optimized):**
+```dart
+FxWeb.container(
+  maxWidth: 1200,
+  child: Fx.col(
+    children: [
+      // Content...
+    ]
+  )
+)
+```
+
+### 2. Cinematic Modals
+For media-heavy web experiences, swap `Fx.image()` overlay popups with the new **Kinetic Modal** engine. Kinetic Modals ensure that floating dismiss buttons and interactive elements are never blocked by the content itself, delivering a premium "Cinematic" experience.
+
+**Before:**
+```dart
+Fx.dialog(
+  context,
+  child: Fx.image('assets/video_thumb.jpg')
+);
+```
+
+**After (Cinematic Modal):**
+```dart
+Fx.modal(
+  context,
+  child: Fx.video(
+    url: 'https://example.com/video.mp4',
+    showControls: true, // Native cinematic controls
+  ),
+);
+```
+
+## Stability Kernel Upgrades
+
+The **Stability Kernel** has been enhanced specifically for the Web. The `window.dart` engine assertions that previously caused Red Screens of Death during rapid resizing have been neutralized.
+
+If you are testing web layouts locally, ensure you use `strictMode: false` in your initialization:
+
+```dart
+void main() async {
+  // Relaxed mode enables Auto-Repair for layout violations on the web
+  await Fluxy.init(strictMode: false);
+  runApp(const MyApp());
+}
+```
+
+## Welcome to Fluxy v1.3.0!
+
+With v1.3.0, Fluxy provides unparalleled execution stability and premium aesthetics for web deployments. Update your `pubspec.yaml` today to unlock the full potential of Fluxy on the web.

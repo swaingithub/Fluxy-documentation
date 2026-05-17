@@ -1,0 +1,44 @@
+---
+title: Shared Web Layouts
+description: How the Webstore implements global scaffolding and nested overlays cleanly for the web.
+---
+import { Callout } from 'fumadocs-ui/components/callout';
+
+# Shared Layout Architecture
+
+Instead of wrapping every single page manually with an `Fx.scaffold` and repetitively pasting navigation models, the Webstore implements a powerful stateless layout wrapper: `WebLayout.dart`.
+
+Every single Web View exclusively calls `WebLayout(child: ...)` at its root.
+
+## Structural Responsibilities
+
+| Responsibility | Implementation Pattern |
+| :--- | :--- |
+| **Global Scaffolding** | Root `Fx.stack` with `child` as the base layer. |
+| **Drawer Management** | `FxWeb.drawer` with reactive boolean signals. |
+| **Navigation** | Sticky `WebNavbar` positioned absolutely at the top. |
+| **State Hydration** | Controller-aware builder to track cart/menu states. |
+
+<Callout type="info">
+By layering `Positioned.fill` inside a root `Fx.stack`, the Webstore elegantly mounts absolute Drawers across any route seamlessly without triggering complex layout reflows.
+</Callout>
+
+### Managing Interactive Web Drawers
+
+```dart
+Fx(() => Stack(
+  children: [
+    FxWeb.drawer(
+       isOpen: ctrl.isMobileMenuOpen.value,
+       onClose: () => ctrl.toggleMobileMenu(),
+       fromRight: false, // Slide from the Left naturally!
+       child: _buildMobileMenuContent(ctrl),
+    ),
+    FxWeb.drawer(
+       isOpen: ctrl.isCartOpen.value,
+       onClose: () => ctrl.toggleCart(),
+       child: _buildCartContent(ctrl),
+    )
+  ]
+))
+```

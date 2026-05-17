@@ -1,0 +1,70 @@
+---
+title: FxWeb (Web Components)
+description: Ultra-premium, responsive Web primitives for building production-ready web applications natively within Fluxy.
+---
+
+# FxWeb Namespace
+
+The `FxWeb` namespace abstracts decades of complex React/Next.js "Headless UI" patterns into instant, fully responsive layout primitives for Flutter developers. Instead of manually engineering state models for sidebars or horizontal scrolling carousels, `FxWeb` delivers fully stable abstractions. 
+
+> **Fully Mobile Safe:** By utilizing pure Flutter `AnimatedCrossFade`, `AnimatedPositioned`, and `ListView` implementations beneath the hood, all `FxWeb` components are completely tree-shakable and compile beautifully back onto native iOS and Android environments. They do NOT break existing Mobile structures!
+
+---
+
+## 1. FxWeb.container
+
+Clamping a beautiful UI column strictly within an architectural bound is the signature of modern Web design (akin to `container mx-auto max-w-7xl` in Tailwind).
+
+```dart
+FxWeb.container(
+  maxWidth: 1200,
+  child: Fx.col(
+    children: [
+       Fx.text('Hero Header'),
+       Fxweb.carousel(...)
+    ]
+  )
+)
+```
+
+## 2. FxWeb.drawer
+
+A ubiquitous slide-over drawer structure crucial for Shopping Carts, Mobile Menus, and filtering parameters. It intelligently manages bounding boxes, overlays, and background clicking natively.
+
+```dart
+FxWeb.drawer(
+  isOpen: homeController.isCartOpen.value,
+  onClose: () => homeController.toggleCart(),
+  fromRight: true, // Standard Cart slides from Right; Mobile menus from Left!
+  child: _buildCartContent(),
+)
+```
+
+## 3. FxWeb.carousel
+
+Native horizontal scroll-snapping carousel specifically designed for dense web product listings. 
+
+```dart
+FxWeb.carousel(
+  height: 540,
+  children: products.map((p) => _buildProductCard(p)).toList(),
+)
+```
+
+## 4. FxWeb.accordion
+
+High-fidelity collapsable content trees for Product FAQs, Features, or Shipping details dynamically transitioning `AnimatedCrossFade`.
+
+```dart
+FxWeb.accordion(
+  title: 'Shipping and Returns',
+  content: Fx.text('Free global shipping. Returns accepted within a 30-day compile timeframe.').tw('text-slate-600'),
+  initialOpen: false,
+)
+```
+
+---
+
+## Built on Fx.box
+
+Because `FxWeb` structures resolve directly back to `Fx.box`, they inherit the absolute full power of Tailwind compilation (`.tw()`), ensuring you can apply margins and padding safely exactly where needed.

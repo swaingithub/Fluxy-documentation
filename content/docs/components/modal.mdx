@@ -1,0 +1,66 @@
+---
+title: Fx.modal
+description: High-fidelity overlays and cinematic dialogs.
+---
+
+# Fx.modal
+
+`Fx.modal` is the flagship component for creating premium, high-impact overlays. Unlike standard Flutter dialogs, `Fx.modal` is designed for the web with built-in responsive constraints and "Supreme" dismissal controls.
+
+---
+
+## Basic Usage
+
+Display any widget as a center-aligned modal with a dimmed background.
+
+```dart
+Fx.modal(
+  context,
+  child: Fx.text('Hello from Fluxy').tw('text-xl text-white'),
+);
+```
+
+## Features
+
+### 1. Supreme Dismissal
+Every Fluxy modal automatically includes a high-contrast floating close button (`top-right`) that is isolated from the child's touch events. This ensures users can always exit the modal, even if the content contains complex gestures (like a video player).
+
+### 2. Responsive Constraints
+Modals are automatically capped at a professional `1100px` width on large screens but scale down gracefully to `double.infinity` on mobile. You can override this using the `maxWidth` parameter.
+
+```dart
+Fx.modal(
+  context,
+  maxWidth: 600, // For smaller, focused dialogs
+  child: MyCustomForm(),
+);
+```
+
+### 3. Barrier Customization
+You can control whether the modal can be dismissed by clicking the background and customize the "Glassmorphism" effect of the barrier.
+
+```dart
+Fx.modal(
+  context,
+  barrierDismissible: false,
+  barrierColor: Colors.black.withOpacity(0.9),
+  child: CriticalUpdateAlert(),
+);
+```
+
+---
+
+## Best Practice: The Media Modal
+
+The most common use case for `Fx.modal` is for "Watch Film" experiences. Because the modal handles hit-testing isolation, it is the perfect container for `Fx.video`.
+
+```dart
+Fx.modal(
+  context,
+  child: Fx.video(
+    url: 'hero_film.mp4',
+    showControls: true,
+    autoPlay: true,
+  ),
+);
+```

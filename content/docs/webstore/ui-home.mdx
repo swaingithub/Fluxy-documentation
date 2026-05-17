@@ -1,0 +1,128 @@
+---
+title: UI Home (Landing Page)
+description: The master flagship entry point of the Webstore.
+---
+
+# Home & Discover Screen
+
+The Home screen serves as the monumental entry point for the Webstore architecture, constructed entirely using responsive pure-web macro-components such as `FxWeb.container`, `FxWeb.carousel`, and `FxWeb.accordion`.
+
+### Home View Component (`lib/features/home/home.view.dart`)
+
+Notice how `WebLayout` is invoked unconditionally at the very root, completely abstracting away the complex Drawer and NavBar logic and isolating this UI specifically to its raw content block implementations.
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:fluxy/fluxy.dart';
+import 'home.controller.dart';
+
+import '../shared/web_layout.dart';
+import '../shared/web_footer.dart';
+
+class HomeView extends StatelessWidget {
+  const HomeView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = Fluxy.find<HomeController>();
+
+    return WebLayout(
+      child: Fx.scroll(
+        child: FxWeb.container(
+          maxWidth: 1200,
+          child: Fx.col(
+            alignItems: CrossAxisAlignment.start,
+            children: [
+              Fx.gap(100), // Padding to account for the floating navbar
+              _buildHeroSection(context),
+              Fx.gap(100),
+              _buildTrendingSection(context, controller),
+              Fx.gap(120),
+              _buildFaqSection(),
+              Fx.gap(120),
+              const WebFooter(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeroSection(BuildContext context) {
+    return FxWeb.hero(
+      title: Fx.col(
+        alignItems: CrossAxisAlignment.start,
+        children: [
+           Fx.text('SUMMER EDITION').tw('text-blue-600 font-bold tracking-widest text-sm mb-6'),
+           Fx.text('Define Your').tw(Fx.isMobile(context) ? 'text-5xl font-extrabold text-slate-900 leading-tight tracking-tight' : 'text-6xl font-extrabold text-slate-900 leading-tight tracking-tight'),
+           Fx.text('Framework.').tw(Fx.isMobile(context) ? 'text-5xl font-extrabold text-blue-600 leading-tight tracking-tight' : 'text-6xl font-extrabold text-blue-600 leading-tight tracking-tight'),
+        ]
+      ),
+      subtitle: Fx.text('Discover premium minimalist aesthetics\ntailored for unparalleled performance.').tw('text-xl text-slate-500 leading-relaxed'),
+      actions: Fx.row(
+        children: [
+          FxButton(onTap: () {}, label: 'Shop Collection', isRounded: true, style: const FxStyle(backgroundColor: Colors.black, color: Colors.white, padding: EdgeInsets.symmetric(horizontal: 40, vertical: 24), shadows: [BoxShadow(color: Color(0x33000000), blurRadius: 16, offset: Offset(0, 8))])),
+          Fx.gap(24),
+          _buildHeroWatchAction(isMobile: Fx.isMobile(context)),
+        ],
+      ),
+      media: Fx.box(
+          style: const FxStyle(transition: Duration(milliseconds: 400), hover: FxStyle(transformScale: 1.02), cursor: SystemMouseCursors.click),
+          child: Fx.image('https://images.unsplash.com/photo-1445205170230-053b83016050?q=80&w=1200&auto=format&fit=crop', height: Fx.isMobile(context) ? 400 : 550, fit: BoxFit.cover, radius: 32),
+      ),
+    ).tw('px-8');
+  }
+
+  Widget _buildTrendingSection(BuildContext context, HomeController controller) {
+    return Fx.box(
+      child: Fx.col(
+        alignItems: CrossAxisAlignment.start,
+        children: [
+          Fx.reveal(
+            children: [
+              Fx.row(
+                justify: MainAxisAlignment.spaceBetween,
+                children: [
+                  Fx.text('Trending Pieces').tw('text-4xl font-extrabold text-slate-900'),
+                  Fx.link(
+                    Fx.text('View Collection →').tw('text-blue-600 font-bold text-base'),
+                    to: '/collection',
+                  ),
+                ],
+              ),
+            ]
+          ),
+          Fx.gap(48),
+          
+          Fx(() {
+            if (controller.isLoading.value) {
+              return Fx.center(child: const CircularProgressIndicator());
+            }
+
+            final list = controller.products.value;
+            return Fx.reveal(
+              interval: const Duration(milliseconds: 80),
+              children: [
+                // Upgrading from static Grid to interactive Gallery Carousel!
+                FxWeb.carousel(
+                  height: 540,
+                  children: list.map((p) => _buildProductCard(p, controller)).toList(),
+                ),
+              ]
+            );
+          }),
+        ],
+      ),
+    );
+  }
+
+  // Card components implementations omitted for brevity...
+}
+```
+
+### 🖥 Visual Examples
+
+<div className="flex flex-wrap justify-center gap-8 my-8 p-8 bg-gray-50/50 dark:bg-zinc-900/50 rounded-3xl border border-gray-200 dark:border-zinc-800/50">
+  <img src="/webstore_home.png" alt="Discover Web Screen" className="rounded-[1rem] border-[4px] border-gray-900 dark:border-zinc-800 shadow-2xl hover:shadow-cyan-500/20 hover:-translate-y-2 transition-all duration-500 w-[600px] h-auto object-cover" />
+  <img src="/webstore_footer.png" alt="Massive Premium Footer" className="rounded-[1rem] border-[4px] border-gray-900 dark:border-zinc-800 shadow-2xl hover:shadow-cyan-500/20 hover:-translate-y-2 transition-all duration-500 w-[600px] h-auto object-cover" />
+</div>

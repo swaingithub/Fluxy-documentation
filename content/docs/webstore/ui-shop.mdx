@@ -1,0 +1,88 @@
+---
+title: UI Shop (Catalog Page)
+description: Fully resilient responsive grid layout implementations.
+---
+
+# UI Shop Screen
+
+The Shop view acts as the primary layout implementation for large e-commerce grids. It prominently features the absolute `FxWeb.responsiveGrid` methodology allowing instantaneous cross-device dynamic column reflows (Desktop 4 Columns -> Tablet 2 Columns -> Phone list).
+
+### Shop View Component (`lib/features/shop/shop.view.dart`)
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:fluxy/fluxy.dart';
+import 'shop.controller.dart';
+import '../shared/web_layout.dart';
+import '../shared/web_footer.dart';
+
+class ShopView extends StatelessWidget {
+  const ShopView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = Fluxy.find<ShopController>();
+    final mobile = FxWeb.isLargeScreen(context) == false;
+
+    return WebLayout(
+      child: Fx.scroll(
+        child: FxWeb.container(
+          maxWidth: 1200,
+          child: Fx.col(
+            alignItems: CrossAxisAlignment.start,
+            children: [
+              Fx.gap(140),
+              Fx.reveal(
+                children: [
+                  Fx.text('SHOP').tw('text-5xl font-extrabold text-slate-900 tracking-tight'),
+                  Fx.gap(16),
+                  Fx.text('Browse our entire catalog of premium software developer gear and aesthetics.').tw('text-xl text-slate-500'),
+                ]
+              ).tw('px-8'),
+              Fx.gap(48),
+              
+              Fx(() {
+                if (!controller.isLoaded.value) return Fx.center(child: const CircularProgressIndicator());
+                return Fx.reveal(
+                  children: [
+                    if (mobile) 
+                      Fx.scroll(
+                        direction: Axis.horizontal,
+                        showScrollbar: false,
+                        child: Fx.row(
+                          gap: 12,
+                          children: controller.categories.value.map((cat) => _buildCategoryBadge(cat)).toList()
+                        ).tw('px-8 pb-4')
+                      )
+                    else
+                      Fx.row(
+                        gap: 16,
+                        children: controller.categories.value.map((cat) => _buildCategoryBadge(cat)).toList()
+                      ).tw('px-8'),
+                    
+                    Fx.gap(48),
+                    Fx.box(
+                      child: FxWeb.responsiveGrid(
+                        context: context,
+                        desktopColumns: 4,
+                        tabletColumns: 2,
+                        spacing: 32,
+                        runSpacing: 48,
+                        children: controller.products.value.map((p) => _buildCard(p, mobile)).toList(),
+                      )
+                    ).tw('px-8')
+                  ]
+                );
+              }),
+              Fx.gap(120),
+              const WebFooter(),
+            ]
+          )
+        )
+      )
+    );
+  }
+
+  // Helper implementations omitted for brevity
+}
+```

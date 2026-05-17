@@ -1,0 +1,69 @@
+---
+title: Media Engine
+description: Effortless high-fidelity video and audio playback for Fluxy web applications.
+---
+
+# Media Engine
+
+Fluxy provides an industry-leading DSL for integrating multimedia into your storefronts and dashboards. Our media components are **Source-Aware**, meaning they automatically detect whether you are loading a remote URL or a local asset.
+
+---
+
+## Fx.video (Supreme Video)
+
+The `Fx.video` component is a high-performance wrapper around the Flutter video engine, optimized for smooth playback and professional aesthetics.
+
+```dart
+Fx.video(
+  url: 'https://cdn.com/promo.mp4',
+  aspectRatio: 16 / 9,
+  autoPlay: true,
+  muted: true,
+  showControls: true, // Enable Apple-style playback UI
+  radius: 24,         // Built-in rounded corners
+)
+```
+
+### Key Parameters:
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `url` | `String` | The path to the video (supports `http://` or local `assets/`). |
+| `aspectRatio` | `double?` | Forces a specific cinematic ratio (e.g., `16/9`, `21/9`). |
+| `poster` | `String?` | An image to show while the video is loading. |
+| `showControls` | `bool` | Toggles the minimalist playback UI and progress bar. |
+| `muted` | `bool` | Toggles audio. Note: Autoplay requires `muted: true` on most browsers. |
+| `overlay` | `Widget?` | Place custom widgets (badges, text) on top of the video. |
+
+---
+
+## Fx.audio (Ambient Sound)
+
+The `Fx.audio` component is perfect for background music, sound effects, or narrated content. It is invisible by default but provides full control over playback.
+
+```dart
+Fx.audio(
+  url: 'assets/audio/ambient.mp3',
+  loop: true,
+  volume: 0.5,
+  autoPlay: true,
+)
+```
+
+### Advanced Usage:
+You can use `Fx.audio` to wrap other widgets, providing a sound-reactive UI:
+
+```dart
+Fx.audio(
+  url: 'click_sound.mp3',
+  autoPlay: false,
+  child: FxButton(label: 'Play Sound'),
+)
+```
+
+---
+
+## Life-cycle Management
+
+One of the biggest advantages of the Fluxy Media Engine is **Automatic Disposal**. 
+
+In standard Flutter, you must manually dispose of `VideoPlayerControllers`. In Fluxy, the framework handles this for you. When a page is popped or a widget is removed from the tree, Fluxy automatically cleans up all media memory to prevent leaks.

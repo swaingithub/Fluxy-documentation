@@ -1,0 +1,109 @@
+---
+title: "Feature: Shop"
+description: Source code for the Shop catalog, including category filtering and responsive grids.
+---
+
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+
+# Shop Feature Source
+
+The Shop feature demonstrates the use of `FxWeb.responsiveGrid` and **Fluxy TabBar** for category management.
+
+<Tabs items={['shop.view.dart', 'shop.controller.dart', 'shop.routes.dart']}>
+<Tab value="shop.view.dart">
+```dart title="lib/features/shop/shop.view.dart"
+import 'package:flutter/material.dart';
+import 'package:fluxy/fluxy.dart';
+import 'shop.controller.dart';
+import '../shared/web_layout.dart';
+
+class ShopView extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final controller = Fluxy.find<ShopController>();
+
+    return WebLayout(
+      child: Fx.scroll(
+        child: FxWeb.container(
+          maxWidth: 1200,
+          child: Fx.col(
+            children: [
+              Fx.gap(140),
+              Fx.text('SHOP').tw('text-5xl font-black'),
+              Fx.gap(48),
+              
+              Fx(() {
+                if (!controller.isLoaded.value) return Fx.loader();
+                
+                return Fx.col(
+                  children: [
+                    FxTabBar(
+                      currentIndex: controller.currentTabIndex,
+                      tabs: controller.categories.value,
+                    ),
+                    Fx.gap(48),
+                    FxWeb.responsiveGrid(
+                      context: context,
+                      desktopColumns: 4,
+                      children: controller.filteredProducts.map((p) => WebProductCard(product: p)).toList(),
+                    ),
+                  ]
+                );
+              }),
+            ]
+          )
+        )
+      )
+    );
+  }
+}
+```
+</Tab>
+<Tab value="shop.controller.dart">
+```dart title="lib/features/shop/shop.controller.dart"
+import 'package:fluxy/fluxy.dart';
+
+class ShopController extends FluxController {
+  final isLoaded = flux(false);
+  final categories = flux(<String>[]);
+  final products = flux(<Map<String, dynamic>>[]);
+  final currentTabIndex = flux(0);
+
+  List<Map<String, dynamic>> get filteredProducts {
+    final selectedCat = categories.value[currentTabIndex.value];
+    if (selectedCat == 'All') return products.value;
+    return products.value.where((p) => p['category'] == selectedCat).toList();
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    await Future.delayed(const Duration(milliseconds: 600));
+    categories.value = ['All', 'Apparel', 'Accessories', 'Developer Gear'];
+    products.value = [ /* ... product data ... */ ];
+    isLoaded.value = true;
+  }
+}
+```
+</Tab>
+<Tab value="shop.routes.dart">
+```dart title="lib/features/shop/shop.routes.dart"
+import 'package:fluxy/fluxy.dart';
+import 'shop.view.dart';
+import 'shop.controller.dart';
+
+final shopRoutes = [
+  FxRoute(
+    path: '/shop',
+    builder: (context, args) => const ShopView(),
+    binding: () => Fluxy.put(ShopController()),
+  ),
+];
+```
+</Tab>
+</Tabs>

@@ -1,0 +1,142 @@
+---
+title: "Shared Components"
+description: Source code for the core web layout and navigation components used across the Webstore.
+---
+
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+
+# Shared Architecture Source
+
+The `shared` feature contains components that define the global look and feel of the application.
+
+<Tabs items={['web_layout.dart', 'web_navbar.dart', 'web_footer.dart']}>
+<Tab value="web_layout.dart">
+```dart title="lib/features/shared/web_layout.dart"
+import 'package:flutter/material.dart';
+import 'package:fluxy/fluxy.dart';
+import '../home/home.controller.dart';
+import 'web_navbar.dart';
+
+class WebLayout extends StatelessWidget {
+  final Widget child;
+  const WebLayout({super.key, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    final ctrl = Fluxy.find<HomeController>();
+
+    return Fx.scaffold(
+      backgroundColor: const Color(0xFFF8FAFC),
+      body: Fx.stack(
+        children: [
+          child, // Page Content
+          const Positioned(top: 0, left: 0, right: 0, child: WebNavbar()),
+          Positioned.fill(
+            child: Fx(() => Stack(
+              children: [
+                 FxWeb.drawer(
+                    isOpen: ctrl.isMobileMenuOpen.value,
+                    onClose: () => ctrl.toggleMobileMenu(),
+                    fromRight: false,
+                    child: _buildMobileMenuContent(ctrl),
+                 ),
+                 FxWeb.drawer(
+                    isOpen: ctrl.isCartOpen.value,
+                    onClose: () => ctrl.toggleCart(),
+                    child: _buildCartContent(ctrl),
+                 )
+              ]
+            )),
+          ),
+        ],
+      ),
+    );
+  }
+}
+```
+</Tab>
+<Tab value="web_navbar.dart">
+```dart title="lib/features/shared/web_navbar.dart"
+import 'package:flutter/material.dart';
+import 'package:fluxy/fluxy.dart';
+import '../home/home.controller.dart';
+
+class WebNavbar extends StatelessWidget {
+  const WebNavbar({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final ctrl = Fluxy.find<HomeController>();
+
+    return Fx.box(
+      style: const FxStyle(
+        backgroundColor: Colors.white,
+        padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+        border: Border(bottom: BorderSide(color: Color(0xFFE2E8F0))),
+      ),
+      child: Fx.row(
+        justify: MainAxisAlignment.spaceBetween,
+        children: [
+          Fx.text('FLUXY').tw('font-black text-2xl'),
+          Fx.row(
+            gap: 32,
+            children: [
+              _navLink('Home', '/'),
+              _navLink('Shop', '/shop'),
+              _navLink('Journal', '/journal'),
+              Fx.icon(Icons.shopping_bag_outlined).onTap(ctrl.toggleCart),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _navLink(String label, String path) {
+    return Fx.text(label).tw('font-bold text-slate-600 hover:text-blue-600 cursor-pointer')
+      .onTap(() => FluxyRouter.to(path));
+  }
+}
+```
+</Tab>
+<Tab value="web_footer.dart">
+```dart title="lib/features/shared/web_footer.dart"
+import 'package:flutter/material.dart';
+import 'package:fluxy/fluxy.dart';
+
+class WebFooter extends StatelessWidget {
+  const WebFooter({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Fx.box(
+      style: const FxStyle(
+        backgroundColor: Color(0xFF0F172A),
+        padding: EdgeInsets.all(80),
+      ),
+      child: FxWeb.responsiveGrid(
+        context: context,
+        desktopColumns: 4,
+        children: [
+          _buildColumn('Brand', ['About Us', 'Careers', 'Sustainability']),
+          _buildColumn('Support', ['Help Center', 'Shipping', 'Returns']),
+          _buildColumn('Legal', ['Privacy Policy', 'Terms of Service']),
+          _buildNewsletter(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildColumn(String title, List<String> links) {
+    return Fx.col(
+      children: [
+        Fx.text(title).tw('text-white font-bold mb-6'),
+        ...links.map((l) => Fx.text(l).tw('text-slate-400 mb-2')),
+      ],
+    );
+  }
+}
+```
+</Tab>
+</Tabs>

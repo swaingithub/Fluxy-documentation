@@ -9,22 +9,28 @@ description: A premium kinetic loading effect.
 
 ## Usage
 
+The most common way to use a shimmer is via the `Fx` DSL:
+
 ```dart
-FxShimmer(
-  width: 200, 
-  height: 20
+Fx.shimmer(
+  child: Fx.box().w(200).h(20),
 )
 ```
 
-## Nested Content
+## Kinetic Masking
 
-You can wrap another widget inside a `FxShimmer` to animate its opacity/mask, or just use it as a standalone block.
+You can wrap complex widget trees inside a `Fx.shimmer` to apply a unified kinetic gradient across the entire group. This is perfect for list tiles and profile cards.
 
 ```dart
-FxShimmer(
-  child: Fx.box().wh(50, 50).roundedFull(),
-) 
-// Produces a shimmering circle
+Fx.shimmer(
+  child: Fx.row(
+    children: [
+      Fx.box().wh(50, 50).roundedFull(), // Shimmering Avatar
+      Fx.gap(12),
+      Fx.box().w(100).h(12),             // Shimmering Text line
+    ],
+  ),
+)
 ```
 
 ## Style

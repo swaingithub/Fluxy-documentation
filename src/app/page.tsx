@@ -59,7 +59,7 @@ export default function LandingPage() {
               Fluxy
             </span>
             <div className="hidden sm:flex px-2 py-0.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-[10px] font-bold tracking-widest text-indigo-400 ml-2">
-              v1.2.3
+              v1.3.0
             </div>
           </div>
           
@@ -97,7 +97,7 @@ export default function LandingPage() {
           >
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-md text-xs font-medium text-indigo-300 mb-8 hover:bg-white/10 transition-colors cursor-default">
               <Sparkles size={12} className="text-indigo-400" />
-              <span className="text-white/80">Fluxy v1.2.3 is now available with Elite Motion System</span>
+              <span className="text-white/80">Fluxy v1.3.0 is now available with Supreme Web Evolution</span>
             </div>
 
             <h1 className="text-6xl md:text-8xl font-bold tracking-tighter leading-[1] mb-8 bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-white/40 drop-shadow-2xl">
@@ -154,7 +154,7 @@ export default function LandingPage() {
               <div className="text-white/50 text-sm font-bold tracking-wide uppercase">Extra Packages</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl md:text-5xl font-bold text-indigo-400 mb-2 drop-shadow-lg">v1.2.3</div>
+              <div className="text-4xl md:text-5xl font-bold text-indigo-400 mb-2 drop-shadow-lg">v1.3.0</div>
               <div className="text-indigo-400/50 text-sm font-bold tracking-wide uppercase">Production Ready</div>
             </div>
           </div>
@@ -191,9 +191,9 @@ export default function LandingPage() {
               className="md:col-span-1"
             />
              <BentoCard 
-              title="Elite Motion"
-              desc="Mesh gradients, neon borders, and physical fluid physics."
-              icon={<Sparkles className="text-white" size={24} />}
+              title="Supreme Web"
+              desc="Industrial-grade browser execution with Cinematic Modals."
+              icon={<Globe className="text-white" size={24} />}
               gradient="from-indigo-500/20 to-blue-800/5"
               className="md:col-span-1"
             />

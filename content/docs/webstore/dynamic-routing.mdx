@@ -1,0 +1,40 @@
+---
+title: Dynamic Routing & Pages
+description: Fetching parameters directly from URLs to dynamically transition layout variables.
+---
+
+# Web URL Parameter Routing
+
+In deep e-commerce environments, parsing dynamic structures straight from the browser's URL payload is a non-negotiable architectural pillar. The Webstore implements dynamic param capturing securely using `FluxyRouter`.
+
+### 1. Registering the Exact Param String
+Inside `shop.routes.dart`, we establish an internal binding definition using `:id`.
+
+```dart
+FxRoute(
+  path: '/shop/:id',
+  builder: (params, args) => ItemView(itemId: params['id'] ?? '1'),
+  transition: FxTransition.fade,
+  controller: () => ItemController(),
+),
+```
+
+### 2. Accessing the Data Inside the View Parameter
+When arriving at `/shop/15`, the `Builder` intercepts `params['id']`, effectively injecting `"15"` directly into the `ItemView`. 
+
+This safely decouples router configurations directly from your Controller's execution, yielding robustly isolated views.
+
+```dart
+class ItemView extends StatelessWidget {
+  final String itemId;
+  const ItemView({super.key, required this.itemId});
+
+  @override
+  Widget build(BuildContext context) {
+    ...
+    // Dynamically query based on explicit parameters
+    controller.loadItem(itemId); 
+```
+
+### 3. Asynchronous Rendering & Fx.suspense
+Since `loadItem()` requires simulated network latency (simulating a database fetch event), the Webstore locks its internal `controller.isLoading.value` and pushes a Suspense-level layout to elegantly handle DOM rendering thresholds until data fulfills.

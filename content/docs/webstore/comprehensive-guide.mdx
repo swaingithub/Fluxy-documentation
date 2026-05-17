@@ -1,0 +1,150 @@
+---
+title: Comprehensive Guide to Fluxy Web
+description: Everything you need to know about building industrial-grade web applications with Fluxy.
+---
+
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+
+# Fluxy Web: The Definitive Guide
+
+Fluxy Web is not just a port of Flutter to the browser; it is a **Managed Application Platform** specifically optimized for high-performance, responsive, and ultra-premium web experiences. 
+
+## 1. Creating a Web Project
+
+To create a new Fluxy project with full Web support, follow these steps:
+
+<Steps>
+<Step>
+### Initialize the CLI
+Ensure you have the Fluxy CLI installed and activated.
+```bash
+dart pub global activate fluxy
+```
+</Step>
+
+<Step>
+### Scaffold the Application
+Create a new project using the industrial-grade boilerplate.
+```bash
+fluxy init my_webstore_app
+```
+</Step>
+
+<Step>
+### Project Structure
+Fluxy automatically scaffolds a structure optimized for web:
+- **`lib/features/shared`**: Houses the `WebLayout`, `Navbar`, and `Footer`.
+- **`lib/core/registry`**: Manages automatic plugin discovery.
+- **`web/`**: Optimized templates for browser performance.
+</Step>
+</Steps>
+
+## 2. Writing Code: The Fluxy Syntax
+
+Fluxy uses a **Chainable Modifier DSL** that removes the "Nesting Hell" of standard Flutter.
+
+<Tabs items={['Fluxy DSL', 'Tailwind Syntax', 'Standard Flutter']}>
+<Tab value="Fluxy DSL">
+```dart
+Fx.text("Premium Product")
+  .font.bold()
+  .blue500()
+  .rounded(12)
+  .p(24)
+  .shadow.lg()
+  .onTap(() => print("Clicked!"))
+```
+</Tab>
+<Tab value="Tailwind Syntax">
+```dart
+Fx.box(
+  child: Fx.text("Shop Now").tw('text-white font-semibold'),
+).tw('bg-blue-600 px-8 py-3 rounded-full shadow-xl hover:scale-105 transition-all')
+```
+</Tab>
+<Tab value="Standard Flutter">
+```dart
+Padding(
+  padding: EdgeInsets.all(24),
+  child: Container(
+    decoration: BoxDecoration(
+      color: Colors.blue,
+      borderRadius: BorderRadius.circular(12),
+      boxShadow: [BoxShadow(blurRadius: 10, color: Colors.black12)],
+    ),
+    child: InkWell(
+      onTap: () => print("Clicked!"),
+      child: Center(
+        child: Text("Premium Product", style: TextStyle(fontWeight: FontWeight.bold)),
+      ),
+    ),
+  ),
+)
+```
+</Tab>
+</Tabs>
+
+## 3. Web-Native Layouts (`FxWeb`)
+
+The `FxWeb` class provides high-level primitives designed for browser environments.
+
+| Component | Usage Example | Purpose |
+| :--- | :--- | :--- |
+| `container` | `FxWeb.container(child: ...)` | Max-width boundary & centering. |
+| `navbar` | `FxWeb.navbar(brand: ..., menu: ...)` | Responsive menu swapping. |
+| `responsiveGrid`| `FxWeb.responsiveGrid(children: ...)` | Dynamic column stacking. |
+| `split` | `FxWeb.split(left: ..., right: ...)` | 50/50 section blocks. |
+| `drawer` | `FxWeb.drawer(isOpen: ..., child: ...)`| Slide-over cart/menu. |
+
+<Callout type="warn">
+Always use `FxWeb.container` as your top-level body wrapper to prevent "Infinity assertion" crashes in standard Flutter scroll views.
+</Callout>
+
+## 4. State Management: The Flux System
+
+Fluxy uses a **Signal-based** state system which is significantly more performant in the browser.
+
+```dart
+class CartController extends FluxController {
+  // Reactive signal with native persistence
+  final cartItems = flux(<Product>[], key: 'webstore_cart', persist: true);
+  
+  void addItem(Product item) => cartItems.value = [...cartItems.value, item];
+}
+```
+
+## 5. Deployment & Production
+
+<Steps>
+<Step>
+### Local Development
+Launch your application in Chrome for instant hot-reload.
+```bash
+fluxy run
+```
+</Step>
+
+<Step>
+### Industrial Build
+Optimize the JavaScript bundle and assets for production.
+```bash
+flutter build web --release --base-href /
+```
+</Step>
+</Steps>
+
+## 6. Premium Web Features
+
+### **The Stability Kernel™**
+The browser environment is unpredictable. If your layout hits a constraint violation, the **Stability Kernel** intercepts the error and applies an **Auto-Repair** to keep the app running.
+
+### **Elite UI & Motion System**
+Fluxy v1.2.3 adds hardware-accelerated motion:
+- **`FxMeshGradient`**: Deep, animated background gradients.
+- **`FxSpotlight`**: Premium mouse-following interactions.
+- **`FxGooey`**: Organic, fluid UI transitions.
+
+### **Zero-Crash Layout Immunity**
+The `FxSafeExpansion` widget automatically solves flex-spacing issues in real-time, preventing the "Unbounded Height" crashes typical in web development.

@@ -1,0 +1,75 @@
+---
+title: Webstore Overview
+description: A production-ready, ultra-premium Web application template built entirely on FxWeb.
+---
+
+# Webstore (Fluxy Web Architecture)
+
+<img src="/webstore_demo.webp" alt="Discover Web Screen animated" className="rounded-[1rem] border-[4px] border-gray-900 dark:border-zinc-800 shadow-2xl my-8 w-full h-auto object-cover" />
+
+import { Globe, Layout, Zap, Rocket } from 'lucide-react';
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+import { Card, Cards } from 'fumadocs-ui/components/card';
+import { Callout } from 'fumadocs-ui/components/callout';
+
+# Webstore (Web App)
+
+While the `ecommerce` template focuses on a mobile-first native architecture, the **Webstore** template provides a complete masterclass in building strictly for **Desktop Web** and ultra-responsive web experiences.
+
+<Cards>
+  <Card 
+    icon={<Globe />}
+    title="Web-First Architecture" 
+    description="Designed specifically for the browser with shared layouts and sticky navigations." 
+  />
+  <Card 
+    icon={<Layout />}
+    title="Responsive Layouts" 
+    description="Monolithic grid systems and threshold-based component swapping." 
+  />
+  <Card 
+    icon={<Zap />}
+    title="Tailwind DSL" 
+    description="Natively bind CSS-like utility strings to Fluxy styles for rapid development." 
+  />
+  <Card 
+    icon={<Rocket />}
+    title="Elite Components" 
+    description="Access high-fidelity drawers, accordions, and hero sections." 
+  />
+</Cards>
+
+## Core Pattern: Fluxy Web DSL
+
+The Webstore template demonstrates how to leverage the specialized `FxWeb` DSL to build layouts that would otherwise require hundreds of lines of standard Flutter code.
+
+### High-Level Features
+1. **Shared Layout Wrappers**: Using `WebLayout` to wrap the entire application state.
+2. **Dynamic Routing**: Complex route hierarchies mapped to specific Web controllers.
+3. **Interactive UI**: Hover states, glassmorphism, and smooth transitions.
+4. **Slide-over Overlays**: Cartesian Cart drawers and mobile menus.
+
+## Getting Started
+
+To launch the Webstore example natively in the browser:
+
+<Steps>
+### Navigate to the directory
+```bash
+cd webstore
+```
+
+### Clean and Sync
+```bash
+flutter clean && flutter pub get
+```
+
+### Run on Chrome
+```bash
+flutter run -d chrome
+```
+</Steps>
+
+<Callout type="info">
+For a deeper dive into project creation, syntax, and advanced features, check out our **[Comprehensive Guide to Fluxy Web](/docs/webstore/comprehensive-guide)**.
+</Callout>

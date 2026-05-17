@@ -17,13 +17,17 @@
     "sidebar",
     "bottom-bar",
     "tab-scaffold",
+    "---Multimedia & Overlays---",
+    "media",
+    "modal",
     "---Data & Feedback---",
     "chart",
     "table",
     "list",
     "shimmer",
     "dashboard",
-    "advanced"
-
+    "advanced",
+    "---Web Primitives---",
+    "web"
   ]
 }

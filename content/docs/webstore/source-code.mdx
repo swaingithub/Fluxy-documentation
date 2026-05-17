@@ -1,0 +1,218 @@
+---
+title: Full Webstore Source Code
+description: A direct look at the industrial-grade implementation of the Fluxy Webstore template.
+---
+
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+
+# The Full Webstore Source
+
+Explore the core architectural files that power the **Fluxy Webstore**. These files demonstrate how to use `FxWeb`, `WebLayout`, and the **Fluxy State System** to build a production-ready e-commerce platform.
+
+<Tabs items={['main.dart', 'web_layout.dart', 'home.view.dart', 'shop.view.dart']}>
+<Tab value="main.dart">
+```dart title="lib/main.dart"
+import 'package:flutter/material.dart';
+import 'package:fluxy/fluxy.dart';
+import 'core/theme/app_theme.dart';
+import 'core/registry/fluxy_registry.dart';
+import 'features/home/home.routes.dart';
+import 'features/shop/shop.routes.dart';
+import 'features/editorial/editorial.routes.dart';
+import 'features/journal/journal.routes.dart';
+import 'features/collection/collection.routes.dart';
+import 'features/about/about.routes.dart';
+
+void main() async {
+  // 1. Initialize Framework & Stability Policy
+  // strictMode: true throws errors on layout violations (perfect for Dev)
+  // strictMode: false (Relaxed) auto-fixes violations (perfect for Prod)
+  await Fluxy.init(strictMode: false);
+
+  // 2. Boot Modular Plugins (Auto-generated registry)
+  registerFluxyPlugins();
+  Fluxy.autoRegister();
+
+  // 3. Setup Global Error Pipeline
+  Fluxy.onError((error, stack) {
+    debugPrint("Fluxy Global Error: $error");
+  });
+
+  runApp(
+    Fluxy.debug(
+      child: FluxyApp(
+        title: 'Fluxy App',
+        theme: AppTheme.light,
+        initialRoute: homeRoutes.first.path,
+        routes: [
+           ...homeRoutes,
+           ...shopRoutes,
+           ...editorialRoutes,
+           ...journalRoutes,
+           ...collectionRoutes,
+           ...aboutRoutes,
+        ],
+      ),
+    ),
+  );
+}
+```
+</Tab>
+<Tab value="web_layout.dart">
+```dart title="lib/features/shared/web_layout.dart"
+import 'package:flutter/material.dart';
+import 'package:fluxy/fluxy.dart';
+import '../home/home.controller.dart';
+import 'web_navbar.dart';
+
+class WebLayout extends StatelessWidget {
+  final Widget child;
+  const WebLayout({super.key, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    HomeController? homeController;
+    try {
+      homeController = Fluxy.find<HomeController>();
+    } catch (_) {}
+
+    return Fx.scaffold(
+      backgroundColor: const Color(0xFFF8FAFC),
+      body: Fx.stack(
+        children: [
+          // 1. The Page Content
+          child,
+
+          // 2. The Header Overlay (Sticky Navbar)
+          const Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: WebNavbar(),
+          ),
+
+          // 3. The Slide-overs (Cart & Mobile Menu)
+          if (homeController != null)
+            Builder(builder: (context) {
+              final ctrl = homeController!;
+              return Positioned.fill(
+                child: Fx(() => Stack(
+                  children: [
+                     FxWeb.drawer(
+                        isOpen: ctrl.isMobileMenuOpen.value,
+                        onClose: () => ctrl.toggleMobileMenu(),
+                        fromRight: false,
+                        child: _buildMobileMenuContent(ctrl),
+                     ),
+                     FxWeb.drawer(
+                        isOpen: ctrl.isCartOpen.value,
+                        onClose: () => ctrl.toggleCart(),
+                        child: _buildCartContent(ctrl),
+                     )
+                  ]
+                )),
+              );
+            }),
+        ],
+      ),
+    );
+  }
+
+  // ... (Full implementation in repository)
+}
+```
+</Tab>
+<Tab value="home.view.dart">
+```dart title="lib/features/home/home.view.dart"
+import 'package:flutter/material.dart';
+import 'package:fluxy/fluxy.dart';
+import 'home.controller.dart';
+import '../shared/web_layout.dart';
+import '../shared/web_footer.dart';
+
+class HomeView extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final controller = Fluxy.find<HomeController>();
+
+    return WebLayout(
+      child: Fx.scroll(
+        child: FxWeb.container(
+          maxWidth: 1200,
+          child: Fx.col(
+            alignItems: CrossAxisAlignment.start,
+            children: [
+              Fx.gap(100), // Navbar Offset
+              _buildHeroSection(context),
+              Fx.gap(100),
+              _buildTrendingSection(context, controller),
+              Fx.gap(120),
+              _buildFaqSection(),
+              const WebFooter(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // The Supreme Web Hero Section
+  Widget _buildHeroSection(BuildContext context) {
+    return FxWeb.hero(
+      title: Fx.text('Define Your Framework.').tw('text-6xl font-black text-slate-900'),
+      subtitle: Fx.text('Discover premium minimalist aesthetics.').tw('text-xl text-slate-500'),
+      media: Fx.image('assets/hero.jpg', height: 550, fit: BoxFit.cover, radius: 32),
+      actions: FxButton(
+        onTap: () => FluxyRouter.to('/shop'),
+        label: 'Shop Collection',
+        isRounded: true,
+      ),
+    );
+  }
+}
+```
+</Tab>
+<Tab value="shop.view.dart">
+```dart title="lib/features/shop/shop.view.dart"
+import 'package:flutter/material.dart';
+import 'package:fluxy/fluxy.dart';
+import 'shop.controller.dart';
+import '../shared/web_layout.dart';
+
+class ShopView extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final controller = Fluxy.find<ShopController>();
+
+    return WebLayout(
+      child: Fx.scroll(
+        child: FxWeb.container(
+          maxWidth: 1200,
+          child: Fx.col(
+            children: [
+              Fx.gap(140),
+              Fx.text('SHOP').tw('text-5xl font-black'),
+              Fx.gap(48),
+              
+              Fx(() {
+                final items = controller.filteredProducts;
+                return FxWeb.responsiveGrid(
+                  context: context,
+                  desktopColumns: 4,
+                  children: items.map((p) => WebProductCard(product: p)).toList(),
+                );
+              }),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+```
+</Tab>
+</Tabs>
+
+<Callout type="info">
+The full source code for the Webstore template is available in the `webstore/` directory of the Fluxy repository. It includes complex logic for cart management, dynamic categorization, and interactive media players.
+</Callout>
